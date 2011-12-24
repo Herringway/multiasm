@@ -1,0 +1,4 @@
+rom: smb.nes
+processor: 6502
+title: Super Mario Bros (USA)
+platform: nes

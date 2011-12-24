@@ -1,0 +1,224 @@
+---
+12582926:
+  labels:
+    114: UNKNOWN0
+    125: UNKNOWN1
+    151: UNKNOWN2
+  size: 221
+  type: assembly
+  name: ""
+  description: ""
+12585259:
+  name: ""
+  description: ""
+  type: assembly
+  size: 53
+  accumsize: 8
+  labels:
+    2373: UNKNOWN0
+    2395: UNKNOWN1
+12585806:
+  name: ""
+  description: ""
+  type: assembly
+  size: 22
+  accumsize: 8
+  labels: ~
+12585828:
+  name: ""
+  description: ""
+  type: assembly
+  size: 17
+  accumsize: 8
+  labels: ~
+12585845:
+  name: ""
+  description: ""
+  type: assembly
+  size: 17
+  accumsize: 8
+  labels: ~
+12585862:
+  name: ""
+  description: ""
+  type: assembly
+  size: 240
+  accumsize: 8
+  labels: ~
+12589907:
+  name: ""
+  description: ""
+  type: assembly
+  size: 61
+  accumsize: 8
+  labels:
+    7007: UNKNOWN0
+    7043: UNKNOWN1
+    7055: UNKNOWN2
+12593224:
+  name: ""
+  description: ""
+  type: assembly
+  size: 36
+  accumsize: 8
+  labels:
+    10317: UNKNOWN0
+    10342: UNKNOWN1
+12593260:
+  name: ""
+  description: ""
+  type: assembly
+  size: 62
+  labels: ~
+12593322:
+  name: ""
+  description: ""
+  type: assembly
+  size: 22
+  labels:
+    10418: UNKNOWN0
+12594673:
+  name: ""
+  description: ""
+  type: assembly
+  size: 45
+  accumsize: 8
+  labels: ~
+12628370:
+  name: ""
+  description: ""
+  type: assembly
+  size: 114
+  labels:
+    45477: UNKNOWN0
+    45521: UNKNOWN1
+    45569: UNKNOWN2
+12648192:
+  size: 7
+  description: RESET Routine
+  name: RESET
+  type: assembly
+12746756:
+  name: ""
+  description: ""
+  type: assembly
+  size: 10
+  labels:
+    32778: UNKNOWN0
+13041664:
+  name: ""
+  description: ""
+  type: assembly
+  size: 3
+13041720:
+  name: ""
+  description: ""
+  type: assembly
+  size: 264
+  labels:
+    80: UNKNOWN0
+    120: UNKNOWN1
+    125: UNKNOWN2
+    162: UNKNOWN3
+    171: UNKNOWN4
+    190: UNKNOWN5
+    219: UNKNOWN6
+    226: UNKNOWN7
+    246: UNKNOWN8
+    258: UNKNOWN9
+    283: UNKNOWN10
+13369954:
+  name: WEAPON_STATS
+  description: Weapon Stats Table
+  type: data
+  size: 449
+  entries:
+  - name: Power
+    size: 1
+  - name: Unknown
+    size: 1
+  - name: Critical Hit Chance
+    size: 1
+  - name: Status Inflicted
+    size: 1
+  - name: Inflict Status?
+    size: 1
+    type: boolean
+13387520:
+  name: ENEMY_STATS
+  description: Enemy Statistics Table
+  type: data
+  size: 5887
+  entries:
+  - name: HP
+    size: 2
+  - name: Level
+    size: 1
+  - name: Unknown1
+    size: 6
+    type: bytearray
+  - name: Speed
+    size: 1
+  - name: Magic
+    size: 1
+  - name: Unknown2
+    size: 3
+    type: bytearray
+  - name: Offense
+    size: 1
+  - name: Defense
+    size: 1
+  - name: Lightning Defense
+    size: 1
+  - name: Shadow Defense
+    size: 1
+  - name: Water Defense
+    size: 1
+  - name: Fire Defense
+    size: 1
+  - name: Evasion
+    size: 1
+  - name: Unknown
+    size: 2
+    bitvalues:
+    - Boss Death
+    - Cannot see HP
+    - Unknown 1
+    - Unknown 2
+    - Unknown 3
+    - Unknown 4
+    - Unknown 5
+    - Unknown 6
+    - Unknown 7
+    - Unknown 8
+    - Unknown 9
+    - Unknown 10
+    - Unknown 11
+    - Unknown 12
+    - Unknown 13
+    - Unknown 14
+16629760:
+  size: 215
+  type: assembly
+16639031:
+  name: ""
+  description: ""
+  type: assembly
+  size: 78
+  labels:
+    58479: UNKNOWN0
+16639208:
+  name: ""
+  description: ""
+  type: assembly
+  size: 74
+  labels:
+    58637: UNKNOWN0
+16639282:
+  name: ""
+  description: ""
+  type: assembly
+  size: 74
+  labels:
+    58711: UNKNOWN0
+...

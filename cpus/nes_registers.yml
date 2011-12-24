@@ -1,0 +1,64 @@
+2000:
+  description: PPU Control Register 1
+2001:
+  description: PPU Control Register 2
+2002:
+  description: PPU Status Register
+2003:
+  description: SPR-RAM Address Register
+2004:
+  description: SPR-RAM I/O Register
+2005:
+  description: VRAM Address Register 1
+2006:
+  description: VRAM Address Register 2
+2007:
+  description: VRAM I/O Register
+4000:
+  description: pAPU Pulse 1 Control Register
+4001:
+  description: pAPU Pulse 1 Ramp Control Register
+4002:
+  description: pAPU Pulse 1 Fine Tune Register
+4003:
+  description: pAPU Pulse 1 Coarse Tune Register
+4004:
+  description: pAPU Pulse 2 Control Register
+4005:
+  description: pAPU Pulse 2 Ramp Control Register
+4006:
+  description: pAPU Pulse 2 Fine Tune Register
+4007:
+  description: pAPU Pulse 2 Coarse Tune Register
+4008:
+  description: pAPU Triangle Control Register 1
+4009:
+  description: pAPU Triangle Control Register 2
+400A:
+  description: pAPU Triangle Frequency Register 1
+400B:
+  description: pAPU Triangle Frequency Register 2
+400C:
+  description: pAPU Noise Control Register 1
+400D:
+  description: pAPU Noise Control Register 2
+400E:
+  description: pAPU Noise Frequency Register 1
+400F:
+  description: pAPU Noise Frequency Register 2
+4010:
+  description: pAPU Delta Modulation Control Register
+4011:
+  description: pAPU Delta Modulation D/A Register
+4012:
+  description: pAPU Delta Modulation Address Register
+4013:
+  description: pAPU Delta Modulation Data Length Register
+4014:
+  description: Sprite DMA Register
+4015:
+  description: pAPU Sound / Vertical Clock Signal Register
+4016:
+  description: Joypad 1
+4017:
+  description: Joypad 2

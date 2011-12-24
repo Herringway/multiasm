@@ -1,0 +1,446 @@
+---
+0x008143:
+  name: RESET_VECTOR
+  description: Execution Entry Point
+  size: 3
+  type: assembly
+8257637:
+  name: PAD_1_STATE
+  description: Controller 1 state
+8275698:
+  description: 1 if debugging is enabled, 0 otherwise
+  name: DEBUG
+8278344:
+  description: Battle Debugging Flag
+  name: BATTLE_DEBUG
+8282342:
+  description: Battle Swirl Countdown
+  name: BATTLE_SWIRL_COUNTDOWN
+8292802:
+  description: Window Statistics Table
+  name: WINDOW_STATS_TABLE
+8293414:
+  description: Window Existence Table
+  name: WINDOW_EXISTENCE_TABLE
+8293526:
+  description: Current window with focus
+  name: CURRENT_FOCUS_WINDOW
+8296763:
+  description: Battle Mode Flag
+  name: BATTLE_MODE_FLAG
+8297268:
+  description: Current Walking Style
+  name: WALKING_STYLE
+8298545:
+  description: Indicates if a DMA transfer is in progress
+  name: DMA_TRANSFER_FLAG
+12613660:
+  description: Dad's Phone Handler (?)
+  name: DAD_PHONE
+  type: assembly
+12615680:
+  description: SNES Initialization
+  name: RESET
+  accumsize: 8
+  indexsize: 8
+  size: 0x142
+  type: assembly
+12616015:
+  description: IRQ Handler
+  name: IRQ
+  type: assembly
+12616048:
+  description: NMI Handler
+  name: NMI
+  type: assembly
+12617311:
+  description: Decompress to VRAM
+  name: DECOMP_VRAM
+  type: assembly
+12617486:
+  description: Enable NMI+Joypad
+  name: ENABLE_NMI_JOYPAD
+  type: assembly
+12617548:
+  description: Reads gamepad state into memory
+  name: READ_JOYPAD
+  type: assembly
+12619739:
+  description: Multiply low byte of Y by A
+  name: EIGHT_BIT_MULT_YxA
+  type: assembly
+12619796:
+  description: Multiply Y by A
+  name: MULT_YxA
+  type: assembly
+12624123:
+  description: Check if the game is running on an NTSC SNES
+  name: CHECK_HARDWARE
+  type: assembly
+12626661:
+  description: Send Music Data to SPC-700
+  name: LOAD_SPC700_DATA
+  type: assembly
+12629252:
+  description: File Select Screen Initialization
+  name: FILE_SELECT_INIT
+  type: assembly
+12629783:
+  description: Battle Initialization
+  name: BATTLE_INIT
+  type: assembly
+12629950:
+  description: Main Loop
+  name: MAIN_LOOP
+  type: assembly
+12630389:
+  description: Game initialization?
+  name: GAME_INIT
+  type: assembly
+12644145:
+  description: Loads and displays logo screen specified by A
+  name: LOGO_SCREEN
+  type: assembly
+12644763:
+  description: Loads and displays the gas station screen
+  name: GAS_STATION
+  type: assembly
+12647076:
+  description: SRAM Integrity Check
+  name: CHECK_SRAM_INTEGRITY
+  type: assembly
+12648498:
+  description: Set blinking triangle prompt to A
+  name: ENABLE_BLINKING_TRIANGLE
+  size: 6
+  type: assembly
+12649732:
+  description: |
+    Get the root address of the current active window
+  name: GET_ACTIVE_WINDOW_ADDRESS
+  type: assembly
+12650212:
+  description: Create Window
+  name: CREATE_WINDOW
+  type: assembly
+12663429:
+  description: (A) Open Menu
+  name: OPEN_MENU_BUTTON
+  type: assembly
+12664990:
+  description: (L) Talk/Check
+  name: CHECKTALK_BUTTON
+  type: assembly
+12665100:
+  description: (B/Select) Open HP/PP Display
+  name: OPEN_HPPP_DISPLAY
+  type: assembly
+12665167:
+  description: (X) Display Town Map
+  name: SHOW_TOWN_MAP
+  type: assembly
+12683539:
+  description: Display Text at ($0E+10)
+  name: DISPLAY_TEXT
+  type: assembly
+  labels:
+    35132: UNKNOWN0
+    35145: UNKNOWN1
+    35182: UNKNOWN2
+    35249: UNKNOWN3
+    35259: UNKNOWN4
+    35270: UNKNOWN5
+    35278: UNKNOWN6
+    35286: UNKNOWN7
+    35294: UNKNOWN8
+    35302: UNKNOWN9
+    35310: UNKNOWN10
+    35318: UNKNOWN11
+    35326: UNKNOWN12
+    35334: UNKNOWN13
+    35342: UNKNOWN14
+    35350: UNKNOWN15
+    35358: UNKNOWN16
+    35366: UNKNOWN17
+    35374: UNKNOWN18
+    35382: UNKNOWN19
+    35390: UNKNOWN20
+    35398: UNKNOWN21
+    35406: UNKNOWN22
+    35414: UNKNOWN23
+    35422: UNKNOWN24
+    35430: UNKNOWN25
+    35438: UNKNOWN26
+    35446: UNKNOWN27
+    35454: UNKNOWN28
+    35462: UNKNOWN29
+    35470: UNKNOWN30
+    35478: UNKNOWN31
+    35486: UNKNOWN32
+    35494: UNKNOWN33
+    35497: UNKNOWN34
+    35503: UNKNOWN35
+    35514: UNKNOWN36
+    35520: UNKNOWN37
+    35532: UNKNOWN38
+    35540: UNKNOWN39
+    35548: UNKNOWN40
+    35556: UNKNOWN41
+    35564: UNKNOWN42
+    35572: UNKNOWN43
+    35580: UNKNOWN44
+    35588: UNKNOWN45
+    35596: UNKNOWN46
+    35604: UNKNOWN47
+    35612: UNKNOWN48
+    35620: UNKNOWN49
+    35626: UNKNOWN50
+    35634: UNKNOWN51
+    35661: UNKNOWN52
+    35667: UNKNOWN53
+    35677: UNKNOWN54
+    35687: UNKNOWN55
+    35695: UNKNOWN56
+    35703: UNKNOWN57
+    35711: UNKNOWN58
+    35719: UNKNOWN59
+    35727: UNKNOWN60
+    35735: UNKNOWN61
+    35743: UNKNOWN62
+    35751: UNKNOWN63
+    35757: UNKNOWN64
+    35785: UNKNOWN65
+12704255:
+  description: Display In-Battle Text at ($0E+10)
+  name: DISPLAY_IN_BATTLE_TEXT
+  size: 74
+  type: assembly
+  labels:
+    55853: UNKNOWN
+    55864: UNKNOWN2
+12704601:
+  description: Redirect to C1ABB4
+  name: REDIRECT_C1ABB4
+  final processor state:
+    accum: 16
+    index: 16
+  size: 6
+  type: assembly
+12753449:
+  name: PSI_STARSTORM_COMMON
+  description: PSI Starstorm General
+  type: assembly
+  size: 38
+  labels:
+    39501: RETURN
+12751814:
+  name: PSI_SHIELD_NULLIFY
+  description: PSI Shield Handler
+  type: assembly
+  labels:
+    37889: UNKNOWN
+    37910: UNKNOWN2
+    37935: UNKNOWN3
+    37997: UNKNOWN4
+    38002: UNKNOWN5
+    38005: RETURN
+12851690:
+  description: Decompress ($0E+10) to ($12+14)
+  name: DECOMP
+12889522:
+  description: Initializes Intro
+  name: INIT_INTRO
+12898039:
+  description: Initialize SPC-700
+  name: INITIALIZE_SPC700
+12898140:
+  description: Change music to A
+  name: CHANGE_MUSIC
+12911236:
+  description: Text Data
+  name: TEXT_DATA
+  type: data
+  size: 320144
+  entries:
+  - name: Text
+    type: standardtext
+    terminator: 2
+13994782:
+  type: data
+  description: Battle Action Table
+  name: BATTLE_ACTION_TABLE
+  size: 3816
+  entries:
+  - name: Direction
+    size: 1
+    values:
+    - party
+    - enemy
+  - name: Target
+    size: 1
+    values:
+    - none
+    - one
+    - random
+    - row
+    - all
+  - name: Action type
+    size: 1
+    values:
+    - nothing
+    - physical (affected by shields and defending)
+    - physical (unaffected by shields and defending)
+    - PSI
+    - item
+    - other
+  - name: PP Cost
+    size: 1
+  - name: Text Address
+    size: 4
+    type: pointer
+  - name: Code Address
+    size: 4
+    type: pointer
+14001216:
+  type: data
+  description: Enemy Configuration Table
+  name: ENEMY_CONFIGURATION_TABLE
+  size: 17787
+  entries:
+  - name: Name
+    size: 10
+    type: standardtext
+  - name: Type
+    size: 1
+    values:
+    - Normal
+    - Insect
+    - Metal
+  - name: Battle Sprite
+    size: 2
+  - name: Overworld Sprite
+    size: 2
+  - name: Run Flag
+    size: 1
+  - name: HP
+    size: 2
+  - name: PP
+    size: 2
+  - name: Experience points
+    size: 4
+  - name: Money
+    size: 2
+  - name: Movement pattern
+    size: 2
+  - name: Encounter Text Pointer
+    size: 4
+    type: pointer
+  - name: Death Text Pointer
+    size: 4
+    type: pointer
+  - name: Battle Sprite Palette
+    size: 1
+  - name: Level
+    size: 1
+  - name: Music
+    size: 1
+  - name: Offense
+    size: 2
+  - name: Defense
+    size: 2
+  - name: Speed
+    size: 1
+  - name: Guts
+    size: 1
+  - name: Luck
+    size: 1
+  - name: Fire vulnerability
+    size: 1
+    values:
+    - 100%
+    - 70%
+    - 40%
+    - 5%
+  - name: Freeze vulnerability
+    size: 1
+    values:
+    - 100%
+    - 70%
+    - 40%
+    - 5%
+  - name: Flash vulnerability
+    size: 1
+    values:
+    - 100%
+    - 70%
+    - 40%
+    - 5%
+  - name: Paralysis vulnerability
+    size: 1
+    values:
+    - 100%
+    - 70%
+    - 40%
+    - 5%
+  - name: Hypnosis/Brainshock vulnerability
+    size: 1
+    values:
+    - 100%
+    - 70%
+    - 40%
+    - 5%
+  - name: Miss Rate
+    size: 1
+  - name: Action Order
+    size: 1
+  - name: Action 1
+    size: 2
+  - name: Action 2
+    size: 2
+  - name: Action 3
+    size: 2
+  - name: Action 4
+    size: 2
+  - name: Final Action
+    size: 2
+  - name: Action 1 Argument
+    size: 1
+  - name: Action 2 Argument
+    size: 1
+  - name: Action 3 Argument
+    size: 1
+  - name: Action 4 Argument
+    size: 1
+  - name: Final Action Argument
+    size: 1
+  - name: Unknown
+    size: 1
+  - name: Boss Flag
+    size: 1
+  - name: Item Rarity
+    size: 1
+  - name: Item Dropped
+    size: 1
+  - name: Initial Status
+    size: 1
+    values:
+    - Normal
+    - PSI Shield Alpha
+    - PSI Shield Beta
+    - Shield Alpha
+    - Shield Beta
+    - Asleep
+    - Cannot Concentrate
+    - Feeling Strange
+  - name: Death Sound
+    size: 1
+    values:
+    - Normal
+    - Boss
+  - name: Row
+    size: 1
+  - name: Max Call
+    size: 1
+  - name: Mirror Success Rate
+    size: 1
+...

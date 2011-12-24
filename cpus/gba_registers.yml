@@ -1,0 +1,5 @@
+---
+0x4000000:
+  name: DISPCNT
+  description: LCD Control
+...

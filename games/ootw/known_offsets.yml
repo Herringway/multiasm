@@ -1,0 +1,138 @@
+---
+0x80E25C:
+  name: ""
+  description: ""
+  type: assembly
+  size: 58
+  labels:
+    57967: UNKNOWN0
+    58001: UNKNOWN1
+8422958:
+  name: ""
+  description: ""
+  type: assembly
+  size: 185
+  labels:
+    34438: UNKNOWN0
+    34453: UNKNOWN1
+    34505: UNKNOWN2
+8444944:
+  name: ""
+  description: ""
+  type: assembly
+  size: 307
+  labels:
+    56373: UNKNOWN0
+    56375: UNKNOWN1
+    56411: UNKNOWN2
+    56415: UNKNOWN3
+    56419: UNKNOWN4
+    56421: UNKNOWN5
+    56423: UNKNOWN6
+    56447: UNKNOWN7
+    56458: UNKNOWN8
+8445690:
+  name: ""
+  description: ""
+  type: assembly
+  size: 15
+  labels:
+    57085: UNKNOWN0
+8446269:
+  name: ""
+  description: ""
+  type: assembly
+  size: 182
+  labels:
+    57672: UNKNOWN0
+    57699: UNKNOWN1
+    57741: UNKNOWN2
+    57754: UNKNOWN3
+    57756: UNKNOWN4
+    57774: UNKNOWN5
+    57779: UNKNOWN6
+    57799: UNKNOWN7
+    57821: UNKNOWN8
+    57824: UNKNOWN9
+8446556:
+  name: ""
+  description: ""
+  type: assembly
+  size: 58
+  labels:
+    57967: UNKNOWN0
+    58001: UNKNOWN1
+8446633:
+  name: ""
+  description: ""
+  type: assembly
+  size: 32
+  labels:
+    58040: UNKNOWN0
+8447364:
+  name: APU_STUFF_E584
+  description: ""
+  type: assembly
+  size: 111
+  labels:
+    58759: UNKNOWN0
+    58781: UNKNOWN1
+    58793: UNKNOWN2
+    58804: UNKNOWN3
+    58826: UNKNOWN4
+    58833: UNKNOWN5
+    58846: UNKNOWN6
+8447475:
+  name: APU_STUFF_E5F3
+  description: ""
+  type: assembly
+  size: 23
+  labels:
+    58872: UNKNOWN0
+    58882: UNKNOWN1
+8447498:
+  name: APU_STUFF_E60A
+  description: ""
+  type: assembly
+  size: 41
+  labels:
+    58900: UNKNOWN0
+    58919: UNKNOWN1
+8447539:
+  name: APU_STUFF_E633
+  description: ""
+  type: assembly
+  size: 32
+  labels:
+    58933: UNKNOWN0
+    58951: UNKNOWN1
+8447571:
+  name: LOAD_MUSIC
+  description: ""
+  type: assembly
+  size: 142
+  labels:
+    59027: UNKNOWN0
+    59040: UNKNOWN1
+    59058: UNKNOWN2
+    59074: UNKNOWN3
+    59084: UNKNOWN4
+    59087: UNKNOWN5
+8447713:
+  name: ""
+  description: ""
+  type: assembly
+  size: 94
+  labels:
+    59160: UNKNOWN0
+    59168: UNKNOWN1
+    59178: UNKNOWN2
+    59181: UNKNOWN3
+8447901:
+  name: ""
+  description: ""
+  type: assembly
+  size: 45
+  labels:
+    59336: UNKNOWN0
+...

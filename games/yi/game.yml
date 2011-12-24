@@ -1,0 +1,6 @@
+rom: yi.SFC
+processor: 65816
+platform: snes
+rombase: 0x000000
+superfx: true
+title: "Super Mario World 2: Yoshi's Island (USA)"
