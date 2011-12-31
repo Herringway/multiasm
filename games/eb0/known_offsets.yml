@@ -1,2 +1,35 @@
---- []
+---
+52947:
+  name: ""
+  description: ""
+  type: assembly
+  size: 41
+  labels:
+    52976: UNKNOWN0
+    52983: UNKNOWN1
+64788:
+  name: ""
+  description: ""
+  type: assembly
+  size: 38
+  labels:
+    32774: UNKNOWN0
+    64796: UNKNOWN1
+    64816: UNKNOWN2
+    64819: UNKNOWN3
+65344:
+  name: RESET
+  description: Execution Entry Point
+  type: assembly
+  size: 160
+  labels:
+    52036: UNKNOWN0
+    65375: UNKNOWN1
+    65400: UNKNOWN2
+    65429: UNKNOWN3
+65488:
+  name: BANK_SWAP
+  description: Swaps PRG-ROM banks
+  type: assembly
+  size: 16
 ...

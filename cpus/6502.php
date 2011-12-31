@@ -25,6 +25,11 @@ class core {
 		$vector = ord(fgetc($this->handle)) + (ord(fgetc($this->handle))<<8);
 		return $vector;
 	}
+	private function fix_addr($opcode, $offset) {
+		if ($opcode['addressing']['type'] == 'relative')
+			return (($this->currentoffset+uint($offset+2,8))&0xFFFF) + ($this->currentoffset&0xFF0000);
+		return ($this->initialoffset&0xFF0000) + $offset;
+	}
 	public function getMisc() {
 		return array();
 	}
@@ -75,35 +80,27 @@ class core {
 				$args[] = $t;
 				$arg += $t<<($j*8);
 			}
-			//$fulladdr = $this->fix_addr($opcode, $arg);
-			$fulladdr = $arg;
-			/*
-			if ((($this->opcodes[$opcode]['addressing']['type'] == 'relative') || (($this->opcodes[$opcode]['addressing']['type'] == 'absolutejmp') && isset($this->opcodes[$opcode]['addressing']['jump']))) && ($fulladdr + ($this->currentoffset&0xFF0000) > $farthestbranch))
-				$farthestbranch = $fulladdr + ($this->currentoffset&0xFF0000);
-				
-			if ((($this->opcodes[$opcode]['addressing']['type'] == 'absolutejmp') || ($this->opcodes[$opcode]['addressing']['type'] == 'absolutelongjmp'))) {
+			$fulladdr = $this->fix_addr($opcodeinfo, $arg);
+			
+			if ($opcodeinfo['addressing']['type'] == 'absolutejmp') {
 				if ((isset($this->addrs[$fulladdr]['name']) && !empty($this->addrs[$fulladdr]['name'])))
 					$uri = $this->addrs[$fulladdr]['name'];
 				else
 					$uri = sprintf('%06X', $fulladdr);
 			}
-			if ($this->opcodes[$opcode]['addressing']['type'] == 'relativelong')
-				$uri = sprintf('%06X', $fulladdr+($this->currentoffset&0xFF0000));
-			if (isset($this->addrs[$fulladdr]['final processor state']['accum']))
-				$accum = $this->addrs[$fulladdr]['final processor state']['accum'];
-			if (isset($this->addrs[$fulladdr]['final processor state']['index']))
-				$index = $this->addrs[$fulladdr]['final processor state']['index'];
+			if (($opcodeinfo['addressing']['type'] == 'relative') && ($fulladdr > $farthestbranch))
+				$farthestbranch = $fulladdr;
 			
 			if (isset($this->addrs[$fulladdr]['name'])) {
 				$name = $this->addrs[$fulladdr]['name'];
 			} else if (isset($this->addrs[$this->initialoffset]['labels'][$fulladdr])) {
 				$uri = sprintf('%s#%s', $offsetname, $this->addrs[$this->initialoffset]['labels'][$fulladdr]);
 				$name = ($this->placeholdernames ? isset($this->addrs[$this->initialoffset]['name']) ? $this->addrs[$this->initialoffset]['name'].'_' : sprintf('UNKNOWN_%06X_', $this->initialoffset) : '').$this->addrs[$this->initialoffset]['labels'][$fulladdr];
-			} else if (($this->opcodes[$opcode]['addressing']['type'] == 'relative') || (($this->opcodes[$opcode]['addressing']['type'] == 'absolutejmp') && (isset($this->opcodes[$opcode]['addressing']['jump'])))) {
+			} else if ($opcodeinfo['addressing']['type'] == 'relative') {
 				if (!isset($this->branches[$fulladdr]))
 					$this->branches[$fulladdr] = '';
 			} else if ($this->placeholdernames) {
-				switch ($this->opcodes[$opcode]['addressing']['type']) {
+				switch ($opcodeinfo['addressing']['type']) {
 					case 'absolute': $name = sprintf('UNKNOWN_%04X', $arg); break;
 					case 'absolutejmp': $name = sprintf('UNKNOWN_%04X', $arg); break;
 					case 'absolutelongjmp': $name = sprintf('UNKNOWN_%06X', $arg); break;
@@ -111,7 +108,6 @@ class core {
 				}
 			} else
 				$name = '';
-				*/
 			$arg = sprintf($opcodeinfo['addressing']['addrformat'], $arg,isset($args[0]) ? $args[0] : 0,isset($args[1]) ? $args[1] : 0, isset($args[2]) ? $args[2] : 0, $this->currentoffset>>16, ($this->currentoffset+uint($arg+$size+1,$size*8))&0xFFFF);
 			
 			$output[] = array('opcode' => $opcode,
