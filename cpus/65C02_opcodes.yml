@@ -1,0 +1,597 @@
+---
+Undefined:
+  mnemonic: INVALID
+  addressing: &none
+    type: none
+    printformat: 
+    addrformat: 
+    size: 0
+0x00: 
+  mnemonic: BRK
+  addressing: *none
+0x01: 
+  mnemonic: ORA
+  addressing: &dpindexedindirectx
+    type: dpindexedindirectx
+    printformat: (%s,X)
+    addrformat: $%02X
+    size: 1
+0x05: 
+  mnemonic: ORA
+  addressing: &directpage
+    type: directpage
+    printformat: "%s"
+    addrformat: $%02X
+    size: 1
+0x06: 
+  mnemonic: ASL
+  addressing: *directpage
+0x08: 
+  mnemonic: PHP
+  addressing: *none
+0x09: 
+  mnemonic: ORA
+  addressing: &accumconst
+    type: accumconst
+    printformat: "#%s"
+    addrformat: $%04X
+    size: accum
+0x0A: 
+  mnemonic: ASL
+  addressing: *none
+0x0D: 
+  mnemonic: ORA
+  addressing: &absolute
+    type: absolute
+    printformat: "%s"
+    addrformat: $%04X
+    size: 2
+0x0E: 
+  mnemonic: ASL
+  addressing: *absolute
+0x10: 
+  mnemonic: BPL
+  addressing: &relative
+    type: relative
+    printformat: "%s"
+    addrformat: $%6$04X
+    size: 1
+    anchorformat: '%s#%s'
+0x11: 
+  mnemonic: ORA
+  addressing: &dpindirectindexedy
+    type: dpindirectindexedy
+    printformat: (%s),Y
+    addrformat: $%02X
+    size: 1
+0x12: 
+  mnemonic: ORA
+  addressing: &dpindirect
+    type: dpindirect
+    printformat: (%s)
+    addrformat: $%02X
+    size: 1
+0x15: 
+  mnemonic: ORA
+  addressing: &dpindexedx
+    type: dpindexedx
+    printformat: "%s,X"
+    addrformat: $%02X
+    size: 1
+0x16: 
+  mnemonic: ASL
+  addressing: *dpindexedx
+0x18: 
+  mnemonic: CLC
+  addressing: *none
+0x19: 
+  mnemonic: ORA
+  addressing: &absoluteindexedy
+    type: absoluteindexedy
+    printformat: "%s,Y"
+    addrformat: $%04X
+    size: 2
+0x1A: 
+  mnemonic: INC
+  addressing: *none
+0x1D: 
+  mnemonic: ORA
+  addressing: &absoluteindexedx
+    type: absoluteindexedx
+    printformat: "%s,X"
+    addrformat: $%04X
+    size: 2
+0x1E: 
+  mnemonic: ASL
+  addressing: *absoluteindexedx
+0x20: 
+  mnemonic: JSR
+  addressing: &absolutejmp
+    type: absolutejmp
+    printformat: "%s"
+    addrformat: $%04X
+    size: 2
+    anchorformat: '%s#%s'
+0x21: 
+  mnemonic: AND
+  addressing: *dpindexedindirectx
+0x24: 
+  mnemonic: BIT
+  addressing: *directpage
+0x25: 
+  mnemonic: AND
+  addressing: *directpage
+0x26: 
+  mnemonic: ROL
+  addressing: *directpage
+0x28: 
+  mnemonic: PLP
+  addressing: *none
+0x29: 
+  mnemonic: AND
+  addressing: *accumconst
+0x2A: 
+  mnemonic: ROL
+  addressing: *none
+0x2C: 
+  mnemonic: BIT
+  addressing: *absolute
+0x2D: 
+  mnemonic: AND
+  addressing: *absolute
+0x2E: 
+  mnemonic: ROL
+  addressing: *absolute
+0x30: 
+  mnemonic: BMI
+  addressing: *relative
+0x31: 
+  mnemonic: AND
+  addressing: *dpindirectindexedy
+0x32: 
+  mnemonic: AND
+  addressing: *dpindirect
+0x34: 
+  mnemonic: BIT
+  addressing: *dpindexedx
+0x35: 
+  mnemonic: AND
+  addressing: *dpindexedx
+0x36: 
+  mnemonic: ROL
+  addressing: *dpindexedx
+0x38: 
+  mnemonic: SEC
+  addressing: *none
+0x39: 
+  mnemonic: AND
+  addressing: *absoluteindexedy
+0x3A: 
+  mnemonic: DEC
+  addressing: *none
+0x3C: 
+  mnemonic: BIT
+  addressing: *absoluteindexedx
+0x3D: 
+  mnemonic: AND
+  addressing: *absoluteindexedx
+0x3E: 
+  mnemonic: ROL
+  addressing: *absoluteindexedx
+0x40: 
+  mnemonic: RTI
+  addressing: &return
+    type: return
+    printformat: 
+    addrformat: 
+    size: 0
+    special: return
+0x41: 
+  mnemonic: EOR
+  addressing: *dpindexedindirectx
+0x45: 
+  mnemonic: EOR
+  addressing: *directpage
+0x46: 
+  mnemonic: LSR
+  addressing: *directpage
+0x48: 
+  mnemonic: PHA
+  addressing: *none
+0x49: 
+  mnemonic: EOR
+  addressing: *accumconst
+0x4A: 
+  mnemonic: LSR
+  addressing: *none
+0x4C: 
+  mnemonic: JMP
+  addressing: 
+    type: absolutejmp
+    printformat: "%s"
+    addrformat: $%04X
+    size: 2
+    anchorformat: '%s#%s'
+    jump: true
+0x4D: 
+  mnemonic: EOR
+  addressing: *absolute
+0x4E: 
+  mnemonic: LSR
+  addressing: *absolute
+0x50: 
+  mnemonic: BVC
+  addressing: *relative
+0x51: 
+  mnemonic: EOR
+  addressing: *dpindirectindexedy
+0x52: 
+  mnemonic: EOR
+  addressing: *dpindirect
+0x55: 
+  mnemonic: EOR
+  addressing: *dpindexedx
+0x56: 
+  mnemonic: LSR
+  addressing: *dpindexedx
+0x58: 
+  mnemonic: CLI
+  addressing: *none
+0x59: 
+  mnemonic: EOR
+  addressing: *absoluteindexedy
+0x5A: 
+  mnemonic: PHY
+  addressing: *none
+0x5D: 
+  mnemonic: EOR
+  addressing: *absoluteindexedx
+0x5E: 
+  mnemonic: LSR
+  addressing: *absoluteindexedx
+0x60: 
+  mnemonic: RTS
+  addressing: *return
+0x61: 
+  mnemonic: ADC
+  addressing: *dpindexedindirectx
+0x65: 
+  mnemonic: ADC
+  addressing: *directpage
+0x66: 
+  mnemonic: ROR
+  addressing: *directpage
+0x68: 
+  mnemonic: PLA
+  addressing: *none
+0x69: 
+  mnemonic: ADC
+  addressing: *accumconst
+0x6A: 
+  mnemonic: ROR
+  addressing: *none
+0x6C: 
+  mnemonic: JMP
+  addressing: &absoluteindirect
+    type: absoluteindirect
+    printformat: (%s)
+    addrformat: $%04X
+    size: 2
+0x6D: 
+  mnemonic: ADC
+  addressing: *absolute
+0x6E: 
+  mnemonic: ROR
+  addressing: *absolute
+0x70: 
+  mnemonic: BVS
+  addressing: *relative
+0x71: 
+  mnemonic: ADC
+  addressing: *dpindirectindexedy
+0x72: 
+  mnemonic: ADC
+  addressing: *dpindirect
+0x75: 
+  mnemonic: ADC
+  addressing: *dpindexedx
+0x76: 
+  mnemonic: ROR
+  addressing: *dpindexedx
+0x78: 
+  mnemonic: SEI
+  addressing: *none
+0x79: 
+  mnemonic: ADC
+  addressing: *absoluteindexedy
+0x7A: 
+  mnemonic: PLY
+  addressing: *none
+0x7C: 
+  mnemonic: JMP
+  addressing: &absoluteindexedindirect
+    type: absoluteindexedindirect
+    printformat: (%s,X)
+    addrformat: $%04X
+    size: 2
+0x7D: 
+  mnemonic: ADC
+  addressing: *absoluteindexedx
+0x7E: 
+  mnemonic: ROR
+  addressing: *absoluteindexedx
+0x81: 
+  mnemonic: STA
+  addressing: *dpindexedindirectx
+0x84: 
+  mnemonic: STY
+  addressing: *directpage
+0x85: 
+  mnemonic: STA
+  addressing: *directpage
+0x86: 
+  mnemonic: STX
+  addressing: *directpage
+0x88: 
+  mnemonic: DEY
+  addressing: *none
+0x89: 
+  mnemonic: BIT
+  addressing: *accumconst
+0x8A: 
+  mnemonic: TXA
+  addressing: *none
+0x8C: 
+  mnemonic: STY
+  addressing: *absolute
+0x8D: 
+  mnemonic: STA
+  addressing: *absolute
+0x8E: 
+  mnemonic: STX
+  addressing: *absolute
+0x90: 
+  mnemonic: BCC
+  addressing: *relative
+0x91: 
+  mnemonic: STA
+  addressing: *dpindirectindexedy
+0x92: 
+  mnemonic: STA
+  addressing: *dpindirect
+0x94: 
+  mnemonic: STY
+  addressing: *dpindexedx
+0x95: 
+  mnemonic: STA
+  addressing: *dpindexedx
+0x96: 
+  mnemonic: STX
+  addressing: &dpindexedy
+    type: dpindexedy
+    printformat: "%s,Y"
+    addrformat: $%02X
+    size: 1
+0x98: 
+  mnemonic: TYA
+  addressing: *none
+0x99: 
+  mnemonic: STA
+  addressing: *absoluteindexedy
+0x9A: 
+  mnemonic: TXS
+  addressing: *none
+0x9D: 
+  mnemonic: STA
+  addressing: *absoluteindexedx
+0xA0: 
+  mnemonic: LDY
+  addressing: &indexconst
+    type: indexconst
+    printformat: "%s"
+    addrformat: '#$%04X'
+    size: index
+0xA1: 
+  mnemonic: LDA
+  addressing: *dpindexedindirectx
+0xA2: 
+  mnemonic: LDX
+  addressing: *indexconst
+0xA4: 
+  mnemonic: LDY
+  addressing: *directpage
+0xA5: 
+  mnemonic: LDA
+  addressing: *directpage
+0xA6: 
+  mnemonic: LDX
+  addressing: *directpage
+0xA8: 
+  mnemonic: TAY
+  addressing: *none
+0xA9: 
+  mnemonic: LDA
+  addressing: *accumconst
+0xAA: 
+  mnemonic: TAX
+  addressing: *none
+0xAC: 
+  mnemonic: LDY
+  addressing: *absolute
+0xAD: 
+  mnemonic: LDA
+  addressing: *absolute
+0xAE: 
+  mnemonic: LDX
+  addressing: *absolute
+0xB0: 
+  mnemonic: BCS
+  addressing: *relative
+0xB1: 
+  mnemonic: LDA
+  addressing: *dpindirectindexedy
+0xB2: 
+  mnemonic: LDA
+  addressing: *dpindirect
+0xB4: 
+  mnemonic: LDY
+  addressing: *dpindexedx
+0xB5: 
+  mnemonic: LDA
+  addressing: *dpindexedx
+0xB6: 
+  mnemonic: LDX
+  addressing: *dpindexedy
+0xB8: 
+  mnemonic: CLV
+  addressing: *none
+0xB9: 
+  mnemonic: LDA
+  addressing: *absoluteindexedy
+0xBA: 
+  mnemonic: TSX
+  addressing: *none
+0xBC: 
+  mnemonic: LDY
+  addressing: *absoluteindexedx
+0xBD: 
+  mnemonic: LDA
+  addressing: *absoluteindexedx
+0xBE: 
+  mnemonic: LDX
+  addressing: *absoluteindexedy
+0xC0: 
+  mnemonic: CPY
+  addressing: *indexconst
+0xC1: 
+  mnemonic: CMP
+  addressing: *dpindexedindirectx
+0xC4: 
+  mnemonic: CPY
+  addressing: *directpage
+0xC5: 
+  mnemonic: CMP
+  addressing: *directpage
+0xC6: 
+  mnemonic: DEC
+  addressing: *directpage
+0xC8: 
+  mnemonic: INY
+  addressing: *none
+0xC9: 
+  mnemonic: CMP
+  addressing: *accumconst
+0xCA: 
+  mnemonic: DEX
+  addressing: *none
+0xCB: 
+  mnemonic: WAI
+  addressing: *none
+0xCC: 
+  mnemonic: CPY
+  addressing: *absolute
+0xCD: 
+  mnemonic: CMP
+  addressing: *absolute
+0xCE: 
+  mnemonic: DEC
+  addressing: *absolute
+0xD0: 
+  mnemonic: BNE
+  addressing: *relative
+0xD1: 
+  mnemonic: CMP
+  addressing: *dpindirectindexedy
+0xD2: 
+  mnemonic: CMP
+  addressing: *dpindirect
+0xD5: 
+  mnemonic: CMP
+  addressing: *dpindexedx
+0xD6: 
+  mnemonic: DEC
+  addressing: *dpindexedx
+0xD8: 
+  mnemonic: CLD
+  addressing: *none
+0xD9: 
+  mnemonic: CMP
+  addressing: *absoluteindexedy
+0xDA: 
+  mnemonic: PHX
+  addressing: *none
+0xDD: 
+  mnemonic: CMP
+  addressing: *absoluteindexedx
+0xDE: 
+  mnemonic: DEC
+  addressing: *absoluteindexedx
+0xE0: 
+  mnemonic: CPX
+  addressing: *indexconst
+0xE1: 
+  mnemonic: SBC
+  addressing: *dpindexedindirectx
+0xE4: 
+  mnemonic: CPX
+  addressing: *directpage
+0xE5: 
+  mnemonic: SBC
+  addressing: *directpage
+0xE6: 
+  mnemonic: INC
+  addressing: *directpage
+0xE8: 
+  mnemonic: INX
+  addressing: *none
+0xE9: 
+  mnemonic: SBC
+  addressing: *accumconst
+0xEA: 
+  mnemonic: NOP
+  addressing: *none
+0xEB: 
+  mnemonic: XBA
+  addressing: *none
+0xEC: 
+  mnemonic: CPX
+  addressing: *absolute
+0xED: 
+  mnemonic: SBC
+  addressing: *absolute
+0xEE: 
+  mnemonic: INC
+  addressing: *absolute
+0xF0: 
+  mnemonic: BEQ
+  addressing: *relative
+0xF1: 
+  mnemonic: SBC
+  addressing: *dpindirectindexedy
+0xF2: 
+  mnemonic: SBC
+  addressing: *dpindirect
+0xF5: 
+  mnemonic: SBC
+  addressing: *dpindexedx
+0xF6: 
+  mnemonic: INC
+  addressing: *dpindexedx
+0xF8: 
+  mnemonic: SED
+  addressing: *none
+0xF9: 
+  mnemonic: SBC
+  addressing: *absoluteindexedy
+0xFA: 
+  mnemonic: PLX
+  addressing: *none
+0xFB: 
+  mnemonic: XCE
+  addressing: *none
+0xFD: 
+  mnemonic: SBC
+  addressing: *absoluteindexedx
+0xFE: 
+  mnemonic: INC
+  addressing: *absoluteindexedx

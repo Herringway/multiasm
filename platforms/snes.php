@@ -28,7 +28,7 @@ class platform {
 				return (($offset&0x7F0000)>>1) + ($offset&0x7FFF);
 		
 		}
-		return -1;
+		throw new Exception('Unknown Area');
 	}
 	private function detectHiROM() {
 		fseek($this->handle, 0x7FDC);

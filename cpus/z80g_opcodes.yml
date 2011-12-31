@@ -1,0 +1,738 @@
+
+---
+0x00:
+  Format: NOP
+  Size: 0
+0x01:
+  Format: LD BC, %04X
+  Size: 2
+0x02:
+  Format: LD (BC), A
+  Size: 0
+0x03:
+  Format: INC BC
+  Size: 0
+0x04:
+  Format: INC B
+  Size: 0
+0x05:
+  Format: DEC B
+  Size: 0
+0x06:
+  Format: LD B, %02X
+  Size: 1
+0x07:
+  Format: RLCA
+  Size: 0
+0x08:
+  Format: LD (%04X), SP
+  Size: 2
+0x09:
+  Format: ADD HL, BC
+  Size: 0
+0x0a:
+  Format: LD A, (BC)
+  Size: 0
+0x0b:
+  Format: DEC BC
+  Size: 0
+0x0c:
+  Format: INC C
+  Size: 0
+0x0d:
+  Format: DEC C
+  Size: 0
+0x0e:
+  Format: LD C, %02X
+  Size: 1
+0x0f:
+  Format: RRCA
+  Size: 0
+0x10:
+  Format: NYI
+  Size: 1
+0x11:
+  Format: LD DE, %04X
+  Size: 2
+0x12:
+  Format: LD (DE), A
+  Size: 0
+0x13:
+  Format: INC DE
+  Size: 0
+0x14:
+  Format: INC D
+  Size: 0
+0x15:
+  Format: DEC D
+  Size: 0
+0x16:
+  Format: LD D, %02X
+  Size: 1
+0x17:
+  Format: RLA
+  Size: 0
+0x18:
+  Format: JR %02X
+  Size: 1
+0x19:
+  Format: ADD HL, DE
+  Size: 0
+0x1a:
+  Format: LD A, (DE)
+  Size: 0
+0x1b:
+  Format: DEC DE
+  Size: 0
+0x1c:
+  Format: INC E
+  Size: 0
+0x1d:
+  Format: DEC E
+  Size: 0
+0x1e:
+  Format: LD E, %02X
+  Size: 1
+0x1f:
+  Format: RRA
+  Size: 0
+0x20:
+  Format: JR NZ, %02X
+  Size: 1
+0x21:
+  Format: LD HL, %04X
+  Size: 2
+0x22:
+  Format: LDI (HL), A
+  Size: 0
+0x23:
+  Format: INC HL
+  Size: 0
+0x24:
+  Format: INC H
+  Size: 0
+0x25:
+  Format: DEC H
+  Size: 0
+0x26:
+  Format: LD H, %02X
+  Size: 1
+0x27:
+  Format: DAA
+  Size: 0
+0x28:
+  Format: JR Z, %02X
+  Size: 1
+0x29:
+  Format: ADD HL, HL
+  Size: 0
+0x2a:
+  Format: LDI A, (HL)
+  Size: 0
+0x2b:
+  Format: DEC HL
+  Size: 0
+0x2c:
+  Format: INC L
+  Size: 0
+0x2d:
+  Format: DEC L
+  Size: 0
+0x2e:
+  Format: LD L, %02X
+  Size: 1
+0x2f:
+  Format: CPL
+  Size: 0
+0x30:
+  Format: JR NC, %02X
+  Size: 1
+0x31:
+  Format: LD SP, %04X
+  Size: 2
+0x32:
+  Format: LDD (HL), A
+  Size: 0
+0x33:
+  Format: INC SP
+  Size: 0
+0x34:
+  Format: INC (HL)
+  Size: 0
+0x35:
+  Format: DEC (HL)
+  Size: 0
+0x36:
+  Format: LD (HL), %02X
+  Size: 1
+0x37:
+  Format: SCF
+  Size: 0
+0x38:
+  Format: JR C, %02X
+  Size: 1
+0x39:
+  Format: ADD HL, SP
+  Size: 0
+0x3a:
+  Format: LDD A, (HL)
+  Size: 0
+0x3b:
+  Format: DEC SP
+  Size: 0
+0x3c:
+  Format: INC A
+  Size: 0
+0x3d:
+  Format: DEC A
+  Size: 0
+0x3e:
+  Format: LD A, %02X
+  Size: 1
+0x3f:
+  Format: CCF
+  Size: 0
+0x40:
+  Format: LD B, B
+  Size: 0
+0x41:
+  Format: LD B, C
+  Size: 0
+0x42:
+  Format: LD B, D
+  Size: 0
+0x43:
+  Format: LD B, E
+  Size: 0
+0x44:
+  Format: LD B, H
+  Size: 0
+0x45:
+  Format: LD B, L
+  Size: 0
+0x46:
+  Format: LD B, (HL)
+  Size: 0
+0x47:
+  Format: LD B, A
+  Size: 0
+0x48:
+  Format: LD C, B
+  Size: 0
+0x49:
+  Format: LD C, C
+  Size: 0
+0x4a:
+  Format: LD C, D
+  Size: 0
+0x4b:
+  Format: LD C, E
+  Size: 0
+0x4c:
+  Format: LD C, H
+  Size: 0
+0x4d:
+  Format: LD C, L
+  Size: 0
+0x4e:
+  Format: LD C, (HL)
+  Size: 0
+0x4f:
+  Format: LD C, A
+  Size: 0
+0x50:
+  Format: LD D, B
+  Size: 0
+0x51:
+  Format: LD D, C
+  Size: 0
+0x52:
+  Format: LD D, D
+  Size: 0
+0x53:
+  Format: LD D, E
+  Size: 0
+0x54:
+  Format: LD D, H
+  Size: 0
+0x55:
+  Format: LD D, L
+  Size: 0
+0x56:
+  Format: LD D, (HL)
+  Size: 0
+0x57:
+  Format: LD D, A
+  Size: 0
+0x58:
+  Format: LD E, B
+  Size: 0
+0x59:
+  Format: LD E, C
+  Size: 0
+0x5a:
+  Format: LD E, D
+  Size: 0
+0x5b:
+  Format: LD E, E
+  Size: 0
+0x5c:
+  Format: LD E, H
+  Size: 0
+0x5d:
+  Format: LD E, L
+  Size: 0
+0x5e:
+  Format: LD E, (HL)
+  Size: 0
+0x5f:
+  Format: LD E, A
+  Size: 0
+0x60:
+  Format: LD H, B
+  Size: 0
+0x61:
+  Format: LD H, C
+  Size: 0
+0x62:
+  Format: LD H, D
+  Size: 0
+0x63:
+  Format: LD H, E
+  Size: 0
+0x64:
+  Format: LD H, H
+  Size: 0
+0x65:
+  Format: LD H, L
+  Size: 0
+0x66:
+  Format: LD H, (HL)
+  Size: 0
+0x67:
+  Format: LD H, A
+  Size: 0
+0x68:
+  Format: LD L, B
+  Size: 0
+0x69:
+  Format: LD L, C
+  Size: 0
+0x6a:
+  Format: LD L, D
+  Size: 0
+0x6b:
+  Format: LD L, E
+  Size: 0
+0x6c:
+  Format: LD L, H
+  Size: 0
+0x6d:
+  Format: LD L, L
+  Size: 0
+0x6e:
+  Format: LD L, (HL)
+  Size: 0
+0x6f:
+  Format: LD L, A
+  Size: 0
+0x70:
+  Format: LD (HL), B
+  Size: 0
+0x71:
+  Format: LD (HL), C
+  Size: 0
+0x72:
+  Format: LD (HL), D
+  Size: 0
+0x73:
+  Format: LD (HL), E
+  Size: 0
+0x74:
+  Format: LD (HL), H
+  Size: 0
+0x75:
+  Format: LD (HL), L
+  Size: 0
+0x76:
+  Format: HALT
+  Size: 0
+0x77:
+  Format: LD (HL), A
+  Size: 0
+0x78:
+  Format: LD A, B
+  Size: 0
+0x79:
+  Format: LD A, C
+  Size: 0
+0x7a:
+  Format: LD A, D
+  Size: 0
+0x7b:
+  Format: LD A, E
+  Size: 0
+0x7c:
+  Format: LD A, H
+  Size: 0
+0x7d:
+  Format: LD A, L
+  Size: 0
+0x7e:
+  Format: LD A, (HL)
+  Size: 0
+0x7f:
+  Format: LD A, A
+  Size: 0
+0x80:
+  Format: ADD A, B
+  Size: 0
+0x81:
+  Format: ADD A, C
+  Size: 0
+0x82:
+  Format: ADD A, D
+  Size: 0
+0x83:
+  Format: ADD A, E
+  Size: 0
+0x84:
+  Format: ADD A, H
+  Size: 0
+0x85:
+  Format: ADD A, L
+  Size: 0
+0x86:
+  Format: ADD A, (HL)
+  Size: 0
+0x87:
+  Format: ADD A, A
+  Size: 0
+0x88:
+  Format: ADC A, B
+  Size: 0
+0x89:
+  Format: ADC A, C
+  Size: 0
+0x8a:
+  Format: ADC A, D
+  Size: 0
+0x8b:
+  Format: ADC A, E
+  Size: 0
+0x8c:
+  Format: ADC A, H
+  Size: 0
+0x8d:
+  Format: ADC A, L
+  Size: 0
+0x8e:
+  Format: ADC A, (HL)
+  Size: 0
+0x8f:
+  Format: ADC A, A
+  Size: 0
+0x90:
+  Format: SUB B
+  Size: 0
+0x91:
+  Format: SUB C
+  Size: 0
+0x92:
+  Format: SUB D
+  Size: 0
+0x93:
+  Format: SUB E
+  Size: 0
+0x94:
+  Format: SUB H
+  Size: 0
+0x95:
+  Format: SUB L
+  Size: 0
+0x96:
+  Format: SUB (HL)
+  Size: 0
+0x97:
+  Format: SUB A
+  Size: 0
+0x98:
+  Format: SBC B
+  Size: 0
+0x99:
+  Format: SBC C
+  Size: 0
+0x9a:
+  Format: SBC D
+  Size: 0
+0x9b:
+  Format: SBC E
+  Size: 0
+0x9c:
+  Format: SBC H
+  Size: 0
+0x9d:
+  Format: SBC L
+  Size: 0
+0x9e:
+  Format: SBC (HL)
+  Size: 0
+0x9f:
+  Format: SBC A
+  Size: 0
+0xa0:
+  Format: AND B
+  Size: 0
+0xa1:
+  Format: AND C
+  Size: 0
+0xa2:
+  Format: AND D
+  Size: 0
+0xa3:
+  Format: AND E
+  Size: 0
+0xa4:
+  Format: AND H
+  Size: 0
+0xa5:
+  Format: AND L
+  Size: 0
+0xa6:
+  Format: AND (HL)
+  Size: 0
+0xa7:
+  Format: AND A
+  Size: 0
+0xa8:
+  Format: XOR B
+  Size: 0
+0xa9:
+  Format: XOR C
+  Size: 0
+0xaa:
+  Format: XOR D
+  Size: 0
+0xab:
+  Format: XOR E
+  Size: 0
+0xac:
+  Format: XOR H
+  Size: 0
+0xad:
+  Format: XOR L
+  Size: 0
+0xae:
+  Format: XOR (HL)
+  Size: 0
+0xaf:
+  Format: XOR A
+  Size: 0
+0xb0:
+  Format: OR B
+  Size: 0
+0xb1:
+  Format: OR C
+  Size: 0
+0xb2:
+  Format: OR D
+  Size: 0
+0xb3:
+  Format: OR E
+  Size: 0
+0xb4:
+  Format: OR H
+  Size: 0
+0xb5:
+  Format: OR L
+  Size: 0
+0xb6:
+  Format: OR (HL)
+  Size: 0
+0xb7:
+  Format: OR A
+  Size: 0
+0xb8:
+  Format: CP B
+  Size: 0
+0xb9:
+  Format: CP C
+  Size: 0
+0xba:
+  Format: CP D
+  Size: 0
+0xbb:
+  Format: CP E
+  Size: 0
+0xbc:
+  Format: CP H
+  Size: 0
+0xbd:
+  Format: CP L
+  Size: 0
+0xbe:
+  Format: CP (HL)
+  Size: 0
+0xbf:
+  Format: CP A
+  Size: 0
+0xc0:
+  Format: RET
+  Size: 0
+0xc1:
+  Format: POP BC
+  Size: 0
+0xc2:
+  Format: JP NZ, %04X
+  Size: 2
+0xc3:
+  Format: JP %04X
+  Size: 2
+0xc4:
+  Format: CALL NZ, %04X
+  Size: 2
+0xc5:
+  Format: PUSH BC
+  Size: 0
+0xc6:
+  Format: 'ADD A, #'
+  Size: 0
+0xc7:
+  Format: RST 00
+  Size: 0
+0xc8:
+  Format: RET
+  Size: 0
+0xc9:
+  Format: RET
+  Size: 0
+0xca:
+  Format: JP Z,%04X
+  Size: 2
+0xcb:
+  Format: NYI
+  Size: 1
+0xcc:
+  Format: CALL Z, %04X
+  Size: 2
+0xcd:
+  Format: CALL %04X
+  Size: 2
+0xce:
+  Format: ADC A, %02X
+  Size: 1
+0xcf:
+  Format: RST 08
+  Size: 0
+0xd0:
+  Format: RET
+  Size: 0
+0xd1:
+  Format: POP DE
+  Size: 0
+0xd2:
+  Format: JP NC, %04X
+  Size: 2
+0xd4:
+  Format: CALL NC, %04X
+  Size: 2
+0xd5:
+  Format: PUSH DE
+  Size: 0
+0xd6:
+  Format: 'SUB #'
+  Size: 0
+0xd7:
+  Format: RST 10
+  Size: 0
+0xd8:
+  Format: RET
+  Size: 0
+0xd9:
+  Format: RETI
+  Size: 0
+0xda:
+  Format: JP C, %04X
+  Size: 2
+0xdc:
+  Format: CALL C, %04X
+  Size: 2
+0xdd:
+  Format: DB %02X
+  Size: 1
+0xdf:
+  Format: RST 18
+  Size: 0
+0xe0:
+  Format: LD ($FF00+%02X), A
+  Size: 1
+0xe1:
+  Format: POP HL
+  Size: 0
+0xe2:
+  Format: LD ($FF00+C), A
+  Size: 0
+0xe5:
+  Format: PUSH HL
+  Size: 0
+0xe6:
+  Format: 'AND #'
+  Size: 0
+0xe7:
+  Format: RST 20
+  Size: 0
+0xe8:
+  Format: ADD SP, %02X
+  Size: 1
+0xe9:
+  Format: JP (HL)
+  Size: 0
+0xea:
+  Format: LD (%04X), A
+  Size: 2
+0xee:
+  Format: 'XOR #'
+  Size: 0
+0xef:
+  Format: RST 28
+  Size: 0
+0xf0:
+  Format: LD A, ($FF00+%02X)
+  Size: 1
+0xf1:
+  Format: POP AF
+  Size: 0
+0xf2:
+  Format: LD A, ($FF00+C)
+  Size: 0
+0xf3:
+  Format: DI
+  Size: 0
+0xf5:
+  Format: PUSH AF
+  Size: 0
+0xf6:
+  Format: 'OR #'
+  Size: 0
+0xf7:
+  Format: RST 30
+  Size: 0
+0xf8:
+  Format: LDHL SP, %02X
+  Size: 1
+0xf9:
+  Format: LD SP, HL
+  Size: 0
+0xfa:
+  Format: LD A, (%04X)
+  Size: 2
+0xfb:
+  Format: EI
+  Size: 0
+0xfe:
+  Format: CP %02X
+  Size: 1
+0xff:
+  Format: RST 38
+  Size: 0
+...

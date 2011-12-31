@@ -1,6 +1,6 @@
 <?php
 function diagnose() {
-	global $game, $known_addresses,$gameshort;
+	global $game, $known_addresses,$gameid;
 	$allproblems = array();
 	$prev = 0;
 	foreach ($known_addresses as $offset => $entry) {
@@ -26,6 +26,6 @@ function diagnose() {
 		$prev = $offset+(isset($entry['size']) ? $entry['size'] : 0);
 	}
 	$dwoo = new Dwoo();
-	$dwoo->output('templates/diagnostic.tpl', array('problems' => $allproblems, 'gameshort' => $gameshort, 'title' => $game['title']));
+	$dwoo->output('templates/diagnostic.tpl', array('problems' => $allproblems, 'game' => $gameid, 'title' => $game['title']));
 }
 ?>

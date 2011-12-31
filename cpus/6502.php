@@ -1,91 +1,134 @@
 <?php
+class core {
+	private $opcodes;
+	public $initialoffset;
+	public $currentoffset;
+	public $branches;
+	private $handle;
+	private $accum = 16;
+	private $index = 16;
+	private $addrs;
+	private $opts;
+	public $placeholdernames = false;
+	private $platform;
+	function __construct(&$handle,$opts,&$known_addresses) {
+		$this->opcodes = yaml_parse_file('./cpus/6502_opcodes.yml');
+		$this->handle = $handle;
+		require_once sprintf('platforms/%s.php', $opts['platform']);
+		$this->platform = new platform($handle, $opts);
+		$this->addrs = $known_addresses;
+		$this->opts = $opts;
+	}
+	public function getDefault() {
+		$realoffset = $this->platform->map_rom(0xFFFC);
+		fseek($this->handle, $realoffset);
+		$vector = ord(fgetc($this->handle)) + (ord(fgetc($this->handle))<<8);
+		return $vector;
+	}
+	public function getMisc() {
+		return array();
+	}
+	private function get_processor_bits($arg) {
+		$output = '';
+		$processor_bits = array('Carry', 'Zero', 'IRQ', 'Decimal', '', '', 'Overflow', 'Negative');
+		for ($i = 0; $i < 8; $i++)
+			$output .= $arg&pow(2,$i) ? $processor_bits[$i].' ' : '';
 
-if (!isset($game))
-	die ('direct execution = bad');
-	
-if (!isset($offset))
-	$offset = 0;
-require_once '6502_registers.php';
-require_once '6502_opcodes.php';
-
-function get_known_addresses() {
-	global $known_addresses,$game;
-	if (array_key_exists('dumpold', $_GET)) {
-		foreach($known_addresses as $addr => $val) {
-			echo strtoupper(dechex($addr)).'|'.$val."\n";
+		return $output;
+	}
+	public function execute($offset,$offsetname) {
+		try {
+			$realoffset = $this->platform->map_rom($offset);
+		} catch (Exception $e) {
+			die (sprintf('Cannot disassemble: %s!', $e->getMessage()));
 		}
+		$farthestbranch = $this->initialoffset = $this->currentoffset = $offset;
+		if (isset($opts['size']))
+			$deflength = $opts['size'];
+		else if (isset($this->addrs[$this->initialoffset]['size']))
+			$deflength = $this->addrs[$this->initialoffset]['size'];
+		if (($realoffset < 0) || ($realoffset > $this->opts['size']))
+			die (sprintf('Bad offset (%X)!', $realoffset));
+		fseek($this->handle, $realoffset);
+		$unknownbranches = 0;
+		$opcode = 0;
+		$output = array();
+		while (true) {
+			if (isset($deflength) && ($deflength+$this->initialoffset <= $this->currentoffset))
+				break;
+			if (($farthestbranch < $this->currentoffset) && !isset($deflength) && isset($this->opcodes[$opcode]['addressing']['special']) && ($this->opcodes[$opcode]['addressing']['special'] == 'return'))
+				break;
+			if (($this->initialoffset&0xFF0000) != ($this->currentoffset&0xFF0000))
+				break;
+			if (isset($this->addrs[$this->initialoffset]['labels']) && isset($this->addrs[$this->initialoffset]['labels'][$this->currentoffset&0xFFFF]))
+				$output[] = array('label' => $this->addrs[$this->initialoffset]['labels'][$this->currentoffset&0xFFFF]);
+			$opcode = ord(fgetc($this->handle));
+			$opcodeinfo = isset($this->opcodes[$opcode]) ? $this->opcodes[$opcode] : $this->opcodes['Undefined'];
+			$uri = null;
+			$name = '';
+			$args = array();
+			
+			$size = $opcodeinfo['addressing']['size'];
+			$arg = 0;
+			for($j = 0; $j < $size; $j++) {
+				$t = ord(fgetc($this->handle));
+				$args[] = $t;
+				$arg += $t<<($j*8);
+			}
+			//$fulladdr = $this->fix_addr($opcode, $arg);
+			$fulladdr = $arg;
+			/*
+			if ((($this->opcodes[$opcode]['addressing']['type'] == 'relative') || (($this->opcodes[$opcode]['addressing']['type'] == 'absolutejmp') && isset($this->opcodes[$opcode]['addressing']['jump']))) && ($fulladdr + ($this->currentoffset&0xFF0000) > $farthestbranch))
+				$farthestbranch = $fulladdr + ($this->currentoffset&0xFF0000);
+				
+			if ((($this->opcodes[$opcode]['addressing']['type'] == 'absolutejmp') || ($this->opcodes[$opcode]['addressing']['type'] == 'absolutelongjmp'))) {
+				if ((isset($this->addrs[$fulladdr]['name']) && !empty($this->addrs[$fulladdr]['name'])))
+					$uri = $this->addrs[$fulladdr]['name'];
+				else
+					$uri = sprintf('%06X', $fulladdr);
+			}
+			if ($this->opcodes[$opcode]['addressing']['type'] == 'relativelong')
+				$uri = sprintf('%06X', $fulladdr+($this->currentoffset&0xFF0000));
+			if (isset($this->addrs[$fulladdr]['final processor state']['accum']))
+				$accum = $this->addrs[$fulladdr]['final processor state']['accum'];
+			if (isset($this->addrs[$fulladdr]['final processor state']['index']))
+				$index = $this->addrs[$fulladdr]['final processor state']['index'];
+			
+			if (isset($this->addrs[$fulladdr]['name'])) {
+				$name = $this->addrs[$fulladdr]['name'];
+			} else if (isset($this->addrs[$this->initialoffset]['labels'][$fulladdr])) {
+				$uri = sprintf('%s#%s', $offsetname, $this->addrs[$this->initialoffset]['labels'][$fulladdr]);
+				$name = ($this->placeholdernames ? isset($this->addrs[$this->initialoffset]['name']) ? $this->addrs[$this->initialoffset]['name'].'_' : sprintf('UNKNOWN_%06X_', $this->initialoffset) : '').$this->addrs[$this->initialoffset]['labels'][$fulladdr];
+			} else if (($this->opcodes[$opcode]['addressing']['type'] == 'relative') || (($this->opcodes[$opcode]['addressing']['type'] == 'absolutejmp') && (isset($this->opcodes[$opcode]['addressing']['jump'])))) {
+				if (!isset($this->branches[$fulladdr]))
+					$this->branches[$fulladdr] = '';
+			} else if ($this->placeholdernames) {
+				switch ($this->opcodes[$opcode]['addressing']['type']) {
+					case 'absolute': $name = sprintf('UNKNOWN_%04X', $arg); break;
+					case 'absolutejmp': $name = sprintf('UNKNOWN_%04X', $arg); break;
+					case 'absolutelongjmp': $name = sprintf('UNKNOWN_%06X', $arg); break;
+					default: $name = ''; break;
+				}
+			} else
+				$name = '';
+				*/
+			$arg = sprintf($opcodeinfo['addressing']['addrformat'], $arg,isset($args[0]) ? $args[0] : 0,isset($args[1]) ? $args[1] : 0, isset($args[2]) ? $args[2] : 0, $this->currentoffset>>16, ($this->currentoffset+uint($arg+$size+1,$size*8))&0xFFFF);
+			
+			$output[] = array('opcode' => $opcode,
+							'instruction' => $opcodeinfo['mnemonic'],
+							'offset' => $this->currentoffset,
+							'args' => $args,
+							'comment' => isset($this->addrs[$fulladdr]['description']) ? $this->addrs[$fulladdr]['description'] : '',
+							'commentarguments' => isset($this->addrs[$fulladdr]['arguments']) ? $this->addrs[$fulladdr]['arguments'] : '',
+							'name' => $name,
+							'uri' => $uri,
+							'value' => $arg,
+							'printformat' => $opcodeinfo['addressing']['printformat']);
+			$this->currentoffset += $size+1;
+			
+		}
+		return $output;
 	}
-	$known_addresses = array();
-	if (!file_exists('games_defines/'.$game.'asm/known_offsets.txt'))
-		return $known_addresses;
-	$handle = fopen('games_defines/'.$game.'asm/known_offsets.txt', 'r');
-	while (($data = fgetcsv($handle, 1000,'|')) !== FALSE)
-		$known_addresses[hexdec($data[0])] = $data[1];
-	return $known_addresses;
 }
 
-$known_addresses = get_known_addresses() + $registers;
-
-function generate_comment($instruction, $val, $oldinstructions) {
-	global $commentfile, $known_addresses, $offset;
-	$comment = '';
-	switch(get_instruction_addressing($instruction)) {
-		case 'absolute':
-		case 'absolutejmp':
-		case 'absoluteindexedx':
-		case 'absoluteindexedy':
-			if (array_key_exists($val, $known_addresses))
-				$comment = '; '.$known_addresses[$val];
-			break;
-	}
-	if ($commentfile)
-		$comment = '; '.trim(fgets($commentfile));
-	return $comment;
-}
-function uint($i, $bits) {
-	return $i < pow(2,$bits-1) ? $i : 0-(pow(2,$bits)-$i);
-}
-$handle = fopen($romfile, 'r');
-if (!$handle)
-	die('Could not open file');
-fseek($handle,0x7FFC+16);
-$defaultoffset = 0x8000+ord(fgetc($handle)) + (ord(fgetc($handle))<<8);
-if (($offset < 0x8000) || ($offset >= 0x8000+filesize($romfile)))
-	$offset = $defaultoffset;
-fseek($handle, $offset-0x8000+16);
-if (array_key_exists($offset, $known_addresses))
-	$routinename = ' - '.$known_addresses[$offset];
-$commentfile = null;
-$commentfilename = sprintf('./ebasm/%06X.txt', $offset);
-if (file_exists($commentfilename))
-	$commentfile = fopen($commentfilename, 'r');
-$argsf = $args = array('  ','  ','  ');
-$output = ""; $beginlink = ''; $endlink = ''; $val = 0; $b = 0;
-$oldinstructions = array(array('',''),array('',''));
-while (!feof($handle)) {
-	$oldinstructions[1] = $oldinstructions[0];
-	$oldinstructions[0] = array($b, $val);
-	$val = 0;
-	$b = ord(fgetc($handle));
-	$size = $addressing[$instructions[$b][1]][1];
-	for ($i = 0; $i < $size; $i++) {
-		$args[$i] = ord(fgetc($handle));
-		$argsf[$i] = sprintf('%02X', $args[$i]);
-		$val += $args[$i]<<($i*8);
-	}
-	if (array_key_exists(2,$addressing[$instructions[$b][1]])) {
-		$beginlink = sprintf('<a href="/disasm/'.$game.'/'.$addressing[$instructions[$b][1]][2].'">', $val,$offset>>16,$offset+uint($val+2,$size*8));
-		$endlink = '</a>';
-	}
-	$output .= sprintf("%06X %02X %2s %2s %2s   %s %s%-11s%s %s\n", $offset, $b, $argsf[0],$argsf[1],$argsf[2],$instructions[$b][0], $beginlink, sprintf($addressing[$instructions[$b][1]][0],$val,$args[0],$args[1],$args[2],$offset>>16,($offset&0xFFFF)+uint($val+2,$size*8)),$endlink, generate_comment($b, $val, $oldinstructions));
-	$offset += $size+1;
-	$argsf = $args = array('  ','  ','  ');
-	$beginlink = '';
-	$endlink = '';
-	if ($instructions[$b][1] == 'return') break;
-}
-fclose($handle);
-if ($commentfile)
-	fclose($commentfile);
-$nextoffset = dechex($offset);
 ?>

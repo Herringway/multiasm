@@ -26,7 +26,7 @@ if (!file_exists('games/'.$gameid.'/known_offsets.yml'))
 	file_put_contents('games/'.$gameid.'/known_offsets.yml', yaml_emit(array()));
 $game = yaml_parse_file('games/'.$gameid.'/game.yml');
 $known_addresses_p = yaml_parse_file('games/'.$gameid.'/known_offsets.yml');
-$known_addresses = $known_addresses_p + yaml_parse_file('cpus/'.$game['platform'].'_registers.yml');
+$known_addresses = $known_addresses_p + yaml_parse_file('platforms/'.$game['platform'].'_registers.yml');
 if (!isset($game['rombase']))
 	$game['rombase'] = 0xC00000;
 	
