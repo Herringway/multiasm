@@ -2,7 +2,9 @@
 function process_entries($handle, $offset, $end, $entries) {
 	global $game;
 	$output = array();
+	$offsets = array();
 	while ($offset < $end) {
+		$tmpoffset = $offset;
 		foreach ($entries as $entry) {
 			$bytesread = isset($entry['size']) ? $entry['size'] : 0;
 			if (!isset($entry['type']) || ($entry['type'] == 'int')) {
@@ -33,12 +35,13 @@ function process_entries($handle, $offset, $end, $entries) {
 			$offset += $bytesread;
 		}
 		$output[] = $tmparray;
+		$offsets[] = $tmpoffset;
 		$tmparray = array();
 	}
-	return array($output, $offset);
+	return array($output, $offsets, $offset);
 }
 function showtable($offset) {
-	global $handle, $known_addresses, $game, $gameshort;
+	global $handle, $known_addresses, $game, $gameid;
 	require sprintf("platforms/%s.php", $game['platform']);
 	$platform = new platform($handle, array());
 	$realoffset = $platform->map_rom($offset);
@@ -61,25 +64,25 @@ function showtable($offset) {
 		$nextoffset = $offset+$known_addresses[$offset]['size'];
 		$hex = hexview($data, isset($known_addresses[$offset]['width']) ? $known_addresses[$offset]['width'] : 16, $offset);
 		$dwoo = new Dwoo();
-		$dwoo->output('templates/'.$game['platform'].'_hex.tpl', array('hex' => $hex, 'title' => $tablename, 'game' => $gameshort, 'nextoffset' => isset($known_addresses[$nextoffset]['name']) ? $known_addresses[$nextoffset]['name'] : strtoupper(dechex($nextoffset))));
+		$dwoo->output('templates/'.$game['platform'].'_hex.tpl', array('hex' => $hex, 'title' => $tablename, 'game' => $gameid, 'nextoffset' => isset($known_addresses[$nextoffset]['name']) ? $known_addresses[$nextoffset]['name'] : strtoupper(dechex($nextoffset))));
 		return;
 	}
 	$header = array();
 	$headerend = $offset;
 	if (isset($table['header']))
 		list($header, $headerend) = process_entries($handle, $offset, $initialoffset+1, $table['header']);
-	list($entries,$offset) = process_entries($handle, $headerend, $initialoffset+$table['size'], $table['entries']);
+	list($entries,$offsets,$offset) = process_entries($handle, $headerend, $initialoffset+$table['size'], $table['entries']);
 	if (isset($_GET['YAML'])) {
 		header('Content-Type: text/plain; charset=UTF-8');
 		echo yaml_emit($table['entries']);
-		echo yaml_emit($output);
+		echo yaml_emit($entries);
 	} else if (isset($_GET['YAML_DATA'])) {
 			header('Content-Type: text/plain; charset=UTF-8');
 		echo yaml_emit($known_addresses);
 	} else {
 		header('Content-Type: text/html; charset=UTF-8');
 		$dwoo = new Dwoo();
-		$dwoo->output('templates/'.$game['platform'].'_table.tpl', array('header' => $header, 'a' => $entries, 'title' => $tablename, 'game' => $gameshort, 'nextoffset' => isset($known_addresses[$offset]['name']) ? $known_addresses[$offset]['name'] : strtoupper(dechex($offset))));
+		$dwoo->output('templates/'.$game['platform'].'_table.tpl', array('header' => $header, 'offsets' => $offsets, 'entries' => $entries, 'title' => $tablename, 'game' => $gameid, 'nextoffset' => isset($known_addresses[$offset]['name']) ? $known_addresses[$offset]['name'] : strtoupper(dechex($offset))));
 	}
 }
 ?>

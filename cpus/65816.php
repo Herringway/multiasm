@@ -66,7 +66,12 @@ class core {
 		return $val;
 	}
 	public function execute($offset,$offsetname) {
-		$realoffset = $this->platform->map_rom($offset);
+		try {
+			$realoffset = $this->platform->map_rom($offset);
+		} catch (Exception $e) {
+			die (sprintf('Cannot disassemble %s!', $e->getMessage()));
+		}
+		$farthestbranch = $this->initialoffset = $this->currentoffset = $offset;
 		if (isset($opts['size']))
 			$deflength = $opts['size'];
 		else if (isset($this->addrs[$this->initialoffset]['size']))
@@ -74,7 +79,6 @@ class core {
 		if (($realoffset < 0) || ($realoffset > $this->opts['size']))
 			die (sprintf('Bad offset (%X)!', $realoffset));
 		fseek($this->handle, $realoffset);
-		$farthestbranch = $this->initialoffset = $this->currentoffset = $offset;
 		$unknownbranches = 0;
 		$opcode = 0;
 		$index = isset($this->addrs[$this->initialoffset]['indexsize']) ? $this->addrs[$this->initialoffset]['indexsize'] : $this->index;
@@ -87,8 +91,6 @@ class core {
 		while (true) {
 			if (isset($deflength) && ($deflength+$this->initialoffset <= $this->currentoffset))
 				break;
-			//if (isset($this->opts['length']) && ($this->initialoffset+$this->opts['length'] <= $this->currentoffset))
-			//	break;
 			if (($farthestbranch < $this->currentoffset) && !isset($deflength) && isset($this->opcodes[$opcode]['addressing']['special']) && ($this->opcodes[$opcode]['addressing']['special'] == 'return'))
 				break;
 			if (($this->initialoffset&0xFF0000) != ($this->currentoffset&0xFF0000))

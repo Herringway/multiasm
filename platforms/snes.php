@@ -10,7 +10,9 @@ class platform {
 		$this->detectHiROM();
 	}
 	public function map_rom($offset) {
-		if ($this->isHiROM) {
+		if (($offset >= 0x7E0000) && ($offset < 0x800000))
+			throw new Exception('RAM');
+		else if ($this->isHiROM) {
 			if ($offset&0x400000)
 				return $offset&0x3FFFFF;
 			else if ($offset&0x8000)

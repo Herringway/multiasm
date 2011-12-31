@@ -265,6 +265,38 @@
   - name: Text
     type: standardtext
     terminator: 2
+0xD57000:
+  type: data
+  description: Item Data
+  name: ITEM_DATA
+  size: 6096
+  entries:
+  - name: Name
+    size: 10
+    type: standardtext
+  - name: Type
+    size: 1
+  - name: Cost
+    size: 2
+  - name: Misc Flags
+    size: 1
+    bitvalues:
+    - Ness can use
+    - Paula can use
+    - Jeff can use
+    - Poo can use
+    - Item can change
+    - Cannot be given away
+    - Unknown
+    - Item disappears when used
+  - name: Effect
+    size: 2
+  - name: Argument
+    size: 4
+    type: hexint
+  - name: Help Text Pointer
+    size: 4
+    type: pointer
 13994782:
   type: data
   description: Battle Action Table

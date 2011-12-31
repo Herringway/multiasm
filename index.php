@@ -11,28 +11,27 @@ header('Content-Type: text/html; charset=UTF-8');
 require_once '../hexview.php';
 require_once 'Dwoo/dwooAutoload.php';
 require_once 'commonfunctions.php';
-
+$settings = yaml_parse_file('settings.yml');
 
 $options = '';
 $routinename = '';
 $arguments = array();
-$gameshort = 'eb';
-$rompath = '../rms/';
+$gameid = $settings['gameid'];
 
 $argc = (array_key_exists('s', $_GET) ? explode('/', $_GET['s']) : array('',''));
 if (array_key_exists(0, $argc) && ($argc[0] != null) && is_dir('./games/'.$argc[0]))
-	$gameshort = $argc[0];
+	$gameid = $argc[0];
 
-if (!file_exists('games/'.$gameshort.'/known_offsets.yml'))
-	file_put_contents('games/'.$gameshort.'/known_offsets.yml', yaml_emit(array()));
-$game = yaml_parse_file('games/'.$gameshort.'/game.yml');
-$known_addresses_p = yaml_parse_file('games/'.$gameshort.'/known_offsets.yml');
+if (!file_exists('games/'.$gameid.'/known_offsets.yml'))
+	file_put_contents('games/'.$gameid.'/known_offsets.yml', yaml_emit(array()));
+$game = yaml_parse_file('games/'.$gameid.'/game.yml');
+$known_addresses_p = yaml_parse_file('games/'.$gameid.'/known_offsets.yml');
 $known_addresses = $known_addresses_p + yaml_parse_file('cpus/'.$game['platform'].'_registers.yml');
 if (!isset($game['rombase']))
 	$game['rombase'] = 0xC00000;
 	
 $offset = -1;
-$game['size'] = filesize($rompath.$game['rom']);
+$game['size'] = filesize($settings['rompath'].$game['rom']);
 if (!isset($argc[1]))
 	$argc[1] = null;
 switch ($argc[1]) {
@@ -64,7 +63,7 @@ default:
 		if (isset($v[1]))
 			$game[$v[0]] = $v[1];
 	}
-	@$handle = fopen($rompath.$game['rom'], 'r');
+	@$handle = fopen($settings['rompath'].$game['rom'], 'r');
 	if (!$handle)
 		die ('File not found!');
 	
@@ -102,10 +101,10 @@ default:
 				$known_addresses_p[$core->initialoffset][$k] = $val;
 			$known_addresses_p[$core->initialoffset]['labels'] = $branches;
 			ksort($known_addresses_p);
-			file_put_contents('games/'.$gameshort.'/known_offsets.yml', yaml_emit($known_addresses_p));
+			file_put_contents('games/'.$gameid.'/known_offsets.yml', yaml_emit($known_addresses_p));
 		}
 		$dwoo = new Dwoo();
-		$dwoo->output('templates/'.$game['platform'].'.tpl', array('routinename' => $routinename, 'title' => $game['title'], 'nextoffset' => isset($known_addresses[$nextoffset]['name']) ? $known_addresses[$nextoffset]['name'] : strtoupper(dechex($nextoffset)), 'game' => $gameshort, 'instructions' => $instructionlist, 'arguments' => $arguments,'thisoffset' => $offset, 'options' => $options, 'offsetname' => $offsetname));
+		$dwoo->output('templates/'.$game['platform'].'.tpl', array('routinename' => $routinename, 'title' => $game['title'], 'nextoffset' => isset($known_addresses[$nextoffset]['name']) ? $known_addresses[$nextoffset]['name'] : strtoupper(dechex($nextoffset)), 'game' => $gameid, 'instructions' => $instructionlist, 'arguments' => $arguments,'thisoffset' => $offset, 'options' => $options, 'offsetname' => $offsetname));
 	}
 	fclose($handle);
 }
