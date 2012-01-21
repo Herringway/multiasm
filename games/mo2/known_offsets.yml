@@ -4,142 +4,412 @@
   description: Execution Entry Point
   size: 3
   type: assembly
-8257637:
+0x7E0065:
   name: PAD_1_STATE
   description: Controller 1 state
-8275698:
+0x7E2C9C:
+  name: UNKNOWN_30x2_TABLE_24
+0x7E305C:
+  name: UNKNOWN_30x2_TABLE_41
+0x7E46F2:
   description: 1 if debugging is enabled, 0 otherwise
   name: DEBUG
-8278344:
+0x7E4E12:
+  name: CURRENT_BATTLE_GROUP
+0x7E5148:
   description: Battle Debugging Flag
   name: BATTLE_DEBUG
-8282342:
+0x7E60E6:
   description: Battle Swirl Countdown
   name: BATTLE_SWIRL_COUNTDOWN
-8292802:
+0x7E89C2:
   description: Window Statistics Table
   name: WINDOW_STATS_TABLE
-8293414:
+0x7E8C26:
   description: Window Existence Table
   name: WINDOW_EXISTENCE_TABLE
-8293526:
+0x7E8C96:
   description: Current window with focus
   name: CURRENT_FOCUS_WINDOW
-8296763:
+0x7E993B:
   description: Battle Mode Flag
   name: BATTLE_MODE_FLAG
-8297268:
+0x7E9B34:
   description: Current Walking Style
   name: WALKING_STYLE
-8298545:
+0x7E9B55:
+  name: PC_PARTY_MEMBER_COUNT
+  description: Number of player-controlled party members
+0x7E9B62:
+  name: AUTO_FIGHT_ENABLE
+  description: Auto Fight Flag
+0x7EA031:
   description: Indicates if a DMA transfer is in progress
   name: DMA_TRANSFER_FLAG
-12613660:
-  description: Dad's Phone Handler (?)
+0x7EA18C:
+  name: ENEMIES_IN_BATTLE
+  description: Number of enemies in battle
+0x7EAB72:
+  name: CURRENT_ATTACKER
+  description: Current Attacker (Pointer to 7E???? battler entry)
+0x7EAB76:
+  name: BATTLE_EXP_SCRATCH
+  description: Scratch space for battle-end experience calculations
+0x7EAB7C:
+  name: GIYGAS_PHASE
+  description: Current Giygas phase
+0x7EABE5:
+  name: ITEM_DROPPED
+  description: Item received at end of battle
+0x7EABE7:
+  name: MIRROR_ENEMY
+  description: Enemy being mirrored by Poo
+0x7EB70A:
+  name: DEBUG_MODE_NUMBER
+  description: Option selected in debug menu
+0xC0781C:
+  description: Dad's Phone Handler
   name: DAD_PHONE
   type: assembly
-12615680:
+  size: 205
+  labels:
+    30852: UNKNOWN0
+    30865: UNKNOWN1
+    30916: UNKNOWN2
+    30928: UNKNOWN3
+    30942: UNKNOWN4
+0xC08000:
   description: SNES Initialization
   name: RESET
   accumsize: 8
   indexsize: 8
-  size: 0x142
+  size: 322
   type: assembly
-12616015:
+0xC0814F:
   description: IRQ Handler
   name: IRQ
   type: assembly
-12616048:
+  size: 578
+  labels:
+    33155: UNKNOWN0
+    33205: UNKNOWN1
+    33224: UNKNOWN2
+    33271: UNKNOWN3
+    33301: UNKNOWN4
+    33307: UNKNOWN5
+    33309: UNKNOWN6
+    33311: UNKNOWN7
+    33344: UNKNOWN8
+    33394: UNKNOWN9
+    33409: UNKNOWN10
+    33494: UNKNOWN11
+    33588: UNKNOWN12
+    33611: UNKNOWN13
+    33645: UNKNOWN14
+    33655: UNKNOWN15
+    33674: UNKNOWN16
+0xC08170:
   description: NMI Handler
   name: NMI
   type: assembly
-12617311:
+  size: 545
+  labels:
+    33205: UNKNOWN0
+    33224: UNKNOWN1
+    33271: UNKNOWN2
+    33301: UNKNOWN3
+    33307: UNKNOWN4
+    33309: UNKNOWN5
+    33311: UNKNOWN6
+    33344: UNKNOWN7
+    33394: UNKNOWN8
+    33409: UNKNOWN9
+    33494: UNKNOWN10
+    33588: UNKNOWN11
+    33611: UNKNOWN12
+    33645: UNKNOWN13
+    33655: UNKNOWN14
+    33674: UNKNOWN15
+0xC0865F:
   description: Decompress to VRAM
   name: DECOMP_VRAM
   type: assembly
-12617486:
+  size: 120
+  labels:
+    34417: UNKNOWN0
+    34423: UNKNOWN1
+    34461: UNKNOWN2
+    34465: UNKNOWN3
+    34469: UNKNOWN4
+    34514: UNKNOWN5
+0xC0870E:
   description: Enable NMI+Joypad
   name: ENABLE_NMI_JOYPAD
   type: assembly
-12617548:
+  size: 17
+  labels: ~
+0xC0874C:
   description: Reads gamepad state into memory
   name: READ_JOYPAD
   type: assembly
-12619739:
-  description: Multiply low byte of Y by A
-  name: EIGHT_BIT_MULT_YxA
+  size: 53
+  labels:
+    34645: UNKNOWN0
+    34655: UNKNOWN1
+    34661: UNKNOWN2
+    34667: UNKNOWN3
+0xC08EED:
+  description: Overwrite Memory
+  name: MEMSET
+  arguments:
+    A: Destination
+    X: Size*2
+    $0E: Value to overwrite data with
   type: assembly
-12619796:
+  size: 25
+  labels:
+    36605: UNKNOWN0
+    36610: UNKNOWN1
+0xC08FDB:
+  description: ""
+  name: ""
+  type: assembly
+  size: 57
+  labels:
+    36868: UNKNOWN0
+0xC09014:
   description: Multiply Y by A
   name: MULT_YxA
   type: assembly
-12624123:
+  size: 84
+  labels: ~
+0xC0A0FB:
   description: Check if the game is running on an NTSC SNES
   name: CHECK_HARDWARE
   type: assembly
-12626661:
+  size: 54
+  labels:
+    41242: UNKNOWN0
+0xC0AAE5:
   description: Send Music Data to SPC-700
   name: LOAD_SPC700_DATA
   type: assembly
-12629252:
+  size: 162
+  labels:
+    43782: UNKNOWN0
+    43800: UNKNOWN1
+    43808: UNKNOWN2
+    43813: UNKNOWN3
+    43819: UNKNOWN4
+    43829: UNKNOWN5
+    43834: UNKNOWN6
+    43838: UNKNOWN7
+    43851: UNKNOWN8
+    43858: UNKNOWN9
+    43878: UNKNOWN10
+    43887: UNKNOWN11
+0xC0B504:
   description: File Select Screen Initialization
   name: FILE_SELECT_INIT
   type: assembly
-12629783:
+  size: 171
+  labels:
+    46416: UNKNOWN0
+0xC0B717:
   description: Battle Initialization
   name: BATTLE_INIT
   type: assembly
-12629950:
+  size: 167
+  labels:
+    46887: UNKNOWN0
+    46901: UNKNOWN1
+    46919: UNKNOWN2
+    46956: UNKNOWN3
+    46970: UNKNOWN4
+    46974: UNKNOWN5
+    46981: UNKNOWN6
+    47012: UNKNOWN7
+    47036: UNKNOWN8
+0xC0B7BE:
   description: Main Loop
   name: MAIN_LOOP
   type: assembly
-12630389:
+  size: 439
+  labels:
+    47141: UNKNOWN0
+    47152: UNKNOWN1
+    47163: UNKNOWN2
+    47171: UNKNOWN3
+    47185: UNKNOWN4
+    47213: UNKNOWN5
+    47241: UNKNOWN6
+    47253: UNKNOWN7
+    47265: UNKNOWN8
+    47273: UNKNOWN9
+    47281: UNKNOWN10
+    47305: UNKNOWN11
+    47327: UNKNOWN12
+    47341: UNKNOWN13
+    47355: UNKNOWN14
+    47358: UNKNOWN15
+    47367: UNKNOWN16
+    47387: UNKNOWN17
+    47412: UNKNOWN18
+    47417: UNKNOWN19
+    47445: UNKNOWN20
+    47453: UNKNOWN21
+    47464: UNKNOWN22
+    47475: UNKNOWN23
+0xC0B975:
   description: Game initialization?
   name: GAME_INIT
   type: assembly
-12644145:
+  size: 34
+  labels: ~
+0xC0DD1B:
+  final processor state:
+    accum: 16
+  size: 38
+  type: assembly
+0xC0EF31:
   description: Loads and displays logo screen specified by A
   name: LOGO_SCREEN
   type: assembly
-12644763:
+  size: 377
+  labels:
+    61289: UNKNOWN0
+    61292: UNKNOWN1
+    61380: UNKNOWN2
+    61456: UNKNOWN3
+    61552: UNKNOWN4
+0xC0F19B:
   description: Loads and displays the gas station screen
   name: GAS_STATION
   type: assembly
-12647076:
+  size: 260
+  labels: ~
+0xC0FAA4:
   description: SRAM Integrity Check
   name: CHECK_SRAM_INTEGRITY
   type: assembly
-12648498:
+  size: 92
+  labels:
+    64216: UNKNOWN0
+    64231: UNKNOWN1
+    64242: UNKNOWN2
+0xC10032:
   description: Set blinking triangle prompt to A
   name: ENABLE_BLINKING_TRIANGLE
   size: 6
   type: assembly
-12649732:
+0xC10504:
   description: |
     Get the root address of the current active window
   name: GET_ACTIVE_WINDOW_ADDRESS
   type: assembly
-12650212:
+  size: 35
+  labels:
+    1299: UNKNOWN0
+    1318: UNKNOWN1
+0xC106E4:
   description: Create Window
   name: CREATE_WINDOW
   type: assembly
-12663429:
+  size: 656
+  labels:
+    1829: UNKNOWN0
+    1842: UNKNOWN1
+    1884: UNKNOWN2
+    1908: UNKNOWN3
+    1921: UNKNOWN4
+    1942: UNKNOWN5
+    1964: UNKNOWN6
+    1975: UNKNOWN7
+    2351: UNKNOWN8
+    2368: UNKNOWN9
+    2393: UNKNOWN10
+0xC13A85:
   description: (A) Open Menu
   name: OPEN_MENU_BUTTON
   type: assembly
-12664990:
+  size: 1561
+  labels:
+    15032: UNKNOWN0
+    15082: UNKNOWN1
+    15087: UNKNOWN2
+    15090: UNKNOWN3
+    15192: UNKNOWN4
+    15234: UNKNOWN5
+    15242: UNKNOWN6
+    15250: UNKNOWN7
+    15258: UNKNOWN8
+    15261: UNKNOWN9
+    15285: UNKNOWN10
+    15297: UNKNOWN11
+    15312: UNKNOWN12
+    15352: UNKNOWN13
+    15399: UNKNOWN14
+    15446: UNKNOWN15
+    15466: UNKNOWN16
+    15480: UNKNOWN17
+    15497: UNKNOWN18
+    15538: UNKNOWN19
+    15566: UNKNOWN20
+    15575: UNKNOWN21
+    15623: UNKNOWN22
+    15625: UNKNOWN23
+    15630: UNKNOWN24
+    15633: UNKNOWN25
+    15645: UNKNOWN26
+    15696: UNKNOWN27
+    15713: UNKNOWN28
+    15754: UNKNOWN29
+    15762: UNKNOWN30
+    15765: UNKNOWN31
+    15780: UNKNOWN32
+    15806: UNKNOWN33
+    15962: UNKNOWN34
+    15986: UNKNOWN35
+    16078: UNKNOWN36
+    16152: UNKNOWN37
+    16181: UNKNOWN38
+    16230: UNKNOWN39
+    16255: UNKNOWN40
+    16383: UNKNOWN41
+    16391: UNKNOWN42
+    16410: UNKNOWN43
+    16443: UNKNOWN44
+    16480: UNKNOWN45
+    16492: UNKNOWN46
+    16515: UNKNOWN47
+    16524: UNKNOWN48
+0xC1409E:
   description: (L) Talk/Check
   name: CHECKTALK_BUTTON
   type: assembly
-12665100:
+  size: 110
+  labels:
+    16585: UNKNOWN0
+    16601: UNKNOWN1
+    16613: UNKNOWN2
+    16634: UNKNOWN3
+0xC1410C:
   description: (B/Select) Open HP/PP Display
   name: OPEN_HPPP_DISPLAY
   type: assembly
-12665167:
+  size: 67
+  labels:
+    16668: UNKNOWN0
+    16686: UNKNOWN1
+    16718: UNKNOWN2
+0xC1414F:
   description: (X) Display Town Map
   name: SHOW_TOWN_MAP
   type: assembly
-12683539:
+  size: 30
+  labels:
+    16748: UNKNOWN0
+0xC18913:
   description: Display Text at ($0E+10)
   name: DISPLAY_TEXT
   type: assembly
@@ -178,39 +448,9 @@
     35478: UNKNOWN31
     35486: UNKNOWN32
     35494: UNKNOWN33
-    35497: UNKNOWN34
-    35503: UNKNOWN35
-    35514: UNKNOWN36
-    35520: UNKNOWN37
-    35532: UNKNOWN38
-    35540: UNKNOWN39
-    35548: UNKNOWN40
-    35556: UNKNOWN41
-    35564: UNKNOWN42
-    35572: UNKNOWN43
-    35580: UNKNOWN44
-    35588: UNKNOWN45
-    35596: UNKNOWN46
-    35604: UNKNOWN47
-    35612: UNKNOWN48
-    35620: UNKNOWN49
-    35626: UNKNOWN50
-    35634: UNKNOWN51
-    35661: UNKNOWN52
-    35667: UNKNOWN53
-    35677: UNKNOWN54
-    35687: UNKNOWN55
-    35695: UNKNOWN56
-    35703: UNKNOWN57
-    35711: UNKNOWN58
-    35719: UNKNOWN59
-    35727: UNKNOWN60
-    35735: UNKNOWN61
-    35743: UNKNOWN62
-    35751: UNKNOWN63
-    35757: UNKNOWN64
-    35785: UNKNOWN65
-12704255:
+    35514: UNKNOWN34
+  size: 696
+0xC1D9FF:
   description: Display In-Battle Text at ($0E+10)
   name: DISPLAY_IN_BATTLE_TEXT
   size: 74
@@ -218,7 +458,15 @@
   labels:
     55853: UNKNOWN
     55864: UNKNOWN2
-12704601:
+0xC1DA49:
+  name: DISPLAY_TEXT_WAIT
+  description: Display text and wait
+  type: assembly
+  size: 93
+  labels:
+    55935: UNKNOWN0
+    55957: UNKNOWN1
+0xC1DB59:
   description: Redirect to C1ABB4
   name: REDIRECT_C1ABB4
   final processor state:
@@ -226,37 +474,416 @@
     index: 16
   size: 6
   type: assembly
-12753449:
+0xC246EE:
+  name: BATTLE_ROUTINE
+  description: Handles Mother 2's Battles
+  type: assembly
+  size: 6599
+  labels:
+    18273: UNKNOWN0
+    18290: UNKNOWN1
+    18447: UNKNOWN2
+    18477: UNKNOWN3
+    18525: UNKNOWN4
+    18547: UNKNOWN5
+    18655: UNKNOWN6
+    18669: UNKNOWN7
+    18680: UNKNOWN8
+    18714: UNKNOWN9
+    18790: UNKNOWN10
+    18838: UNKNOWN11
+    18860: UNKNOWN12
+    18872: UNKNOWN13
+    19004: UNKNOWN14
+    19019: UNKNOWN15
+    19026: UNKNOWN16
+    19174: UNKNOWN17
+    19214: UNKNOWN18
+    19218: UNKNOWN19
+    19229: UNKNOWN20
+    19259: UNKNOWN21
+    19295: UNKNOWN22
+    19311: UNKNOWN23
+    19337: UNKNOWN24
+    19365: UNKNOWN25
+    19393: UNKNOWN26
+    19421: UNKNOWN27
+    19430: UNKNOWN28
+    19447: UNKNOWN29
+    19522: UNKNOWN30
+    19531: UNKNOWN31
+    19559: UNKNOWN32
+    19604: UNKNOWN33
+    19609: UNKNOWN34
+    19614: UNKNOWN35
+    19727: UNKNOWN36
+    19741: UNKNOWN37
+    19745: UNKNOWN38
+    19755: UNKNOWN39
+    19769: UNKNOWN40
+    19783: UNKNOWN41
+    19797: UNKNOWN42
+    19811: UNKNOWN43
+    19823: UNKNOWN44
+    19831: UNKNOWN45
+    19845: UNKNOWN46
+    19943: UNKNOWN47
+    19948: UNKNOWN48
+    19958: UNKNOWN49
+    19968: UNKNOWN50
+    19987: UNKNOWN51
+    19994: UNKNOWN52
+    19999: UNKNOWN53
+    20096: UNKNOWN54
+    20103: UNKNOWN55
+    20149: UNKNOWN56
+    20174: UNKNOWN57
+    20202: UNKNOWN58
+    20207: UNKNOWN59
+    20244: UNKNOWN60
+    20291: UNKNOWN61
+    20306: UNKNOWN62
+    20318: UNKNOWN63
+    20338: UNKNOWN64
+    20380: UNKNOWN65
+    20404: UNKNOWN66
+    20416: UNKNOWN67
+    20449: UNKNOWN68
+    20497: UNKNOWN69
+    20510: UNKNOWN70
+    20552: UNKNOWN71
+    20578: UNKNOWN72
+    20583: UNKNOWN73
+    20610: UNKNOWN74
+    20624: UNKNOWN75
+    20649: UNKNOWN76
+    20677: UNKNOWN77
+    20688: UNKNOWN78
+    20698: UNKNOWN79
+    20727: UNKNOWN80
+    20738: UNKNOWN81
+    20797: UNKNOWN82
+    20852: UNKNOWN83
+    20857: UNKNOWN84
+    20862: UNKNOWN85
+    20891: UNKNOWN86
+    20912: UNKNOWN87
+    20928: UNKNOWN88
+    20964: UNKNOWN89
+    20984: UNKNOWN90
+    20992: UNKNOWN91
+    21006: UNKNOWN92
+    21027: UNKNOWN93
+    21052: UNKNOWN94
+    21096: UNKNOWN95
+    21120: UNKNOWN96
+    21152: UNKNOWN97
+    21166: UNKNOWN98
+    21192: UNKNOWN99
+    21201: UNKNOWN100
+    21210: UNKNOWN101
+    21219: UNKNOWN102
+    21228: UNKNOWN103
+    21263: UNKNOWN104
+    21314: UNKNOWN105
+    21422: UNKNOWN106
+    21435: UNKNOWN107
+    21458: UNKNOWN108
+    21479: UNKNOWN109
+    21486: UNKNOWN110
+    21517: UNKNOWN111
+    21545: UNKNOWN112
+    21552: UNKNOWN113
+    21625: UNKNOWN114
+    21686: UNKNOWN115
+    21697: UNKNOWN116
+    21719: UNKNOWN117
+    21776: UNKNOWN118
+    21795: UNKNOWN119
+    21835: UNKNOWN120
+    21850: UNKNOWN121
+    21867: UNKNOWN122
+    21913: UNKNOWN123
+    21918: UNKNOWN124
+    21933: UNKNOWN125
+    21981: UNKNOWN126
+    21989: UNKNOWN127
+    22011: UNKNOWN128
+    22138: UNKNOWN129
+    22146: UNKNOWN130
+    22154: UNKNOWN131
+    22196: UNKNOWN132
+    22244: UNKNOWN133
+    22305: UNKNOWN134
+    22353: UNKNOWN135
+    22466: UNKNOWN136
+    22500: UNKNOWN137
+    22554: UNKNOWN138
+    22592: UNKNOWN139
+    22630: UNKNOWN140
+    22668: UNKNOWN141
+    22704: UNKNOWN142
+    22743: UNKNOWN143
+    22758: UNKNOWN144
+    22761: UNKNOWN145
+    22805: UNKNOWN146
+    22880: UNKNOWN147
+    22900: UNKNOWN148
+    22930: UNKNOWN149
+    22944: UNKNOWN150
+    22973: UNKNOWN151
+    23008: UNKNOWN152
+    23010: UNKNOWN153
+    23047: UNKNOWN154
+    23096: UNKNOWN155
+    23103: UNKNOWN156
+    23136: UNKNOWN157
+    23141: UNKNOWN158
+    23146: UNKNOWN159
+    23202: UNKNOWN160
+    23210: UNKNOWN161
+    23271: UNKNOWN162
+    23280: UNKNOWN163
+    23289: UNKNOWN164
+    23296: UNKNOWN165
+    23313: UNKNOWN166
+    23322: UNKNOWN167
+    23327: UNKNOWN168
+    23361: UNKNOWN169
+    23389: UNKNOWN170
+    23458: UNKNOWN171
+    23460: UNKNOWN172
+    23464: UNKNOWN173
+    23494: UNKNOWN174
+    23536: UNKNOWN175
+    23549: UNKNOWN176
+    23575: UNKNOWN177
+    23639: UNKNOWN178
+    23694: UNKNOWN179
+    23701: UNKNOWN180
+    23721: UNKNOWN181
+    23726: UNKNOWN182
+    23733: UNKNOWN183
+    23741: UNKNOWN184
+    23745: UNKNOWN185
+    23750: UNKNOWN186
+    23765: UNKNOWN187
+    23872: UNKNOWN188
+    23876: UNKNOWN189
+    23916: UNKNOWN190
+    23949: UNKNOWN191
+    23984: UNKNOWN192
+    24006: UNKNOWN193
+    24059: UNKNOWN194
+    24069: UNKNOWN195
+    24086: UNKNOWN196
+    24139: UNKNOWN197
+    24154: UNKNOWN198
+    24338: UNKNOWN199
+    24360: UNKNOWN200
+    24388: UNKNOWN201
+    24400: UNKNOWN202
+    24469: UNKNOWN203
+    24481: UNKNOWN204
+    24500: UNKNOWN205
+    24511: UNKNOWN206
+    24515: UNKNOWN207
+    24536: UNKNOWN208
+    24666: UNKNOWN209
+    24689: UNKNOWN210
+    24711: UNKNOWN211
+    24721: UNKNOWN212
+    24729: UNKNOWN213
+0xC260E9:
+  name: INSTANT_WIN_HANDLER
+  description: Instant Win Handler
+  type: assembly
+  size: 919
+  labels:
+    24838: UNKNOWN0
+    24861: UNKNOWN1
+    24916: UNKNOWN2
+    24929: UNKNOWN3
+    24959: UNKNOWN4
+    24992: UNKNOWN5
+    25071: UNKNOWN6
+    25101: UNKNOWN7
+    25113: UNKNOWN8
+    25136: UNKNOWN9
+    25155: UNKNOWN10
+    25160: UNKNOWN11
+    25184: UNKNOWN12
+    25267: UNKNOWN13
+    25376: UNKNOWN14
+    25445: UNKNOWN15
+    25457: UNKNOWN16
+    25573: UNKNOWN17
+    25587: UNKNOWN18
+    25601: UNKNOWN19
+    25615: UNKNOWN20
+    25629: UNKNOWN21
+    25643: UNKNOWN22
+    25657: UNKNOWN23
+    25669: UNKNOWN24
+    25697: UNKNOWN25
+    25718: UNKNOWN26
+    25722: UNKNOWN27
+0xC2656D:
+  name: INSTANT_WIN_CHECK
+  description: Instant Win Check
+  type: assembly
+  size: 861
+  labels:
+    25987: UNKNOWN0
+    26035: UNKNOWN1
+    26045: UNKNOWN2
+    26067: UNKNOWN3
+    26093: UNKNOWN4
+    26202: UNKNOWN5
+    26217: UNKNOWN6
+    26232: UNKNOWN7
+    26240: UNKNOWN8
+    26247: UNKNOWN9
+    26280: UNKNOWN10
+    26285: UNKNOWN11
+    26302: UNKNOWN12
+    26309: UNKNOWN13
+    26395: UNKNOWN14
+    26400: UNKNOWN15
+    26418: UNKNOWN16
+    26503: UNKNOWN17
+    26508: UNKNOWN18
+    26518: UNKNOWN19
+    26524: UNKNOWN20
+    26574: UNKNOWN21
+    26579: UNKNOWN22
+    26588: UNKNOWN23
+    26603: UNKNOWN24
+    26615: UNKNOWN25
+    26620: UNKNOWN26
+    26692: UNKNOWN27
+    26693: UNKNOWN28
+    26700: UNKNOWN29
+    26726: UNKNOWN30
+    26797: UNKNOWN31
+    26812: UNKNOWN32
+    26817: UNKNOWN33
+    26824: UNKNOWN34
+0xC293C6:
+  name: PSI_SHIELD_NULLIFY
+  description: PSI Shield Handler
+  type: assembly
+  labels: ~
+  size: 177
+0xC29A29:
   name: PSI_STARSTORM_COMMON
   description: PSI Starstorm General
   type: assembly
   size: 38
   labels:
     39501: RETURN
-12751814:
-  name: PSI_SHIELD_NULLIFY
-  description: PSI Shield Handler
+0xC2AAC7:
+  name: BOSS_BATTLE_CHECK
+  description: Checks if a boss is currently in the battle
   type: assembly
+  size: 93
   labels:
-    37889: UNKNOWN
-    37910: UNKNOWN2
-    37935: UNKNOWN3
-    37997: UNKNOWN4
-    38002: UNKNOWN5
-    38005: RETURN
-12851690:
+    43739: NEXT_ENEMY
+    43787: NOT_BOSS
+    43802: BEGIN_LOOP
+    43810: RETURN
+0xC2AB24:
+  name: BTLACT_TELEPORT_BOX
+  description: 'Battle Action: Teleport Box'
+  type: assembly
+  size: 186
+  labels:
+    43838: UNKNOWN0
+    43907: UNKNOWN1
+    43966: TELEPORT_BOX_FAILURE
+    43996: RETURN
+0xC2ABDE:
+  name: ""
+  description: ""
+  type: assembly
+  size: 20
+  labels: ~
+0xC419EA:
   description: Decompress ($0E+10) to ($12+14)
   name: DECOMP
-12889522:
+  type: assembly
+  size: 792
+  labels:
+    6679: UNKNOWN0
+    6713: UNKNOWN1
+    6724: UNKNOWN2
+    6730: UNKNOWN3
+    6742: UNKNOWN4
+    6760: UNKNOWN5
+    6766: UNKNOWN6
+    6777: UNKNOWN7
+    6786: UNKNOWN8
+    6800: UNKNOWN9
+    6806: UNKNOWN10
+    6848: UNKNOWN11
+    6868: UNKNOWN12
+    6914: UNKNOWN13
+    6958: UNKNOWN14
+    6968: UNKNOWN15
+    7024: UNKNOWN16
+    7062: UNKNOWN17
+    7065: UNKNOWN18
+    7108: UNKNOWN19
+    7111: UNKNOWN20
+    7154: UNKNOWN21
+    7157: UNKNOWN22
+    7200: UNKNOWN23
+    7203: UNKNOWN24
+    7241: UNKNOWN25
+    7244: UNKNOWN26
+    7301: UNKNOWN27
+    7304: UNKNOWN28
+    7365: UNKNOWN29
+0xC4ADB2:
   description: Initializes Intro
   name: INIT_INTRO
-12898039:
+  type: assembly
+  size: 341
+  labels:
+    44548: UNKNOWN0
+    44556: UNKNOWN1
+    44564: UNKNOWN2
+    44572: UNKNOWN3
+    44580: UNKNOWN4
+    44583: UNKNOWN5
+    44593: UNKNOWN6
+    44610: UNKNOWN7
+    44629: UNKNOWN8
+    44648: UNKNOWN9
+    44660: UNKNOWN10
+    44737: UNKNOWN11
+    44749: UNKNOWN12
+    44780: UNKNOWN13
+0xC4CEF7:
   description: Initialize SPC-700
   name: INITIALIZE_SPC700
-12898140:
+  type: assembly
+  size: 101
+  labels: ~
+0xC4CF5C:
   description: Change music to A
   name: CHANGE_MUSIC
-12911236:
+  type: assembly
+  size: 347
+  labels:
+    53105: UNKNOWN0
+    53114: UNKNOWN1
+    53128: UNKNOWN2
+    53139: UNKNOWN3
+    53235: UNKNOWN4
+    53330: UNKNOWN5
+    53421: UNKNOWN6
+0xC50284:
   description: Text Data
   name: TEXT_DATA
   type: data
@@ -265,6 +892,35 @@
   - name: Text
     type: standardtext
     terminator: 2
+0xCBD89A:
+  type: data
+  description: Battle Group BG Association Table
+  name: GROUP_BATTLEBG_TABLE
+  size: 1936
+  entries:
+  - name: Unknown
+    size: 2
+  - name: Unknown2
+    size: 2
+0xD0C60D:
+  type: data
+  description: Battle Entry Pointer Table
+  name: BTL_ENTRY_PTR_TABLE
+  size: 3872
+  entries:
+  - name: Pointer
+    size: 4
+    type: pointer
+  - name: Fear event flag
+    size: 2
+    type: hexint
+  - name: Fear mode
+    size: 1
+    values:
+    - Run away if flag is unset
+    - Run away if flag is set
+  - name: Battle Letterboxing?
+    size: 1
 0xD57000:
   type: data
   description: Item Data
@@ -297,7 +953,7 @@
   - name: Help Text Pointer
     size: 4
     type: pointer
-13994782:
+0xD58B1E:
   type: data
   description: Battle Action Table
   name: BATTLE_ACTION_TABLE
@@ -333,7 +989,7 @@
   - name: Code Address
     size: 4
     type: pointer
-14001216:
+0xD5A440:
   type: data
   description: Enemy Configuration Table
   name: ENEMY_CONFIGURATION_TABLE
@@ -475,4 +1131,22 @@
     size: 1
   - name: Mirror Success Rate
     size: 1
+0xEFD02B:
+  name: ""
+  description: ""
+  type: assembly
+  size: 62
+  labels:
+    53314: UNKNOWN0
+    53318: UNKNOWN1
+    53336: UNKNOWN2
+    53349: UNKNOWN3
+0xEFD069:
+  name: DEBUG_CHECK_VIEW_CHARACTER_MODE
+  description: Check if in view character mode
+  type: assembly
+  size: 19
+  labels:
+    53368: UNKNOWN0
+    53371: UNKNOWN1
 ...

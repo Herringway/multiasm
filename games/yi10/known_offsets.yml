@@ -1,0 +1,18 @@
+---
+0x088000:
+  type: assembly
+0x17F471:
+  type: data
+  size: 224
+  entries:
+  - name: PTR
+    size: 4
+    type: pointer
+0x17F7C3:
+  type: data
+  size: 1332
+  entries:
+  - name: PTR
+    size: 3
+    type: pointer
+...

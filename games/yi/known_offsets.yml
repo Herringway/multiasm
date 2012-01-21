@@ -1,32 +1,49 @@
 ---
-33337:
+0x008000:
+  name: ""
+  description: ""
+  type: assembly
+  size: 320
+  labels:
+    32866: UNKNOWN0
+    32908: UNKNOWN1
+    32969: UNKNOWN2
+    33008: UNKNOWN3
+    33009: UNKNOWN4
+    33031: UNKNOWN5
+    33057: UNKNOWN6
+    33067: UNKNOWN7
+    33069: UNKNOWN8
+    33072: UNKNOWN9
+    33082: UNKNOWN10
+0x008239:
   name: ""
   description: ""
   type: assembly
   size: 12
   accumsize: 8
   labels: ~
-33416:
+0x008288:
   name: ""
   description: ""
   type: assembly
   size: 35
   indexsize: 8
   labels: ~
-33451:
+0x0082AB:
   name: ""
   description: ""
   type: assembly
   size: 37
   indexsize: 8
   labels: ~
-33488:
+0x0082D0:
   name: ""
   description: ""
   type: assembly
   size: 76
   labels: ~
-34115:
+0x008543:
   name: ""
   description: ""
   type: assembly
@@ -40,4 +57,11 @@
     34207: UNKNOWN3
     34227: UNKNOWN4
     34229: UNKNOWN5
+0x17F471:
+  type: data
+  size: 16
+  entries:
+  - name: PTR
+    size: 4
+    type: pointer
 ...

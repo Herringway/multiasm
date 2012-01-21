@@ -1,36 +1,33 @@
 ---
-65424:
+0x00FF90:
   name: RESET_VECTOR
   size: 7
   type: assembly
-8386400:
+0x7FF760:
   name: WAIT_3001
   size: 6
   type: assembly
-12583048:
+0xC00088:
   name: ""
   description: ""
   type: assembly
   size: 384
-  labels:
-    200: UNKNOWN0
-    230: UNKNOWN1
-    312: UNKNOWN2
-12583226:
+  labels: ~
+0xC0013A:
   name: ""
   description: ""
   type: assembly
   size: 206
   accumsize: 8
   labels: ~
-12583527:
+0xC00267:
   name: ""
   description: ""
   type: assembly
   size: 15
   accumsize: 8
   labels: ~
-12583619:
+0xC002C3:
   name: ""
   description: ""
   type: assembly
@@ -75,7 +72,7 @@
     1626: UNKNOWN35
     1632: UNKNOWN36
     1654: UNKNOWN37
-12584983:
+0xC00817:
   name: ""
   description: ""
   type: assembly
@@ -84,7 +81,7 @@
   labels:
     2165: UNKNOWN0
     2190: UNKNOWN1
-12585037:
+0xC0084D:
   name: ""
   description: ""
   type: assembly
@@ -92,33 +89,33 @@
   accumsize: 8
   labels:
     2165: UNKNOWN0
-12585270:
+0xC00936:
   name: ""
   description: ""
   type: assembly
   size: 25
   accumsize: 8
   labels: ~
-12585324:
+0xC0096C:
   name: ""
   description: ""
   type: assembly
   size: 43
   labels: ~
-12585396:
+0xC009B4:
   name: ""
   description: ""
   type: assembly
   size: 43
   labels: ~
-12585458:
+0xC009F2:
   name: ""
   description: ""
   type: assembly
   size: 6
   labels:
     2546: UNKNOWN0
-12585608:
+0xC00A88:
   name: ""
   description: ""
   type: assembly
@@ -126,19 +123,19 @@
   accumsize: 8
   labels:
     2708: UNKNOWN0
-12595131:
+0xC02FBB:
   name: ""
   description: ""
   type: assembly
   size: 59
   labels: ~
-12595190:
+0xC02FF6:
   name: ""
   description: ""
   type: assembly
   size: 81
   labels: ~
-12596639:
+0xC0359F:
   name: ""
   description: ""
   type: assembly
@@ -146,14 +143,14 @@
   accumsize: 8
   labels:
     13744: UNKNOWN0
-12608878:
+0xC0656E:
   name: ""
   description: ""
   type: assembly
   size: 39
   accumsize: 8
   labels: ~
-12608917:
+0xC06595:
   name: ""
   description: ""
   type: assembly
@@ -161,21 +158,21 @@
   accumsize: 8
   labels:
     26023: UNKNOWN0
-12609137:
+0xC06671:
   name: ""
   description: ""
   type: assembly
   size: 69
   accumsize: 8
   labels: ~
-12610656:
+0xC06C60:
   name: ""
   description: ""
   type: assembly
   size: 39
   accumsize: 8
   labels: ~
-12612423:
+0xC07347:
   name: ""
   description: ""
   type: assembly
@@ -187,7 +184,7 @@
     29636: UNKNOWN3
     29643: UNKNOWN4
     29653: UNKNOWN5
-12645471:
+0xC0F45F:
   name: ""
   description: ""
   type: assembly
@@ -195,7 +192,7 @@
   accumsize: 8
   labels:
     62592: UNKNOWN0
-12645691:
+0xC0F53B:
   name: ""
   description: ""
   type: assembly
@@ -203,14 +200,14 @@
   accumsize: 8
   labels:
     62819: UNKNOWN0
-12645708:
+0xC0F54C:
   name: ""
   description: ""
   type: assembly
   size: 34
   accumsize: 8
   labels: ~
-12840960:
+0xC3F000:
   name: BATTLE_FONT_GFX
   description: Battle Numeral/Cursor GFX
   type: data
@@ -220,7 +217,7 @@
     size: 32
     type: tile
     bpp: 4
-12844032:
+0xC3FC00:
   name: BATTLE_FONT_PAL
   description: Battle Numeral/Cursor GFX Palette
   type: data
@@ -229,13 +226,13 @@
   - name: Palette
     size: 32
     type: palette
-12845064:
+0xC40008:
   name: ""
   description: ""
   type: assembly
   size: 3
   labels: ~
-13196089:
+0xC95B39:
   name: ""
   description: ""
   type: assembly
@@ -245,14 +242,14 @@
     23366: UNKNOWN0
     23379: UNKNOWN1
     23392: UNKNOWN2
-13202512:
+0xC97450:
   name: ""
   description: ""
   type: assembly
   size: 27
   accumsize: 8
   labels: ~
-14811136:
+0xE20000:
   name: DIALOGUE
   description: Dialogue
   type: data
@@ -265,7 +262,7 @@
   - name: Text
     type: dialoguetext
     terminator: 0
-15204352:
+0xE80000:
   name: UNCOMPRESSED_OBJECT_GFX
   description: Uncompressed Object Graphics
   type: data
@@ -275,7 +272,7 @@
     size: 32
     type: tile
     bpp: 4
-16319014:
+0xF90226:
   name: ENEMY_STATS
   description: Enemy Statistics
   type: data
@@ -344,7 +341,7 @@
     size: 1
   - name: Unknown
     size: 1
-16341492:
+0xF959F4:
   name: ABILITY_NAMES
   description: Enemy Ability Names
   type: data
@@ -353,7 +350,7 @@
   - name: Text
     type: standardtext
     size: 13
-16344404:
+0xF96554:
   name: BATTLE_DIALOGUE_PTRS
   description: Pointers to Enemy Battle Dialogue
   type: data
@@ -362,7 +359,7 @@
   - name: Pointer
     type: pointer
     size: 2
-16344916:
+0xF96754:
   name: BATTLE_DIALOGUE
   description: Enemy Battle Dialogue
   type: data
@@ -371,7 +368,7 @@
   - name: Text
     type: standardtext
     terminator: 512
-16355973:
+0xF99285:
   name: MISC_BATTLE_DIALOGUE
   description: Miscellaneous Battle Dialogue
   type: data
@@ -380,7 +377,7 @@
   - name: Text
     type: standardtext
     terminator: 0
-16356049:
+0xF992D1:
   name: ENEMY_NAMES
   description: Enemy Names
   type: data
@@ -389,7 +386,7 @@
   - name: Text
     type: standardtext
     size: 13
-16359377:
+0xF99FD1:
   name: PSYCHO_PTRS
   description: Psychopath Message Pointers
   type: data
@@ -398,7 +395,7 @@
   - name: Pointer
     type: pointer
     size: 2
-16359889:
+0xF9A1D1:
   name: PSYCHO_MESSAGES
   description: Psychopath Messages
   type: data
@@ -407,7 +404,7 @@
   - name: Text
     type: standardtext
     terminator: 512
-16365124:
+0xF9B644:
   name: BATTLEFIELD_LAYOUT
   description: Layout data for each battlefield
   type: data
@@ -422,12 +419,12 @@
     size: 1
   - name: Palette ID
     size: 1
-16365892:
+0xF9B944:
   name: MONSTER_TARGETTING_COORDS
   description: Coordinates for targetting each monster
   type: data
   size: 256
-16366148:
+0xF9BA44:
   name: MAP_BATTLEFIELDS
   description: Battlefields for each area map
   type: data
@@ -436,18 +433,18 @@
   - name: Battlefield IDs
     size: 4
     type: bytearray
-16366404:
+0xF9BB44:
   name: FLOWER_BONUSES
   description: Flower bonuses for each monster
   type: data
   size: 256
-16366660:
+0xF9BC44:
   type: data
   size: 19
-16366679:
+0xF9BC57:
   type: nullspace
   size: 937
-16367616:
+0xF9C000:
   name: MONSTER_FORMATIONS
   description: Monster Formations
   type: data
@@ -456,98 +453,98 @@
   - name: Unknown
     size: 26
     type: bytearray
-16380928:
+0xF9F400:
   type: nullspace
   size: 3072
-16384000:
+0xFA0000:
   name: INITIAL_STATS_PTR
   type: data
   size: 2
-16384002:
+0xFA0002:
   name: FA0002_PTR
   type: data
   size: 2
-16384004:
+0xFA0004:
   name: ITEM_STATS_PTR
   type: data
   size: 2
-16384006:
+0xFA0006:
   name: CHARACTER_NAME_PTR
   type: data
   size: 2
-16384008:
+0xFA0008:
   name: SPELL_NAME_PTR
   type: data
   size: 2
-16384010:
+0xFA000A:
   name: ITEM_NAME_PTR
   type: data
   size: 2
-16384012:
+0xFA000C:
   name: LEVEL_UP_XP_PTR
   type: data
   size: 2
-16384014:
+0xFA000E:
   name: LEVEL_UP_STATUS_PTR
   type: data
   size: 2
-16384016:
+0xFA0010:
   name: LEVEL_UP_BONUSES_PTR
   type: data
   size: 2
-16384018:
+0xFA0012:
   name: MAGIC_STATS_PTR
   type: data
   size: 2
-16384020:
+0xFA0014:
   name: BATTLE_MESSAGES_PTR
   type: data
   size: 2
-16384022:
+0xFA0016:
   name: FA0016_PTR
   type: data
   size: 2
-16384024:
+0xFA0018:
   name: MAGIC_DESCRIPTIONS_PTR
   type: data
   size: 2
-16384026:
+0xFA001A:
   name: ITEM_DESCRIPTIONS_PTR
   type: data
   size: 2
-16384028:
+0xFA001C:
   name: SHOP_PRICES_PTR
   type: data
   size: 2
-16384030:
+0xFA001E:
   name: FA001E_PTR
   type: data
   size: 2
-16384032:
+0xFA0020:
   name: LEVEL_UP_SPELLS_PTR
   type: data
   size: 2
-16384034:
+0xFA0022:
   name: FA0022_PTR
   type: data
   size: 2
-16384036:
+0xFA0024:
   name: FA0024_PTR
   type: data
   size: 2
-16384038:
+0xFA0026:
   name: WEAPON_TIMING_PTR
   type: data
   size: 2
-16384040:
+0xFA0028:
   name: FA0028_PTR
   type: data
   size: 2
-16384042:
+0xFA002A:
   name: SHOP_STATS_PTR
   type: data
   size: 2
-16384044:
+0xFA002C:
   name: INITIAL_STATS
   description: Characters' initial stats
   size: 96
@@ -556,10 +553,10 @@
   - name: unknown
     size: 16
     type: bytearray
-16384140:
+0xFA008C:
   size: 4
   type: data
-16384144:
+0xFA0090:
   name: STARTING_ITEMS
   description: Items Mario begins with
   size: 75
@@ -568,7 +565,7 @@
   - name: Items
     size: 75
     type: bytearray
-16384219:
+0xFA00DB:
   name: STARTING_MISC
   description: Miscellaneous things Mario begins with
   size: 5
@@ -582,10 +579,10 @@
     size: 1
   - name: Frog Coins
     size: 1
-16384224:
+0xFA00E0:
   type: data
   size: 109
-16384333:
+0xFA014D:
   name: ITEM_STATS
   description: Item Stats
   type: data
@@ -594,7 +591,7 @@
   - name: Unknown
     type: bytearray
     size: 18
-16388941:
+0xFA134D:
   name: CHARACTER_NAMES
   type: data
   size: 50
@@ -602,7 +599,7 @@
   - name: Name
     type: standardtext
     size: 10
-16388991:
+0xFA137F:
   name: SPELL_NAMES
   type: data
   size: 1920
@@ -610,14 +607,14 @@
   - name: Name
     type: standardtext
     size: 15
-16390911:
+0xFA1AFF:
   name: EXPERIENCE_TABLE
   size: 58
   type: data
   entries:
   - name: Experience Needed
     size: 2
-16390969:
+0xFA1B39:
   name: STAT_MODS
   size: 434
   type: data

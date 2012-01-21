@@ -1,4 +1,5 @@
-rom: mo3.gba
+---
 processor: ARM
 platform: gba
 title: "Mother 3 (JAP + translation)"
+...

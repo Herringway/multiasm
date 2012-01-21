@@ -1,4 +1,4 @@
-rom: smrpg.smc
+---
 processor: 65816
 platform: snes
 title: Super Mario RPG (USA)
@@ -199,3 +199,4 @@ texttables:
       0x9C: "&"
       0x0200: ""
       0x0201: "\n"
+...

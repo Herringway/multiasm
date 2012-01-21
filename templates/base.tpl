@@ -5,6 +5,7 @@
 		<style type="text/css">
 			body	{ text-align: center; }
 			a		{ text-decoration: none; }
+			small a		{ text-decoration: underline; }
 			.palette { text-shadow: 0 0 0.5em white; width: 100px; height: 100px; text-align: center; display: table-cell; vertical-align:middle;}
 			a[title] { text-decoration: underline; }
 			form	{ position: absolute; background: white; border: 1px solid black; right: 0px; }
@@ -13,6 +14,7 @@
 			.highlight { background: yellow; }
 			.rightside { background: white; border: 1px solid black; }
 			.optiontitle { float: left; text-align: left; width: 75px; display: inline-block; }
+			.unknown	{ color: darkred; }
 		</style>
 		{block "header"}{/block}
 	</head>
@@ -30,6 +32,6 @@
 </pre>
 {if $nextoffset}
 <a rel="next" accesskey="n" href="/{$game}/{string_format($nextoffset,'%s')}">Next Function</a><br />{/if}
-<small><a href="/{$game}/stats">Stats</a> <a href="/{$game}/issues">Issues</a></small>
+<small><a href="/{$game}/stats">Stats</a> <a href="/{$game}/issues">Issues</a> <a href="/{$game}/rommap">Known Addresses</a></small>
 </body>
 </html>

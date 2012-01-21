@@ -42,7 +42,6 @@ function process_entries($handle, $offset, $end, $entries) {
 }
 function showtable($offset) {
 	global $handle, $known_addresses, $game, $gameid;
-	require sprintf("platforms/%s.php", $game['platform']);
 	$platform = new platform($handle, array());
 	$realoffset = $platform->map_rom($offset);
 	fseek($handle, $realoffset);

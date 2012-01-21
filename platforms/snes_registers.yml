@@ -287,6 +287,15 @@
 0x4212: 
   description: Status Register
   name: HVBJOY
+  bits:
+    - Joypad ready
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - In HBlank
+    - In VBlank
 0x4213: 
   description: Programmable I/O port (in-port)
   name: RDIO

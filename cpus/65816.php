@@ -15,7 +15,6 @@ class core {
 	function __construct(&$handle,$opts,&$known_addresses) {
 		$this->opcodes = yaml_parse_file('./cpus/65816_opcodes.yml');
 		$this->handle = $handle;
-		require_once sprintf('platforms/%s.php', $opts['platform']);
 		$this->platform = new platform($handle, $opts);
 		$this->addrs = $known_addresses;
 		$this->opts = $opts;
@@ -122,7 +121,7 @@ class core {
 			}
 			$fulladdr = $this->fix_addr($opcode, $arg);
 			
-			if ((($this->opcodes[$opcode]['addressing']['type'] == 'relative') || (($this->opcodes[$opcode]['addressing']['type'] == 'absolutejmp') && isset($this->opcodes[$opcode]['addressing']['jump']))) && ($fulladdr + ($this->currentoffset&0xFF0000) > $farthestbranch))
+			if (($this->opcodes[$opcode]['addressing']['type'] == 'relative') && ($fulladdr + ($this->currentoffset&0xFF0000) > $farthestbranch))
 				$farthestbranch = $fulladdr + ($this->currentoffset&0xFF0000);
 				
 			if ((($this->opcodes[$opcode]['addressing']['type'] == 'absolutejmp') || ($this->opcodes[$opcode]['addressing']['type'] == 'absolutelongjmp'))) {
@@ -140,9 +139,9 @@ class core {
 			
 			if (isset($this->addrs[$fulladdr]['name'])) {
 				$name = $this->addrs[$fulladdr]['name'];
-			} else if (isset($this->addrs[$this->initialoffset]['labels'][$fulladdr])) {
-				$uri = sprintf('%s#%s', $offsetname, $this->addrs[$this->initialoffset]['labels'][$fulladdr]);
-				$name = ($this->placeholdernames ? isset($this->addrs[$this->initialoffset]['name']) ? $this->addrs[$this->initialoffset]['name'].'_' : sprintf('UNKNOWN_%06X_', $this->initialoffset) : '').$this->addrs[$this->initialoffset]['labels'][$fulladdr];
+			} else if (isset($this->addrs[$this->initialoffset]['labels'][$fulladdr&0xFFFF])) {
+				$uri = sprintf('%s#%s', $offsetname, $this->addrs[$this->initialoffset]['labels'][$fulladdr&0xFFFF]);
+				$name = ($this->placeholdernames ? isset($this->addrs[$this->initialoffset]['name']) ? $this->addrs[$this->initialoffset]['name'].'_' : sprintf('UNKNOWN_%06X_', $this->initialoffset) : '').$this->addrs[$this->initialoffset]['labels'][$fulladdr&0xFFFF];
 			} else if (($this->opcodes[$opcode]['addressing']['type'] == 'relative') || (($this->opcodes[$opcode]['addressing']['type'] == 'absolutejmp') && (isset($this->opcodes[$opcode]['addressing']['jump'])))) {
 				if (!isset($this->branches[$fulladdr]))
 					$this->branches[$fulladdr] = '';

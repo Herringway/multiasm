@@ -1,7 +1,5 @@
-rom:  mo2.smc
+---
 processor:  65816
-rombase:  0xC00000
-size:  0x300000
 platform:  snes
 title:  Mother 2 (JPN)
 texttables: 
@@ -29,6 +27,7 @@ texttables:
       0x1C05: 3
       0x1C07: 3
       0x1C0A: 6
+      0x1C13: 3
       0x1D: 2
       0x1D03: 3
       0x1D09: 4
@@ -256,3 +255,4 @@ texttables:
       0xFE: ョ
       0xFF: ロ
       0x1C0108: ネス
+...

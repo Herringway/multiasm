@@ -1,4 +1,5 @@
-rom: f6-.smc
+---
 processor: 65816
 platform: snes
 title: Final Fantasy 6 (USA)
+...
