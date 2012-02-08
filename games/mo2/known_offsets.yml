@@ -4,6 +4,15 @@
   description: Execution Entry Point
   size: 3
   type: assembly
+0x00FAA4:
+  name: ""
+  description: ""
+  type: assembly
+  size: 92
+  labels:
+    64216: UNKNOWN0
+    64231: UNKNOWN1
+    64242: UNKNOWN2
 0x7E0065:
   name: PAD_1_STATE
   description: Controller 1 state
@@ -170,6 +179,14 @@
   labels:
     36605: UNKNOWN0
     36610: UNKNOWN1
+0xC08F06:
+  name: MEMSET2
+  description: Overwrite $7E0000+[$0E] to $7E0000+[$0E]+X with A
+  type: assembly
+  size: 13
+  labels:
+    36617: UNKNOWN0
+    36624: UNKNOWN1
 0xC08FDB:
   description: ""
   name: ""
@@ -288,15 +305,23 @@
   type: assembly
   size: 260
   labels: ~
+0xC0F5BF:
+  name: ""
+  description: ""
+  type: assembly
+  size: 31
+  labels:
+    62926: UNKNOWN0
+    62935: UNKNOWN1
 0xC0FAA4:
   description: SRAM Integrity Check
   name: CHECK_SRAM_INTEGRITY
   type: assembly
   size: 92
   labels:
-    64216: UNKNOWN0
-    64231: UNKNOWN1
-    64242: UNKNOWN2
+    64216: GOOD_SRAM
+    64231: LOOP_BEGINNING
+    64242: LOOP_ENTRY
 0xC10032:
   description: Set blinking triangle prompt to A
   name: ENABLE_BLINKING_TRIANGLE
