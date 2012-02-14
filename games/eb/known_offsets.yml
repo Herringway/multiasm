@@ -28,6 +28,12 @@
 0x7E006F:
   description: Controller 2 button press
   name: PAD_2_PRESS
+0x7E00A7:
+  description: In-game Timer (Low half)
+  name: TIMER_LOW
+0x7E00A9:
+  description: In-game Timer (High half)
+  name: TIMER_HIGH
 0x7E0200:
   description: Current Text Palette
   name: CUR_TEXT_PAL
@@ -386,6 +392,12 @@
 0x7E98B7:
   description: Sound Setting (1 = stereo, 0 = mono)
   name: SOUND_SETTING
+0x7E99C9:
+  description: Temporary storage for In-game Timer Low (1/60ths of a second)
+  name: TIMER_TEMP_LOW
+0x7E99CB:
+  description: Temporary storage for In-game Timer High (1/60ths of a second)
+  name: TIMER_TEMP_HIGH
 0x7E99CD:
   description: Current Text Flavour
 0x7E99CE:
@@ -3591,8 +3603,10 @@
   labels:
     43984: UNKNOWN0
 0xC0ABE0:
-  description: Play Sound Effect A
+  description: Play Sound Effect
   name: PLAY_SOUND
+  arguments:
+    A: Sound Effect ID
   size: 44
   type: assembly
   labels:
@@ -3799,14 +3813,14 @@
     47208: UNKNOWN4
     47222: UNKNOWN5
     47250: UNKNOWN6
-    47278: UNKNOWN7
-    47290: UNKNOWN8
+    47278: DEBUG_PAD2_B_HELD
+    47290: DEBUG_PAD2_A_HELD
     47302: NO_DEBUG
     47310: UNKNOWN10
     47318: UNKNOWN11
-    47342: UNKNOWN12
-    47364: UNKNOWN13
-    47378: UNKNOWN14
+    47342: NO_OPEN_MENU
+    47364: NO_OPEN_HPPP_DISPLAY
+    47378: NO_OPEN_TOWN_MAP
     47392: UNKNOWN15
     47395: UNKNOWN16
     47404: UNKNOWN17
@@ -4902,6 +4916,8 @@
 0xC104EE:
   description: Create Window
   name: CREATE_WINDOW
+  arguments:
+    A: Window template to spawn
   size: 671
   type: assembly
   labels:
@@ -5087,6 +5103,8 @@
     3831: UNKNOWN1
     3835: UNKNOWN2
 0xC10EFC:
+  description: Displays window title for config menus
+  name: DISPLAY_CONFIG_MENU_TITLE
   size: 68
   type: assembly
   labels:
@@ -7981,6 +7999,9 @@
 0xC18EAD:
   description: Take item from character (one/any)
   name: TAKE_ITEM_FROM_CHARACTER
+  arguments:
+    A: Character (or -1 for all)
+    X: Item to take
   size: 97
   type: assembly
   labels:
@@ -8225,8 +8246,10 @@
     40601: UNKNOWN3
     40613: UNKNOWN4
 0xC19EE6:
-  description: Return Item A's main type + 1
+  description: Return the type of an item
   name: GET_ITEM_TYPE
+  argument:
+    A: Item ID
   size: 67
   type: assembly
   labels:
@@ -8805,9 +8828,11 @@
     53464: UNKNOWN2
     53511: UNKNOWN3
 0xC1D109:
-  description: |
-    Level up Character A-1 (silent if X is 0)
+  description: Level up Character
   name: LEVEL_UP_CHAR
+  arguments:
+    X: Silent Mode
+    A: Character to level-up
   size: 1991
   type: assembly
   labels:
@@ -8880,8 +8905,10 @@
     55495: UNKNOWN66
     55502: UNKNOWN67
 0xC1D8D0:
-  description: Sets character A-1 level to 1
-  name: SET_CHAR_LEVEL_ONE
+  description: Resets character level to 1
+  name: RESET_CHAR_LEVEL_ONE
+  arguments:
+    A: Character to reset
   size: 281
   type: assembly
   labels:
@@ -8914,8 +8941,10 @@
   size: 97
   type: assembly
 0xC1DC1C:
-  description: Display In-Battle Text at ($0E+10)
+  description: Display In-Battle Text
   name: DISPLAY_IN_BATTLE_TEXT
+  arguments:
+    $0E: Text Pointer
   size: 74
   type: assembly
   labels:
@@ -9255,8 +9284,8 @@
   labels:
     62391: UNKNOWN0
 0xC1F3C2:
-  name: OPEN_CONFIG_MENU
-  description: Opens the sound, text speed, and text flavour configuration menu
+  name: OPEN_TEXT_SPEED_MENU
+  description: Opens the text speed configuration menu
   size: 213
   type: assembly
   labels:
@@ -9272,6 +9301,8 @@
     62786: UNKNOWN3
     62819: UNKNOWN4
 0xC1F568:
+  name: OPEN_SOUND_MENU
+  description: Opens the sound configuration menu
   size: 174
   type: assembly
   labels:
@@ -9288,6 +9319,8 @@
     63185: UNKNOWN4
     63198: UNKNOWN5
 0xC1F6E3:
+  name: OPEN_FLAVOUR_MENU
+  description: Opens the text flavour configuration menu
   size: 290
   type: assembly
   labels:
@@ -9310,9 +9343,9 @@
     63592: MENU_DELETE_SELECTED
     63602: MENU_SETUP_SELECTED
     63606: UNKNOWN7
-    63627: UNKNOWN8
+    63627: MENU_SETUP_SELECTED2
     63630: UNKNOWN9
-    63650: UNKNOWN10
+    63650: MENU_SETUP_SELECTED3
     63667: MENU_OTHER_SELECTED
     63673: EMPTY_FILE_SELECTED
     63677: UNKNOWN13
@@ -13548,7 +13581,8 @@
 0xC3E874:
   type: data
   size: 259
-  description: Debug Mode Commands
+  description: Debug Mode Text
+  name: DEBUG_MODE_TEXT
 0xC3E977:
   description: Inventory Something
   size: 41
@@ -13663,9 +13697,12 @@
 0xC3EF26:
   type: data
   size: 394
+  description: Has PSI category text in it...
 0xC3F0B0:
   type: data
   size: 316
+  description: PSI Target Text
+  name: PSI_TARGET_TEXT
 0xC3F1EC:
   labels:
     61962: UNKNOWN0
@@ -13766,6 +13803,7 @@
 0xC3FB1F:
   type: data
   size: 670
+  description: Has Name Registration text at the start...
 0xC3FDBD:
   type: data
   size: 8
@@ -14139,6 +14177,8 @@
 0xC43550:
   size: 24
   type: data
+  description: Item Use menu
+  name: ITEM_USE_MENU
 0xC43568:
   size: 11
   type: assembly
@@ -14588,6 +14628,8 @@
 0xC45963:
   size: 55
   type: data
+  description: Misc. Target Text
+  name: MISC_TARGET_TEXT
 0xC4599A:
   size: 141
   type: assembly
@@ -14597,6 +14639,8 @@
 0xC45A27:
   size: 617
   type: data
+  description: Status/Equip window text
+  name: STATUS_EQUIP_WINDOW_TEXT
 0xC45C90:
   size: 333
   type: assembly
@@ -15267,6 +15311,8 @@
 0xC48037:
   size: 215
   type: data
+  description: Lumine Hall text
+  name: LUMINE_HALL_TEXT
 0xC4810E:
   size: 365
   type: assembly
@@ -15455,6 +15501,7 @@
   labels:
     36800: UNKNOWN0
 0xC48FC4:
+  description: Related to timed item transformation?
   size: 298
   type: assembly
   labels:
@@ -15684,6 +15731,8 @@
 0xC49FE1:
   size: 172
   type: data
+  description: Battle Menu Text
+  name: BATTLE_MENU_TEXT
 0xC4A08D:
   type: data
   size: 66
@@ -16057,7 +16106,7 @@
   type: data
   entries:
   - name: Text
-    size: 64
+    size: 67
     type: standardtext
 0xC4C2DE:
   size: 385
@@ -16476,6 +16525,8 @@
 0xC4E366:
   size: 3
   type: assembly
+  description: Do Nothing
+  name: DO_NOTHING_C4E366
 0xC4E369:
   size: 369
   type: assembly
@@ -16513,6 +16564,8 @@
 0xC4E796:
   type: data
   size: 24
+  description: Character guardian text
+  name: CHARACTER_GUARDIAN_TEXT
 0xC4E7AE:
   size: 750
   type: assembly
@@ -17279,6 +17332,7 @@
 0xD57A2E:
   type: data
   size: 128
+  description: Unused Teleport Destination Text?
 0xD57AAE:
   type: data
   size: 186
@@ -18340,6 +18394,11 @@
   - name: Pointer
     type: pointer
     size: 2
+0xE60042:
+  type: assembly
+  name: SPC700_TEST
+  size: 0x2AC8
+  cpu: SPC700
 0xE62B0A:
   type: data
   size: 550647
@@ -18351,6 +18410,8 @@
 0xEF0000:
   size: 82
   type: assembly
+  description: Turn Off Enemy Flashing
+  name: ENEMY_FLASHING_OFF
   labels:
     39: UNKNOWN0
     61: UNKNOWN1
@@ -18358,6 +18419,8 @@
 0xEF0052:
   size: 105
   type: assembly
+  description: Turn On Enemy Flashing
+  name: ENEMY_FLASHING_ON
   labels:
     108: UNKNOWN0
     146: UNKNOWN1
@@ -18486,6 +18549,8 @@
     2080: UNKNOWN1
     2083: UNKNOWN2
 0xEF0825:
+  name: CHECK_SAVE_CORRUPTION
+  description: Checks if SRAM is corrupt
   size: 106
   type: assembly
   labels:
@@ -18678,6 +18743,8 @@
 0xEF4A40:
   type: data
   size: 22842
+  description: Text Data
+  name: TEXT_DATA_EF4A40
 0xEFA37A:
   type: data
   description: Commands Window Text Strings
