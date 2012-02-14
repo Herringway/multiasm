@@ -61,7 +61,13 @@ function showtable($offset) {
 		fseek($handle, $realoffset);
 		$data = fread($handle, $known_addresses[$offset]['size']);
 		$nextoffset = $offset+$known_addresses[$offset]['size'];
-		$hex = hexview($data, isset($known_addresses[$offset]['width']) ? $known_addresses[$offset]['width'] : 16, $offset);
+		if (isset($known_addresses[$offset]['charset']))
+			$charset = $game['texttables'][$known_addresses[$offset]['charset']]['replacements'];
+		else if (isset($game['defaulttext']))
+			$charset = $game['texttables'][$game['defaulttext']]['replacements'];
+		else
+			$charset = null;
+		$hex = hexview($data, isset($known_addresses[$offset]['width']) ? $known_addresses[$offset]['width'] : 16, $offset, $charset);
 		$dwoo = new Dwoo();
 		$dwoo->output('templates/'.$game['platform'].'_hex.tpl', array('hex' => $hex, 'title' => $tablename, 'game' => $gameid, 'nextoffset' => isset($known_addresses[$nextoffset]['name']) ? $known_addresses[$nextoffset]['name'] : strtoupper(dechex($nextoffset))));
 		return;

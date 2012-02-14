@@ -27,9 +27,9 @@ class core {
 	public function getMisc() {
 		$output = array();
 		if (isset($this->opts['accum']))
-			$output['accumsize'] = intval($this->opts['accum']);
+			$output['accumsize'] = 8;
 		if (isset($this->opts['index']))
-			$output['indexsize'] = intval($this->opts['index']);
+			$output['indexsize'] = 8;
 		return $output;
 	}
 	private function get_processor_bits($arg) {

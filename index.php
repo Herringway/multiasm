@@ -2,12 +2,15 @@
 if (array_key_exists('begin', $_GET)) {
 	$options = '';
 	foreach ($_GET as $key => $val)
-		if (($key != 'begin') && ($key != 'game'))
-			$options[] = sprintf('%s=%s', $key, $val);
-	header('Location: http://asm.elpenguino.net'.sprintf('/%s/%s/%s',$_GET['game'], $_GET['begin'], implode('/', $options)));
+		if (($key != 'begin') && ($key != 'game')) {
+			if ($val == 'true')
+				$options[] = $key;
+			else
+				$options[] = sprintf('%s=%s', $key, $val);
+		}
+	header(sprintf('Location: http://%s/%s/%s/%s',$_SERVER['SERVER_NAME'],$_GET['game'], $_GET['begin'], implode('/', $options)));
 	die();
 }
-header('Content-Type: text/html; charset=UTF-8');
 //echo '<pre>'; var_dump($_SERVER); echo '</pre>';
 require_once '../hexview.php';
 require_once 'Dwoo/dwooAutoload.php';
@@ -73,15 +76,21 @@ default:
 		$v = explode('=', $argc[$i]);
 		if (isset($v[1]))
 			$game[$v[0]] = $v[1];
+		else
+			$game[$v[0]] = true;
 	}
 	if (!$handle)
 		die ('File not found!');
 	
 	if (isset($known_addresses[$offset]['type']) && (($known_addresses[$offset]['type'] == 'data') || ($known_addresses[$offset]['type'] == 'nullspace'))) {
 		require 'table.php';
+		header('Content-Type: text/html; charset=UTF-8');
 		showtable($offset);
 	} else {
-		require_once 'cpus/'.$game['processor'].'.php';
+		if (isset($known_addresses[$offset]['cpu']))
+			require_once 'cpus/'.$known_addresses[$offset]['cpu'].'.php';
+		else
+			require_once 'cpus/'.$game['processor'].'.php';
 		
 		$core = new core($handle,$game,$known_addresses);
 		if ($offset == -1)
@@ -119,8 +128,14 @@ default:
 				$output[sprintf('0x%06X',$k)] = $offset;
 			file_put_contents('games/'.$gameid.'/known_offsets.yml', preg_replace('/"0x([0-9a-fA-F]{6})":/', '0x\1:', yaml_emit($output)));
 		}
-		$dwoo = new Dwoo();
-		$dwoo->output('templates/'.$game['platform'].'.tpl', array('routinename' => $routinename, 'title' => $game['title'], 'nextoffset' => isset($known_addresses[$nextoffset]['name']) ? $known_addresses[$nextoffset]['name'] : strtoupper(dechex($nextoffset)), 'game' => $gameid, 'instructions' => $instructionlist, 'arguments' => $arguments,'thisoffset' => $offset, 'options' => $options, 'offsetname' => $offsetname));
+		if (isset($game['yaml'])) {
+			header('Content-Type: text/plain; charset=UTF-8');
+			echo yaml_emit($instructionlist);
+		} else {
+			header('Content-Type: text/html; charset=UTF-8');
+			$dwoo = new Dwoo();
+			$dwoo->output('templates/'.$game['platform'].'.tpl', array('routinename' => $routinename, 'title' => $game['title'], 'nextoffset' => isset($known_addresses[$nextoffset]['name']) ? $known_addresses[$nextoffset]['name'] : strtoupper(dechex($nextoffset)), 'game' => $gameid, 'instructions' => $instructionlist, 'arguments' => $arguments,'thisoffset' => $offset, 'options' => $game, 'offsetname' => $offsetname));
+		}
 	}
 	fclose($handle);
 }

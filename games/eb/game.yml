@@ -2,6 +2,7 @@
 processor: 65816
 platform: snes
 title: Earthbound (USA)
+defaulttext: standardtext
 texttables:
   stafftext:
     lengths:

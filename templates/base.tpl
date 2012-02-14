@@ -7,14 +7,20 @@
 			a		{ text-decoration: none; }
 			small a		{ text-decoration: underline; }
 			.palette { text-shadow: 0 0 0.5em white; width: 100px; height: 100px; text-align: center; display: table-cell; vertical-align:middle;}
-			a[title] { text-decoration: underline; }
 			form	{ position: absolute; background: white; border: 1px solid black; right: 0px; }
 			pre		{ text-align: left; font-family: monospace; color: black; border: 1px dashed black; background-color: lightgray; padding: 2px; margin: 6px; overflow: auto; }
-			span	{ position: relative; top: 15px; width: 150px; background:white; border: 2px solid black; }
+			body > span	{ position: relative; top: 15px; width: 150px; background:white; border: 2px solid black; }
 			.highlight { background: yellow; }
 			.rightside { background: white; border: 1px solid black; }
 			.optiontitle { float: left; text-align: left; width: 75px; display: inline-block; }
-			.unknown	{ color: darkred; }
+			.unknown		{ color: darkred; }
+			.label			{ color: blue; }
+			.opcode			{ color: gray; }
+			.args			{ color: black; }
+			.address		{ color: green; }
+			.instruction 	{ color: gray; }
+			.interpargs		{ color: black; }
+			.interpargs > a	{ color: blue;}
 		</style>
 		{block "header"}{/block}
 	</head>
