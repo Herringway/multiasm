@@ -1,260 +1,1794 @@
 ---
-0x00:
-  size: 1
-  instruction: NOP
-0x03:
-  size: 3
-  instruction: BBS
-0x0B:
-  size: 2
-  instruction: ASL
-0x10:
-  size: 2
-  instruction: BPL
-0x13:
-  size: 3
-  instruction: BBC
-0x1D:
-  size: 1
-  instruction: DEC
-0x20:
-  size: 1
-  instruction: CLRP
-0x23:
-  size: 3
-  instruction: BBS
-0x2E:
-  size: 3
-  instruction: CBNE
-0x2F:
-  size: 2
-  instruction: BRA
-0x30:
-  size: 2
-  instruction: BMI
-0x33:
-  size: 3
-  instruction: BBC
-0x3D:
-  size: 1
-  instruction: INC
-0x3F:
-  size: 3
-  instruction: CALL
-  printformat: "%04X"
-0x43:
-  size: 3
-  instruction: BBS
-0x44:
-  size: 2
-  instruction: EOR
-0x50:
-  size: 2
-  instruction: BVC
-0x53:
-  size: 3
-  instruction: BBC
-0x5C:
-  size: 1
-  instruction: LSR
-0x5D:
-  size: 1
-  instruction: MOV
-0x5F:
-  size: 3
-  instruction: JMP
-0x60:
-  size: 1
-  instruction: CLRC
-0x63:
-  size: 3
-  instruction: BBS
-0x65:
-  size: 3
-  instruction: CMP
-0x68:
-  size: 2
-  instruction: CMP
-0x69:
-  size: 3
-  instruction: CMP
-0x6B:
-  size: 2
-  instruction: ROR
-0x6D:
-  size: 1
-  instruction: PUSH
-0x6E:
-  size: 3
-  instruction: DBNZ
-0x6F:
-  size: 1
-  instruction: RETI
-0x70:
-  size: 2
-  instruction: BVS
-0x73:
-  size: 3
-  instruction: BBC
-0x83:
-  size: 3
-  instruction: BBS
-0x84:
-  size: 2
-  instruction: ADC
-0x8B:
-  size: 2
-  instruction: DEC
-0x8C:
-  size: 3
-  instruction: DEC
-0x8D:
-  size: 2
-  instruction: MOV
-0x8F:
-  size: 3
-  instruction: MOV
-0x90:
-  size: 2
-  instruction: BCC
-0x93:
-  size: 3
-  instruction: BBC
-0x9B:
-  size: 2
-  instruction: DEC
-0x9C:
-  size: 1
-  instruction: DEC
-0xA2:
-  size: 2
-  instruction: SET5
-0xA3:
-  size: 3
-  instruction: BBS
-0xAB:
-  size: 2
-  instruction: INC
-0xAC:
-  size: 3
-  instruction: INC
-0xAD:
-  size: 2
-  instruction: CMP
-0xAF:
-  size: 1
-  instruction: MOV
-0xB0:
-  size: 2
-  instruction: BCS
-0xB3:
-  size: 3
-  instruction: BBC
-0xBB:
-  size: 2
-  instruction: INC
-0xBC:
-  size: 1
-  instruction: INC
-0xBD:
-  size: 1
-  instruction: MOV
-0xC3:
-  size: 3
-  instruction: BBS
-0xC4:
-  size: 2
-  instruction: MOV
-  printformat: "%02X"
-0xC5:
-  size: 3
-  instruction: MOV
-0xC8:
-  size: 2
-  instruction: CMP
-  printformat: "%02X"
-0xCB:
-  size: 2
-  instruction: MOV
-0xCD:
-  size: 2
-  instruction: MOV
-  printformat: "%02X"
-0xCF:
-  size: 1
-  instruction: MUL
-0xD0:
-  size: 2
-  instruction: BNE
-  printformat: "%02X"
-0xD3:
-  size: 3
-  instruction: BBC
-0xDC:
-  size: 1
-  instruction: DEC
-0xDE:
-  size: 3
-  instruction: CBNE
-0xE3:
-  size: 3
-  instruction: BBS
-0xE4:
-  size: 2
-  instruction: MOV
-0xE5:
-  size: 3
-  instruction: MOV
-0xE6:
-  size: 1
-  instruction: MOV
-0xE7:
-  size: 2
-  instruction: MOV
 0xE8:
+  instruction: MOV
   size: 2
+  printformat: "A, #$%02X"
+  cycles: 2
+  registers: N-----Z-
+  description:  A <- imm
+0xE6:
   instruction: MOV
-  printformat: "%02X"
-0xE9:
-  size: 3
+  size: 1
+  printformat: A, (X)	 
+  cycles: 3
+  registers: N-----Z-
+  description:  A <- (X)
+0xBF:
   instruction: MOV
-0xEA:
-  size: 3
-  instruction: NOT1
-0xEB:
+  size: 1
+  printformat: A, (X)+	 
+  cycles: 4
+  registers: N-----Z-
+  description:  A <- (X), X is incremented afterward
+0xE4:
+  instruction: MOV
   size: 2
-  instruction: MOV
-0xEC:
-  size: 3
-  instruction: MOV
-0xED:
-  size: 1
-  instruction: NOTC
-0xEE:
-  size: 1
-  instruction: POP
-0xEF:
-  size: 1
-  instruction: SLEEP
-0xF0:
-  size: 2
-  instruction: BEQ
-0xF3:
-  size: 3
-  instruction: BBC
+  printformat: A, dp	 
+  cycles: 3
+  registers: N-----Z-
+  description:  A <- (dp)
 0xF4:
-  size: 2
   instruction: MOV
-0xF6:
+  size: 2
+  printformat: A, dp+X	 
+  cycles: 4
+  registers: N-----Z-
+  description:  A <- (dp+X)
+0xE5:
+  instruction: MOV
   size: 3
+  printformat: A, !abs	 
+  cycles: 4
+  registers: N-----Z-
+  description:  A <- (abs)
+0xF5:
   instruction: MOV
-0xFC:
-  size: 1
-  instruction: INC
-0xFE:
+  size: 3
+  printformat: A, !abs+X
+  cycles: 5
+  registers: N-----Z-
+  description:  A <- (abs+X)
+0xF6:
+  instruction: MOV
+  size: 3
+  printformat: A, !abs+Y
+  cycles: 5
+  registers: N-----Z-
+  description:  A <- (abs+Y)
+0xE7:
+  instruction: MOV
   size: 2
-  instruction: DBNZ
-0xFF:
+  printformat: A, [dp+X]
+  cycles: 6
+  registers: N-----Z-
+  description:  A <- (abs:(abs+X))
+0xF7:
+  instruction: MOV
+  size: 2
+  printformat: A, [dp]+Y
+  cycles: 6
+  registers: N-----Z-
+  description:  A <- (abs:(abs)+Y)
+0xCD:
+  instruction: MOV
+  size: 2
+  printformat: "X, #$%02X"
+  cycles: 2
+  registers: N-----Z-
+  description:  X <- imm
+0xF8:
+  instruction: MOV
+  size: 2
+  printformat: X, dp	 
+  cycles: 3
+  registers: N-----Z-
+  description:  X <- (dp)
+0xF9:
+  instruction: MOV
+  size: 2
+  printformat: X, dp+Y	 
+  cycles: 4
+  registers: N-----Z-
+  description:  X <- (dp+Y)
+0xE9:
+  instruction: MOV
+  size: 3
+  printformat: X, !abs	 
+  cycles: 4
+  registers: N-----Z-
+  description:  X <- (abs)
+0x8D:
+  instruction: MOV
+  size: 2
+  printformat: "Y, #$%02X"
+  cycles: 2
+  registers: N-----Z-
+  description:  Y <- imm
+0xEB:
+  instruction: MOV
+  size: 2
+  printformat: Y, dp	 
+  cycles: 3
+  registers: N-----Z-
+  description:  Y <- (dp)
+0xFB:
+  instruction: MOV
+  size: 2
+  printformat: Y, dp+X	 
+  cycles: 4
+  registers: N-----Z-
+  description:  Y <- (dp+X)
+0xEC:
+  instruction: MOV
+  size: 3
+  printformat: Y, !abs	 
+  cycles: 4
+  registers: N-----Z-
+  description:  Y <- (abs)
+0xC6:
+  instruction: MOV
   size: 1
+  printformat: (X), A	 
+  cycles: 4
+  registers: --------
+  description:  A -> (X)
+0xAF:
+  instruction: MOV
+  size: 1
+  printformat: (X)+, A	 
+  cycles: 4
+  registers: --------
+  description:  A -> (X), X is incremented
+0xC4:
+  instruction: MOV
+  size: 2
+  printformat: dp, A	 
+  cycles: 4
+  registers: --------
+  description:  A -> (dp)
+0xD4:
+  instruction: MOV
+  size: 2
+  printformat: dp+X, A	 
+  cycles: 5
+  registers: --------
+  description:  A -> (dp+X)
+0xC5:
+  instruction: MOV
+  size: 3
+  printformat: !abs, A	 
+  cycles: 5
+  registers: --------
+  description:  A -> (abs)
+0xD5:
+  instruction: MOV
+  size: 3
+  printformat: !abs+X, A
+  cycles: 6
+  registers: --------
+  description:  A -> (abs+X)
+0xD6:
+  instruction: MOV
+  size: 3
+  printformat: !abs+Y, A
+  cycles: 6
+  registers: --------
+  description:  A -> (abs+Y)
+0xC7:
+  instruction: MOV
+  size: 2
+  printformat: "[dp+X], A"
+  cycles: 7
+  registers: --------
+  description:  A -> (abs:(dp+X))
+0xD7:
+  instruction: MOV
+  size: 2
+  printformat: "[dp]+Y, A"
+  cycles: 7
+  registers: --------
+  description:  A -> (abs:(dp)+Y)
+0xD8:
+  instruction: MOV
+  size: 2
+  printformat: dp, X	 
+  cycles: 4
+  registers: --------
+  description:  X -> (dp)
+0xD9:
+  instruction: MOV
+  size: 2
+  printformat: dp+Y, X	 
+  cycles: 5
+  registers: --------
+  description:  X -> (dp+Y)
+0xC9:
+  instruction: MOV
+  size: 3
+  printformat: !abs, X	 
+  cycles: 5
+  registers: --------
+  description:  X -> (abs)
+0xCB:
+  instruction: MOV
+  size: 2
+  printformat: dp, Y	 
+  cycles: 4
+  registers: --------
+  description:  Y -> (dp)
+0xBB:
+  instruction: MOV
+  size: 2
+  printformat: dp+X, Y	 
+  cycles: 5
+  registers: --------
+  description:  Y -> (dp+X)
+0xCC:
+  instruction: MOV
+  size: 3
+  printformat: !abs, Y	 
+  cycles: 5
+  registers: --------
+  description:  Y -> (abs)
+0x7D:
+  instruction: MOV
+  size: 1
+  printformat: A, X	 
+  cycles: 2
+  registers: N-----Z-
+  description:  A <- X
+0xDD:
+  instruction: MOV
+  size: 1
+  printformat: A, Y	 
+  cycles: 2
+  registers: N-----Z-
+  description:  A <- Y
+0x5D:
+  instruction: MOV
+  size: 1
+  printformat: X, A	 
+  cycles: 2
+  registers: N-----Z-
+  description:  A -> X
+0xFD:
+  instruction: MOV
+  size: 1
+  printformat: Y, A	 
+  cycles: 2
+  registers: N-----Z-
+  description:  A -> Y
+0x9D:
+  instruction: MOV
+  size: 1
+  printformat: X, SP	 
+  cycles: 2
+  registers: N-----Z-
+  description:  X <- SP
+0xBD:
+  instruction: MOV
+  size: 1
+  printformat: SP, X	 
+  cycles: 2
+  registers: --------
+  description:  X -> SP
+0xFA:
+  instruction: MOV
+  size: 3
+  printformat: dp, dp	 
+  cycles: 5
+  registers: --------
+  description:  (dp) <- (dp)
+0x8F:
+  instruction: MOV
+  size: 3
+  printformat: "dp, #$%02X"
+  cycles: 5
+  registers: --------
+  description:  (dp) <- imm
+0x88:
+  instruction: ADC
+  size: 2
+  printformat: "A, #$%02X"
+  cycles: 2
+  registers: NV--H-ZC
+  description:  A += imm	    + C
+0x86:
+  instruction: ADC
+  size: 1
+  printformat: A, (X)	 
+  cycles: 3
+  registers: NV--H-ZC
+  description:  A += (X)	    + C
+0x84:
+  instruction: ADC
+  size: 2
+  printformat: A, dp	 
+  cycles: 3
+  registers: NV--H-ZC
+  description:  A += (dp)	    + C
+0x94:
+  instruction: ADC
+  size: 2
+  printformat: A, dp+X	 
+  cycles: 4
+  registers: NV--H-ZC
+  description:  A += (dp+X)	    + C
+0x85:
+  instruction: ADC
+  size: 3
+  printformat: A, !abs	 
+  cycles: 4
+  registers: NV--H-ZC
+  description:  A += (abs)	    + C
+0x95:
+  instruction: ADC
+  size: 3
+  printformat: A, !abs+X
+  cycles: 5
+  registers: NV--H-ZC
+  description:  A += (abs+X)	    + C 
+0x96:
+  instruction: ADC
+  size: 3
+  printformat: A, !abs+Y
+  cycles: 5
+  registers: NV--H-ZC
+  description:  A += (abs+Y)	    + C
+0x87:
+  instruction: ADC
+  size: 2
+  printformat: A, [dp+X]
+  cycles: 6
+  registers: NV--H-ZC
+  description:  A += (abs:(dp+X)) + C
+0x97:
+  instruction: ADC
+  size: 2
+  printformat: A, [dp]+Y
+  cycles: 6
+  registers: NV--H-ZC
+  description:  A += (abs:(dp)+Y) + C
+0x99:
+  instruction: ADC
+  size: 1
+  printformat: (X),(Y)	 
+  cycles: 5
+  registers: NV--H-ZC
+  description:  (X) += (Y)	    + C
+0x89:
+  instruction: ADC
+  size: 3
+  printformat: dp, dp 
+  cycles: 6
+  registers: NV--H-ZC
+  description:  (dp) += (dp)	    + C
+0x98:
+  instruction: ADC
+  size: 3
+  printformat: "dp, #$%02X"
+  cycles: 5
+  registers: NV--H-ZC
+  description:  (dp) += imm	    + C
+0xA8:
+  instruction: SBC
+  size: 2
+  printformat: "A, #$%02X"
+  cycles: 2
+  registers: NV--H-ZC
+  description:  A -= imm	    + !C
+0xA6:
+  instruction: SBC
+  size: 1
+  printformat: A, (X)	 
+  cycles: 3
+  registers: NV--H-ZC
+  description:  A -= (X)	    + !C
+0xA4:
+  instruction: SBC
+  size: 2
+  printformat: A, dp	 
+  cycles: 3
+  registers: NV--H-ZC
+  description:  A -= (dp)	    + !C
+0xB4:
+  instruction: SBC
+  size: 2
+  printformat: A, dp+X	 
+  cycles: 4
+  registers: NV--H-ZC
+  description:  A -= (dp+X)	    + !C
+0xA5:
+  instruction: SBC
+  size: 3
+  printformat: A, !abs	 
+  cycles: 4
+  registers: NV--H-ZC
+  description:  A -= (abs)	    + !C
+0xB5:
+  instruction: SBC
+  size: 3
+  printformat: A, !abs+X
+  cycles: 5
+  registers: NV--H-ZC
+  description:  A -= (abs+X)	    + !C
+0xB6:
+  instruction: SBC
+  size: 3
+  printformat: A, !abs+Y
+  cycles: 5
+  registers: NV--H-ZC
+  description:  A -= (abs+Y)	    + !C
+0xA7:
+  instruction: SBC
+  size: 2
+  printformat: A, [dp+X]
+  cycles: 6
+  registers: NV--H-ZC
+  description:  A -= (abs:(dp+X)) + !C
+0xB7:
+  instruction: SBC
+  size: 2
+  printformat: A, [dp]+Y
+  cycles: 6
+  registers: NV--H-ZC
+  description:  A -= (abs:(dp)+Y) + !C
+0xB9:
+  instruction: SBC
+  size: 1
+  printformat: (X), (Y) 
+  cycles: 5
+  registers: NV--H-ZC
+  description:  (X) -= (Y)	    + !C
+0xA9:
+  instruction: SBC
+  size: 3
+  printformat: dp, dp	 
+  cycles: 6
+  registers: NV--H-ZC
+  description:  (dp) -= (dp)	    + !C
+0xB8:
+  instruction: SBC
+  size: 3
+  printformat: "dp, #$%02X"
+  cycles: 5
+  registers: NV--H-ZC
+  description:  (dp) -= imm	    + !C
+0x68:
+  instruction: CMP
+  size: 2
+  printformat: "A, #$%02X"
+  cycles: 2
+  registers: NV----ZC
+  description:  A - imm
+0x66:
+  instruction: CMP
+  size: 1
+  printformat: A, (X)	 
+  cycles: 3
+  registers: NV----ZC
+  description:  A - (X)
+0x64:
+  instruction: CMP
+  size: 2
+  printformat: A, dp	 
+  cycles: 3
+  registers: NV----ZC
+  description:  A - (dp)
+0x74:
+  instruction: CMP
+  size: 2
+  printformat: A, dp+X	 
+  cycles: 4
+  registers: NV----ZC
+  description:  A - (dp+X)
+0x65:
+  instruction: CMP
+  size: 3
+  printformat: A, !abs	 
+  cycles: 4
+  registers: NV----ZC
+  description:  A - (abs)
+0x75:
+  instruction: CMP
+  size: 3
+  printformat: A, !abs+X
+  cycles: 5
+  registers: NV----ZC
+  description:  A - (abs+X)
+0x76:
+  instruction: CMP
+  size: 3
+  printformat: A, !abs+Y
+  cycles: 5
+  registers: NV----ZC
+  description:  A - (abs+Y)
+0x67:
+  instruction: CMP
+  size: 2
+  printformat: A, [dp+X]
+  cycles: 6
+  registers: NV----ZC
+  description:  A - (abs:(dp+X))
+0x77:
+  instruction: CMP
+  size: 2
+  printformat: A, [dp]+Y
+  cycles: 6
+  registers: NV----ZC
+  description:  A - (abs:(dp)+Y)
+0x79:
+  instruction: CMP
+  size: 1
+  printformat: (X), (Y) 
+  cycles: 5
+  registers: NV----ZC
+  description:  (X) - (Y)
+0x69:
+  instruction: CMP
+  size: 3
+  printformat: dp, dp	 
+  cycles: 6
+  registers: NV----ZC
+  description:  (dp) - (dp)
+0x78:
+  instruction: CMP
+  size: 3
+  printformat: "dp, #$%02X"
+  cycles: 5
+  registers: NV----ZC
+  description:  (dp) - imm
+0xC8:
+  instruction: CMP
+  size: 2
+  printformat: "X, #$%02X"
+  cycles: 2
+  registers: NV----ZC
+  description:  X - imm
+0x3E:
+  instruction: CMP
+  size: 2
+  printformat: X, dp	 
+  cycles: 3
+  registers: NV----ZC
+  description:  X - (dp)
+0x1E:
+  instruction: CMP
+  size: 3
+  printformat: X, !abs	 
+  cycles: 4
+  registers: NV----ZC
+  description:  X - (abs)
+0xAD:
+  instruction: CMP
+  size: 2
+  printformat: "Y, #$%02X"
+  cycles: 2
+  registers: NV----ZC
+  description:  Y - imm
+0x7E:
+  instruction: CMP
+  size: 2
+  printformat: Y, dp	 
+  cycles: 3
+  registers: NV----ZC
+  description:  Y - (dp)
+0x5E:
+  instruction: CMP
+  size: 3
+  printformat: Y, !abs	 
+  cycles: 4
+  registers: NV----ZC
+  description:  Y - (abs)
+0x28:
+  instruction: AND
+  size: 2
+  printformat: "A, #$%02X"
+  cycles: 2
+  registers: N-----Z-
+  description:  A &= imm
+0x26:
+  instruction: AND
+  size: 1
+  printformat: A, (X)	 
+  cycles: 3
+  registers: N-----Z-
+  description:  A &= (X)
+0x24:
+  instruction: AND
+  size: 2
+  printformat: A, dp	 
+  cycles: 3
+  registers: N-----Z-
+  description:  A &= (dp)
+0x34:
+  instruction: AND
+  size: 2
+  printformat: A, dp+X	 
+  cycles: 4
+  registers: N-----Z-
+  description:  A &= (dp+X)
+0x25:
+  instruction: AND
+  size: 3
+  printformat: A, !abs	 
+  cycles: 4
+  registers: N-----Z-
+  description:  A &= (abs)
+0x35:
+  instruction: AND
+  size: 3
+  printformat: A, !abs+X
+  cycles: 5
+  registers: N-----Z-
+  description:  A &= (abs+X)
+0x36:
+  instruction: AND
+  size: 3
+  printformat: A, !abs+Y
+  cycles: 5
+  registers: N-----Z-
+  description:  A &= (abs+Y)
+0x27:
+  instruction: AND
+  size: 2
+  printformat: A, [dp+X]
+  cycles: 6
+  registers: N-----Z-
+  description:  A &= (abs:(dp+X))
+0x37:
+  instruction: AND
+  size: 2
+  printformat: A, [dp]+Y
+  cycles: 6
+  registers: N-----Z-
+  description:  A &= (abs:(dp)+Y)
+0x39:
+  instruction: AND
+  size: 1
+  printformat: (X), (Y) 
+  cycles: 5
+  registers: N-----Z-
+  description:  (X) &= (Y)
+0x29:
+  instruction: AND
+  size: 3
+  printformat: dp, dp	 
+  cycles: 6
+  registers: N-----Z-
+  description:  (dp) &= (dp)
+0x38:
+  instruction: AND
+  size: 3
+  printformat: "dp, #$%02X"
+  cycles: 5
+  registers: N-----Z-
+  description:  (dp) &= imm
+0x08:
+  instruction: OR
+  size: 2
+  printformat: "A, #$%02X"
+  cycles: 2
+  registers: N-----Z-
+  description:  A |= imm
+0x06:
+  instruction: OR
+  size: 1
+  printformat: A, (X)	 
+  cycles: 3
+  registers: N-----Z-
+  description:  A |= (X)
+0x04:
+  instruction: OR
+  size: 2
+  printformat: A, dp	 
+  cycles: 3
+  registers: N-----Z-
+  description:  A |= (dp)
+0x14:
+  instruction: OR
+  size: 2
+  printformat: A, dp+X	 
+  cycles: 4
+  registers: N-----Z-
+  description:  A |= (dp+X)
+0x05:
+  instruction: OR
+  size: 3
+  printformat: A, !abs	 
+  cycles: 4
+  registers: N-----Z-
+  description:  A |= (abs)
+0x15:
+  instruction: OR
+  size: 3
+  printformat: A, !abs+X
+  cycles: 5
+  registers: N-----Z-
+  description:  A |= (abs+X)
+0x16:
+  instruction: OR
+  size: 3
+  printformat: A, !abs+Y
+  cycles: 5
+  registers: N-----Z-
+  description:  A |= (abs+Y)
+0x07:
+  instruction: OR
+  size: 2
+  printformat: A, [dp+X]
+  cycles: 6
+  registers: N-----Z-
+  description:  A |= (abs:(dp+X))
+0x17:
+  instruction: OR
+  size: 2
+  printformat: A, [dp]+Y
+  cycles: 6
+  registers: N-----Z-
+  description:  A |= (abs:(dp)+Y)
+0x19:
+  instruction: OR
+  size: 1
+  printformat: (X), (Y) 
+  cycles: 5
+  registers: N-----Z-
+  description:  (X) |= (Y)
+0x09:
+  instruction: OR
+  size: 3
+  printformat: dp, dp	 
+  cycles: 6
+  registers: N-----Z-
+  description:  (dp) |= (dp)
+0x18:
+  instruction: OR
+  size: 3
+  printformat: "dp, #$%02X"
+  cycles: 5
+  registers: N-----Z-
+  description:  (dp) |= imm
+0x48:
+  instruction: EOR
+  size: 2
+  printformat: "A, #$%02X"
+  cycles: 2
+  registers: N-----Z-
+  description:  A ^= imm
+0x46:
+  instruction: EOR
+  size: 1
+  printformat: A, (X)	 
+  cycles: 3
+  registers: N-----Z-
+  description:  A ^= (X)
+0x44:
+  instruction: EOR
+  size: 2
+  printformat: A, dp	 
+  cycles: 3
+  registers: N-----Z-
+  description:  A ^= (dp)
+0x54:
+  instruction: EOR
+  size: 2
+  printformat: A, dp+X	 
+  cycles: 4
+  registers: N-----Z-
+  description:  A ^= (dp+X)
+0x45:
+  instruction: EOR
+  size: 3
+  printformat: A, !abs	 
+  cycles: 4
+  registers: N-----Z-
+  description:  A ^= (abs)
+0x55:
+  instruction: EOR
+  size: 3
+  printformat: A, !abs+X
+  cycles: 5
+  registers: N-----Z-
+  description:  A ^= (abs+X)
+0x56:
+  instruction: EOR
+  size: 3
+  printformat: A, !abs+Y
+  cycles: 5
+  registers: N-----Z-
+  description:  A ^= (abs+Y)
+0x47:
+  instruction: EOR
+  size: 2
+  printformat: A, [dp+X]
+  cycles: 6
+  registers: N-----Z-
+  description:  A ^= (abs:(dp+X))
+0x57:
+  instruction: EOR
+  size: 2
+  printformat: A, [dp]+Y
+  cycles: 6
+  registers: N-----Z-
+  description:  A ^= (abs:(dp)+Y))
+0x59:
+  instruction: EOR
+  size: 1
+  printformat: (X), (Y) 
+  cycles: 5
+  registers: N-----Z-
+  description:  (X) ^= (Y)
+0x49:
+  instruction: EOR
+  size: 3
+  printformat: dp, dp	 
+  cycles: 6
+  registers: N-----Z-
+  description:  (dp) ^= (dp)
+0x58:
+  instruction: EOR
+  size: 3
+  printformat: "dp, #$%02X"
+  cycles: 5
+  registers: N-----Z-
+  description:  (dp) ^= imm
+0xBC:
+  instruction: INC
+  size: 1
+  printformat: A	 
+  cycles: 2
+  registers: N-----Z-
+  description:  ++A
+0xAB:
+  instruction: INC
+  size: 2
+  printformat: dp	 
+  cycles: 4
+  registers: N-----Z-
+  description:  ++(dp)
+0xBB:
+  instruction: INC
+  size: 2
+  printformat: dp+X	 
+  cycles: 5
+  registers: N-----Z-
+  description:  ++(dp+X)
+0xAC:
+  instruction: INC
+  size: 3
+  printformat: !abs	 
+  cycles: 5
+  registers: N-----Z-
+  description:  ++(abs)
+0x3D:
+  instruction: INC
+  size: 1
+  printformat: X	 
+  cycles: 2
+  registers: N-----Z-
+  description:  ++X
+0xFC:
+  instruction: INC
+  size: 1
+  printformat: Y	 
+  cycles: 2
+  registers: N-----Z-
+  description:  ++Y
+0x9C:
+  instruction: DEC
+  size: 1
+  printformat: A	 
+  cycles: 2
+  registers: N-----Z-
+  description:  --A
+0x8B:
+  instruction: DEC
+  size: 2
+  printformat: dp	 
+  cycles: 4
+  registers: N-----Z-
+  description:  --(dp)
+0x9B:
+  instruction: DEC
+  size: 2
+  printformat: dp+X	 
+  cycles: 5
+  registers: N-----Z-
+  description:  --(dp+X)
+0x8C:
+  instruction: DEC
+  size: 3
+  printformat: !abs	 
+  cycles: 5
+  registers: N-----Z-
+  description:  --(abs)
+0x1D:
+  instruction: DEC
+  size: 1
+  printformat: X	 
+  cycles: 2
+  registers: N-----Z-
+  description:  --X
+0xDC:
+  instruction: DEC
+  size: 1
+  printformat: Y	 
+  cycles: 2
+  registers: N-----Z-
+  description:  --Y
+0x1C:
+  instruction: ASL
+  size: 1
+  printformat: A	 
+  cycles: 2
+  registers: N-----ZC
+  description:  C << A      << 0
+0x0B:
+  instruction: ASL
+  size: 2
+  printformat: dp	 
+  cycles: 4
+  registers: N-----ZC
+  description:  C << (dp)   << 0
+0x1B:
+  instruction: ASL
+  size: 2
+  printformat: dp+X	 
+  cycles: 5
+  registers: N-----ZC
+  description:  C << (dp+X) << 0
+0x0C:
+  instruction: ASL
+  size: 3
+  printformat: !abs	 
+  cycles: 5
+  registers: N-----ZC
+  description:  C << (abs)  << 0
+0x5C:
+  instruction: LSR
+  size: 1
+  printformat: A	 
+  cycles: 2
+  registers: N-----ZC
+  description:  0 >> A      >> C
+0x4B:
+  instruction: LSR
+  size: 2
+  printformat: dp	 
+  cycles: 4
+  registers: N-----ZC
+  description:  0 >> (dp)   >> C
+0x5B:
+  instruction: LSR
+  size: 2
+  printformat: dp+X	 
+  cycles: 5
+  registers: N-----ZC
+  description:  0 >> (dp+X) >> C
+0x4C:
+  instruction: LSR
+  size: 3
+  printformat: !abs	 
+  cycles: 5
+  registers: N-----ZC
+  description:  0 >> (abs)  >> C
+0x3C:
+  instruction: ROL
+  size: 1
+  printformat: A	 
+  cycles: 2
+  registers: N-----ZC
+  description:  C << A << C
+0x2B:
+  instruction: ROL
+  size: 2
+  printformat: dp	 
+  cycles: 4
+  registers: N-----ZC
+  description:  C << (dp) << C
+0x3B:
+  instruction: ROL
+  size: 2
+  printformat: dp+X	 
+  cycles: 5
+  registers: N-----ZC
+  description:  C << (dp+X) << C
+0x2C:
+  instruction: ROL
+  size: 3
+  printformat: !abs	 
+  cycles: 5
+  registers: N-----ZC
+  description:  C << (abs)  << C
+0x7C:
+  instruction: ROR
+  size: 1
+  printformat: A	 
+  cycles: 2
+  registers: N-----ZC
+  description:  C >> A      >> C
+0x6B:
+  instruction: ROR
+  size: 2
+  printformat: dp	 
+  cycles: 4
+  registers: N-----ZC
+  description:  C >> (dp)   >> C
+0x7B:
+  instruction: ROR
+  size: 2
+  printformat: dp+X	 
+  cycles: 5
+  registers: N-----ZC
+  description:  C >> (dp+X) >> C
+0x6C:
+  instruction: ROR
+  size: 3
+  printformat: !abs	 
+  cycles: 5
+  registers: N-----ZC
+  description:  C >> (abs)  >> C
+0x9F:
+  instruction: XCN
+  size: 1
+  printformat: A	 
+  cycles: 5
+  registers: N-----Z-
+  description:  Swaps the nibbles in A (A = (A>>4) | (A<<4))
+0xBA:
+  instruction: MOVW
+  size: 2
+  printformat: YA, dp	 
+  cycles: 5
+  registers: N-----Z-
+  description:  YA <- dp
+0xDA:
+  instruction: MOVW
+  size: 2
+  printformat: dp, YA	 
+  cycles: 4
+  registers: --------
+  description:  YA -> dp
+0x3A:
+  instruction: INCW
+  size: 2
+  printformat: dp	 
+  cycles: 6
+  registers: N-----Z-
+  description:  ++dp
+0x1A:
+  instruction: DECW
+  size: 2
+  printformat: dp	 
+  cycles: 6
+  registers: N-----Z-
+  description:  --dp
+0x7A:
+  instruction: ADDW
+  size: 2
+  printformat: YA, dp	 
+  cycles: 5
+  registers: NV--H-ZC
+  description:  YA += dp
+0x9A:
+  instruction: SUBW
+  size: 2
+  printformat: YA, dp	 
+  cycles: 5
+  registers: NV--H-ZC
+  description:  YA -= dp
+0x5A:
+  instruction: CMPW
+  size: 2
+  printformat: YA, dp	 
+  cycles: 4
+  registers: N-----ZC
+  description:  YA - dp
+0xCF:
+  instruction: MUL
+  size: 1
+  printformat: YA	 
+  cycles: 9
+  registers: N-----Z-
+  description:  YA <- Y*A
+0x9E:
+  instruction: DIV
+  size: 1
+  printformat: YA,X
+  cycles: 12
+  registers: NV--H-Z-
+  description: Y <- YA % X and A <- YA / X
+0xDF:
+  instruction: DAA
+  size: 1
+  printformat: A	 
+  cycles: 3
+  registers: N-----ZC
+  description:  decimal adjust for addition
+0xBE:
+  instruction: DAS
+  size: 1
+  printformat: A	 
+  cycles: 3
+  registers: N-----ZC
+  description:  decimal adjust for subtraction
+0x2F:
+  instruction: BRA
+  size: 2
+  printformat: "$%02X"	 
+  cycles: 4
+  registers: --------
+  description:  Branch (always)
+0xF0:
+  instruction: BEQ
+  size: 2
+  printformat: "$%02X"	 
+  cycles: 2/4
+  registers: --------
+  description:  Branch if Equal (Z=1)
+0xD0:
+  instruction: BNE
+  size: 2
+  printformat: "$%02X"	 
+  cycles: 2/4
+  registers: --------
+  description:  Branch if Not Equal (Z=0)
+0xB0:
+  instruction: BCS
+  size: 2
+  printformat: "$%02X"	 
+  cycles: 2/4
+  registers: --------
+  description:  Branch if Carry Set
+0x90:
+  instruction: BCC
+  size: 2
+  printformat: "$%02X"	 
+  cycles: 2/4
+  registers: --------
+  description:  Branch if Carry Cleared
+0x70:
+  instruction: BVS
+  size: 2
+  printformat: "$%02X"	 
+  cycles: 2/4
+  registers: --------
+  description:  Branch if V=1
+0x50:
+  instruction: BVC
+  size: 2
+  printformat: "$%02X"	 
+  cycles: 2/4
+  registers: --------
+  description:  Branch if V=0
+0x30:
+  instruction: BMI
+  size: 2
+  printformat: "$%02X"	 
+  cycles: 2/4
+  registers: --------
+  description:  Branch if Negative (N=1)
+0x10:
+  instruction: BPL
+  size: 2
+  printformat: "$%02X"	 
+  cycles: 2/4
+  registers: --------
+  description:  Branch if Positive (N=0)
+0x2E:
+  instruction: CBNE
+  size: 3
+  printformat: dp, rel	 
+  cycles: 5/7
+  registers: --------
+  description:  Branch if A != (dp)
+0xDE:
+  instruction: CBNE
+  size: 3
+  printformat: dp+X,rel 
+  cycles: 6/8
+  registers: --------
+  description:  Branch if A != (dp+X)
+0x6E:
+  instruction: DBNZ
+  size: 3
+  printformat: dp,rel	 
+  cycles: 5/7
+  registers: --------
+  description:  --(dp) and branch if not zero
+0xFE:
+  instruction: DBNZ
+  size: 2
+  printformat: "$%02X"
+  cycles: 4/6
+  registers: --------
+  description:  --Y and branch if not zero
+0x5F:
+  instruction: JMP
+  size: 3
+  printformat: !abs	 
+  cycles: 3
+  registers: --------
+  description:  PC <- abs
+0x1F:
+  instruction: JMP
+  size: 3
+  printformat: "[!abs+X]"
+  cycles: 6
+  registers: --------
+  description:  PC <- abs:(abs+X)
+0x3F:
+  instruction: CALL
+  size: 3
+  printformat: !abs	 
+  cycles: 8
+  registers: --------
+  description:  Subroutine call
+0x4F:
+  instruction: PCALL
+  size: 2
+  printformat: upage	 
+  cycles: 6
+  registers: --------
+  description:  Upage call (???)
+0x01:
+  instruction: TCALL
+  size: 1
+  printformat: 0
+  cycles: 8
+  registers: --------
+  description: Table Call
+0x11:
+  instruction: TCALL
+  size: 1
+  printformat: 1
+  cycles: 8
+  registers: --------
+  description: Table Call
+0x21:
+  instruction: TCALL
+  size: 1
+  printformat: 2
+  cycles: 8
+  registers: --------
+  description: Table Call
+0x31:
+  instruction: TCALL
+  size: 1
+  printformat: 3
+  cycles: 8
+  registers: --------
+  description: Table Call
+0x41:
+  instruction: TCALL
+  size: 1
+  printformat: 4
+  cycles: 8
+  registers: --------
+  description: Table Call
+0x51:
+  instruction: TCALL
+  size: 1
+  printformat: 5
+  cycles: 8
+  registers: --------
+  description: Table Call
+0x61:
+  instruction: TCALL
+  size: 1
+  printformat: 6
+  cycles: 8
+  registers: --------
+  description: Table Call
+0x71:
+  instruction: TCALL
+  size: 1
+  printformat: 7
+  cycles: 8
+  registers: --------
+  description: Table Call
+0x81:
+  instruction: TCALL
+  size: 1
+  printformat: 8
+  cycles: 8
+  registers: --------
+  description: Table Call
+0x91:
+  instruction: TCALL
+  size: 1
+  printformat: 9
+  cycles: 8
+  registers: --------
+  description: Table Call
+0xA1:
+  instruction: TCALL
+  size: 1
+  printformat: 10
+  cycles: 8
+  registers: --------
+  description: Table Call
+0xB1:
+  instruction: TCALL
+  size: 1
+  printformat: 11
+  cycles: 8
+  registers: --------
+  description: Table Call
+0xC1:
+  instruction: TCALL
+  size: 1
+  printformat: 12
+  cycles: 8
+  registers: --------
+  description: Table Call
+0xD1:
+  instruction: TCALL
+  size: 1
+  printformat: 13
+  cycles: 8
+  registers: --------
+  description: Table Call
+0xE1:
+  instruction: TCALL
+  size: 1
+  printformat: 14
+  cycles: 8
+  registers: --------
+  description: Table Call
+0xF1:
+  instruction: TCALL
+  size: 1
+  printformat: 15
+  cycles: 8
+  registers: --------
+  description: Table Call
+0x0F:
+  instruction: BRK
+  size: 1
+  printformat: 	 
+  cycles: 8
+  registers: ---1-0--
+  description:  Software interrupt (???)
+0x6F:
+  instruction: RET
+  size: 1
+  printformat: 	 
+  cycles: 5
+  registers: --------
+  description:  Return from subroutine (PC is popped)
+0x7F:
+  instruction: RETI
+  size: 1
+  printformat: 	 
+  cycles: 6
+  registers: RESTORED
+  description:  Return from interrupt (PC and PSW are popped)
+0x2D:
+  instruction: PUSH
+  size: 1
+  printformat: A	 
+  cycles: 4
+  registers: --------
+  description:  Push A to stack
+0x4D:
+  instruction: PUSH
+  size: 1
+  printformat: X	 
+  cycles: 4
+  registers: --------
+  description:  Push X to stack
+0x6D:
+  instruction: PUSH
+  size: 1
+  printformat: Y	 
+  cycles: 4
+  registers: --------
+  description:  Push Y to stack
+0x0D:
+  instruction: PUSH
+  size: 1
+  printformat: PSW	 
+  cycles: 4
+  registers: --------
+  description:  Push PSW to stack
+0xAE:
+  instruction: POP
+  size: 1
+  printformat: A	 
+  cycles: 4
+  registers: --------
+  description:  Pop A from stack
+0xCE:
+  instruction: POP
+  size: 1
+  printformat: X	 
+  cycles: 4
+  registers: --------
+  description:  Pop X from stack
+0xEE:
+  instruction: POP
+  size: 1
+  printformat: Y	 
+  cycles: 4
+  registers: --------
+  description:  Pop Y from stack
+0x8E:
+  instruction: POP
+  size: 1
+  printformat: PSW	 
+  cycles: 4
+  registers: RESTORED
+  description:  Pop PSW from stack
+0x0E:
+  instruction: TSET1
+  size: 3
+  printformat: !abs	 
+  cycles: 6
+  registers: N-----Z-
+  description:  Test and set bits with A (???)
+0x4E:
+  instruction: TCLR1
+  size: 3
+  printformat: !abs	 
+  cycles: 6
+  registers: N-----Z-
+  description:  Test and clear bits with A (???)
+0x4A:
+  instruction: AND1
+  size: 3
+  printformat: C,mem,bit 
+  cycles: 4
+  registers: -------C
+  description:  C &= mem:bit
+0x6A:
+  instruction: AND1
+  size: 3
+  printformat: C,/mem,bit
+  cycles: 4
+  registers: -------C
+  description:  C &= ~mem:bit
+0x0A:
+  instruction: OR1
+  size: 3
+  printformat: C,mem,bit 
+  cycles: 5
+  registers: -------C
+  description:  C |= mem:bit
+0x2A:
+  instruction: OR1
+  size: 3
+  printformat: C,/mem,bit
+  cycles: 5
+  registers: -------C
+  description:  C |= ~mem:bit
+0x8A:
+  instruction: EOR1
+  size: 3
+  printformat: C,mem,bit 
+  cycles: 5
+  registers: -------C
+  description:  C ^= mem:bit
+0xEA:
+  instruction: NOT1
+  size: 3
+  printformat: mem,bit	  
+  cycles: 5
+  registers: --------
+  description:  Complement mem:bit
+0xAA:
+  instruction: MOV1
+  size: 3
+  printformat: C,mem,bit 
+  cycles: 4
+  registers: -------C
+  description:  C <- mem:bit
+0xCA:
+  instruction: MOV1
+  size: 3
+  printformat: mem,bit,C 
+  cycles: 6
+  registers: --------
+  description:  C -> mem:bit
+0x60:
+  instruction: CLRC
+  size: 1
+  printformat: 	 
+  cycles: 2
+  registers: -------0
+  description:  Clear Carry
+0x80:
+  instruction: SETC
+  size: 1
+  printformat: 	 
+  cycles: 2
+  registers: -------1
+  description:  Set Carry
+0xED:
+  instruction: NOTC
+  size: 1
+  printformat: 	 
+  cycles: 3
+  registers: -------c
+  description:  Complement Carry
+0xE0:
+  instruction: CLRV
+  size: 1
+  printformat: 	 
+  cycles: 2
+  registers: -0--0---
+  description:  Clear V and H
+0x20:
+  instruction: CLRP
+  size: 1
+  printformat: 	 
+  cycles: 2
+  registers: --0-----
+  description:  Clear DP page to 0
+0x40:
+  instruction: SETP
+  size: 1
+  printformat: 	 
+  cycles: 2
+  registers: --1-----
+  description:  Set DP page to 1
+0xA0:
+  instruction: EI
+  size: 1
+  printformat: 	 
+  cycles: 3
+  registers: ------1-
+  description:  Enable Interrupts (but interrupts are not supported)
+0xC0:
+  instruction: DI
+  size: 1
+  printformat: 	 
+  cycles: 3
+  registers: ------0-
+  description:  Disable Interrupts (but interrupts are not supported)
+0x00:
+  instruction: NOP
+  size: 1
+  printformat: 	 
+  cycles: 2
+  registers: --------
+  description:  Delay
+0xEF:
   instruction: SLEEP
+  size: 1
+  printformat: 	 
+  cycles: 3
+  registers: --------
+  description:  standby SLEEP mode
+0xFF:
+  instruction: STOP
+  size: 1
+  printformat: 	 
+  cycles: 3
+  registers: --------
+  description:  standby STOP mode
+0x02:
+  instruction: SET1
+  size: 2
+  printformat: dp, bit
+  cycles: 4
+  registers: --------
+  description: Set bit in direct page
+0x22:
+  instruction: SET2
+  size: 2
+  printformat: dp, bit
+  cycles: 4
+  registers: --------
+  description: Set bit in direct page
+0x42:
+  instruction: SET3
+  size: 2
+  printformat: dp, bit
+  cycles: 4
+  registers: --------
+  description: Set bit in direct page
+0x62:
+  instruction: SET4
+  size: 2
+  printformat: dp, bit
+  cycles: 4
+  registers: --------
+  description: Set bit in direct page
+0x82:
+  instruction: SET5
+  size: 2
+  printformat: dp, bit
+  cycles: 4
+  registers: --------
+  description: Set bit in direct page
+0xA2:
+  instruction: SET6
+  size: 2
+  printformat: dp, bit
+  cycles: 4
+  registers: --------
+  description: Set bit in direct page
+0xC2:
+  instruction: SET7
+  size: 2
+  printformat: dp, bit
+  cycles: 4
+  registers: --------
+  description: Set bit in direct page
+0xE2:
+  instruction: SET8
+  size: 2
+  printformat: dp, bit
+  cycles: 4
+  registers: --------
+  description: Set bit in direct page
+0x12:
+  instruction: CLR1
+  size: 2
+  printformat: dp, bit
+  cycles: 4
+  registers: --------
+  description: Clear bit in direct page
+0x32:
+  instruction: CLR2
+  size: 2
+  printformat: dp, bit
+  cycles: 4
+  registers: --------
+  description: Clear bit in direct page
+0x52:
+  instruction: CLR3
+  size: 2
+  printformat: dp, bit
+  cycles: 4
+  registers: --------
+  description: Clear bit in direct page
+0x72:
+  instruction: CLR4
+  size: 2
+  printformat: dp, bit
+  cycles: 4
+  registers: --------
+  description: Clear bit in direct page
+0x92:
+  instruction: CLR5
+  size: 2
+  printformat: dp, bit
+  cycles: 4
+  registers: --------
+  description: Clear bit in direct page
+0xB2:
+  instruction: CLR6
+  size: 2
+  printformat: dp, bit
+  cycles: 4
+  registers: --------
+  description: Clear bit in direct page
+0xD2:
+  instruction: CLR7
+  size: 2
+  printformat: dp, bit
+  cycles: 4
+  registers: --------
+  description: Clear bit in direct page
+0xF2:
+  instruction: CLR8
+  size: 2
+  printformat: dp, bit
+  cycles: 4
+  registers: --------
+  description: Clear bit in direct page
+0x03:
+  instruction: BBS1
+  size: 3
+  printformat: dp, bit, rel
+  cycles: 5/7
+  registers: --------
+  description: Branch if memory bit set
+0x23:
+  instruction: BBS2
+  size: 3
+  printformat: dp, bit, rel
+  cycles: 5/7
+  registers: --------
+  description: Branch if memory bit set
+0x43:
+  instruction: BBS3
+  size: 3
+  printformat: dp, bit, rel
+  cycles: 5/7
+  registers: --------
+  description: Branch if memory bit set
+0x63:
+  instruction: BBS4
+  size: 3
+  printformat: dp, bit, rel
+  cycles: 5/7
+  registers: --------
+  description: Branch if memory bit set
+0x83:
+  instruction: BBS5
+  size: 3
+  printformat: dp, bit, rel
+  cycles: 5/7
+  registers: --------
+  description: Branch if memory bit set
+0xA3:
+  instruction: BBS6
+  size: 3
+  printformat: dp, bit, rel
+  cycles: 5/7
+  registers: --------
+  description: Branch if memory bit set
+0xC3:
+  instruction: BBS7
+  size: 3
+  printformat: dp, bit, rel
+  cycles: 5/7
+  registers: --------
+  description: Branch if memory bit set
+0xE3:
+  instruction: BBS8
+  size: 3
+  printformat: dp, bit, rel
+  cycles: 5/7
+  registers: --------
+  description: Branch if memory bit set
+0x13:
+  instruction: BBC1
+  size: 3
+  printformat: dp, bit, rel
+  cycles: 5/7
+  registers: --------
+  description: Branch if memory bit cleared
+0x33:
+  instruction: BBC2
+  size: 3
+  printformat: dp, bit, rel
+  cycles: 5/7
+  registers: --------
+  description: Branch if memory bit cleared
+0x53:
+  instruction: BBC3
+  size: 3
+  printformat: dp, bit, rel
+  cycles: 5/7
+  registers: --------
+  description: Branch if memory bit cleared
+0x73:
+  instruction: BBC4
+  size: 3
+  printformat: dp, bit, rel
+  cycles: 5/7
+  registers: --------
+  description: Branch if memory bit cleared
+0x93:
+  instruction: BBC5
+  size: 3
+  printformat: dp, bit, rel
+  cycles: 5/7
+  registers: --------
+  description: Branch if memory bit cleared
+0xB3:
+  instruction: BBC6
+  size: 3
+  printformat: dp, bit, rel
+  cycles: 5/7
+  registers: --------
+  description: Branch if memory bit cleared
+0xD3:
+  instruction: BBC7
+  size: 3
+  printformat: dp, bit, rel
+  cycles: 5/7
+  registers: --------
+  description: Branch if memory bit cleared
+0xF3:
+  instruction: BBC8
+  size: 3
+  printformat: dp, bit, rel
+  cycles: 5/7
+  registers: --------
+  description: Branch if memory bit cleared
 ...
