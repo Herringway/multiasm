@@ -1,5 +1,6 @@
 <?php
 class core {
+	const addressformat = '%06X';
 	private $opcodes;
 	public $initialoffset;
 	public $currentoffset;
@@ -119,6 +120,9 @@ class core {
 				if ($args[0]&0x20)
 					$accum = ($opcode == 0xC2) ? 16 : 8;
 			}
+			if ($opcode == 0x42)
+				trigger_error("WDM Encountered. You sure this is assembly?");
+				
 			$fulladdr = $this->fix_addr($opcode, $arg);
 			
 			if (($this->opcodes[$opcode]['addressing']['type'] == 'relative') && ($fulladdr + ($this->currentoffset&0xFF0000) > $farthestbranch))

@@ -1,4 +1,9 @@
 ---
+processor: 6502
+title: Earth Bound Zero (US Prototype)
+platform: nes
+...
+---
 52947:
   name: ""
   description: ""
