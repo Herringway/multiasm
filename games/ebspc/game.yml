@@ -1,4 +1,0 @@
-rom: whatever.spc
-processor: TASM
-tasm_mode: SPC700
-title: Earthbound (USA) (SPC)

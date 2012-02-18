@@ -1,5 +1,5 @@
 <?php
-if (array_key_exists('begin', $_GET)) {
+if (isset($_GET['begin'])) {
 	$options = '';
 	foreach ($_GET as $key => $val)
 		if (($key != 'begin') && ($key != 'game'))
@@ -8,14 +8,15 @@ if (array_key_exists('begin', $_GET)) {
 	die();
 }
 header('Content-Type: text/html; charset=UTF-8');
-//echo '<pre>'; var_dump($_SERVER); echo '</pre>';
-require_once '../hexview.php';
 require_once 'Dwoo/dwooAutoload.php';
 require_once 'commonfunctions.php';
 if (!file_exists('settings.yml'))
-	file_put_contents('settings.yml', yaml_emit(array('gameid' => 'eb', 'rompath' => '.')));
+	file_put_contents('settings.yml', yaml_emit(array('gameid' => 'eb', 'rompath' => '.', 'debug' => false)));
 $settings = yaml_parse_file('settings.yml');
-
+if ($settings['debug']) {
+	require_once 'chromephp.php';
+}
+debugvar($_SERVER, 'server');
 $options = '';
 $routinename = '';
 $arguments = array();
@@ -23,15 +24,13 @@ $gameid = $settings['gameid'];
 
 $argc = explode('/', str_replace($_SERVER['SCRIPT_NAME'], '', $_SERVER['REQUEST_URI']));
 array_shift($argc);
-if (array_key_exists(0, $argc) && ($argc[0] != null) && is_dir('./games/'.$argc[0]))
+if (isset($argc[0]) && ($argc[0] != null) && file_exists('games/'.$gameid.'.yml'))
 	$gameid = $argc[0];
 
-if (!file_exists('games/'.$gameid.'/known_offsets.yml'))
-	file_put_contents('games/'.$gameid.'/known_offsets.yml', yaml_emit(array()));
-$game = yaml_parse_file('games/'.$gameid.'/game.yml');
+list($gameorig,$known_addresses_p) = yaml_parse_file('games/'.$gameid.'.yml', -1);
+$game = $gameorig;
 require_once sprintf('platforms/%s.php', $game['platform']);
 
-$known_addresses_p = yaml_parse_file('games/'.$gameid.'/known_offsets.yml');
 $known_addresses = $known_addresses_p + yaml_parse_file('platforms/'.$game['platform'].'_registers.yml');
 if (!isset($game['rombase']))
 	$game['rombase'] = 0xC00000;
@@ -56,7 +55,7 @@ case 'rommap':
 	break;
 default:
 	$offsetname = '';
-	if (array_key_exists(1, $argc) && ($argc[1] != null)) {
+	if (isset($argc[1]) && ($argc[1] != null)) {
 		$offsetname = $argc[1];
 		$offset = hexdec($argc[1]);
 		$argc[1] = $argc[1];
@@ -74,6 +73,7 @@ default:
 		if (isset($v[1]))
 			$game[$v[0]] = $v[1];
 	}
+	debugvar($game, 'options');
 	if (!$handle)
 		die ('File not found!');
 	
@@ -96,8 +96,15 @@ default:
 			$routinename = sprintf('%X', $offset);
 		if (isset($known_addresses[$offset]['arguments']))
 			$arguments = $known_addresses[$offset]['arguments'];
+			
+		$branches = array();
+		if (isset($known_addresses_p[$core->initialoffset]['labels']))
+			$branches = $known_addresses_p[$core->initialoffset]['labels'];
 		if (isset($game['genstub'])) {
-			$branches = null;
+			if (isset($known_addresses_p[$core->initialoffset]['labels']))
+				$branches = $known_addresses_p[$core->initialoffset]['labels'];
+			else
+				$branches = null;
 			if ($core->branches !== null) {
 				ksort($core->branches);
 				$unknownbranches = 0;
@@ -115,12 +122,12 @@ default:
 				$known_addresses_p[$core->initialoffset][$k] = $val;
 			$known_addresses_p[$core->initialoffset]['labels'] = $branches;
 			ksort($known_addresses_p);
-			foreach ($known_addresses_p as $k=>$offset)
-				$output[sprintf('0x%06X',$k)] = $offset;
-			file_put_contents('games/'.$gameid.'/known_offsets.yml', preg_replace('/"0x([0-9a-fA-F]{6})":/', '0x\1:', yaml_emit($output)));
+			$output = preg_replace_callback('/ ?(\d+):/', 'hexafixer', yaml_emit($gameorig).yaml_emit($known_addresses_p));
+			//debugvar($output, 'output');
+			file_put_contents('games/'.$gameid.'.yml', $output);
 		}
 		$dwoo = new Dwoo();
-		$dwoo->output('templates/'.$game['platform'].'.tpl', array('routinename' => $routinename, 'title' => $game['title'], 'nextoffset' => isset($known_addresses[$nextoffset]['name']) ? $known_addresses[$nextoffset]['name'] : strtoupper(dechex($nextoffset)), 'game' => $gameid, 'instructions' => $instructionlist, 'arguments' => $arguments,'thisoffset' => $offset, 'options' => $options, 'offsetname' => $offsetname));
+		$dwoo->output('templates/'.$game['platform'].'.tpl', array('routinename' => $routinename, 'title' => $game['title'], 'nextoffset' => isset($known_addresses[$nextoffset]['name']) ? $known_addresses[$nextoffset]['name'] : strtoupper(dechex($nextoffset)), 'game' => $gameid, 'instructions' => $instructionlist, 'arguments' => $arguments,'thisoffset' => $offset, 'options' => $options, 'offsetname' => $offsetname, 'addrformat' => core::addressformat, 'branches' => $branches));
 	}
 	fclose($handle);
 }

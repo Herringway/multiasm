@@ -1,4 +1,9 @@
 ---
+processor: 65816
+platform: snes
+title: Out of This World (USA)
+...
+---
 0x80E25C:
   name: ""
   description: ""

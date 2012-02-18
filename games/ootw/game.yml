@@ -1,5 +1,0 @@
-rom: ootw.smc
-processor: 65816
-platform: snes
-title: Out of This World (USA)
-rombase: 0xC00000

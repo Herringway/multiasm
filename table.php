@@ -1,4 +1,5 @@
 <?php
+require_once '../hexview.php';
 function process_entries($handle, $offset, $end, $entries) {
 	global $game;
 	$output = array();

@@ -1,6 +1,0 @@
----
-processor: 65816
-rombase: 0xC00000
-platform: snes
-title: Chrono Trigger (USA)
-...
