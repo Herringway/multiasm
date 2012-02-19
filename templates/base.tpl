@@ -13,7 +13,7 @@
 			pre		{  left: 15%; position: absolute; top: 0px; text-align: left; font-family: monospace; color: black; background-color: lightgray; padding: 2px; overflow: auto; width: 70%; max-height: 95%; z-index: 0; border: 1px inset;}
 			div.menu	{ position: fixed; left: 0px; top:0px; background: white; font-size: 8pt; text-align: center; width: 15%;  max-height: 100%; height: 100%; overflow: auto; }
 			div.fix		{ width: auto; height: auto; margin-top: 6%; }
-			span.top	{ position: relative; top: -5px;  margin-left: auto; margin-right: auto; display: block;  width: 300px; background:white; border: 2px solid black; z-index: 1;}
+			span.top	{ position: relative; top: -5px;  margin-left: auto; margin-right: auto; display: block;  width: 20%; background:white; border: 2px solid black; z-index: 1;}
 			.highlight { background: yellow; }
 			small	{ position: fixed; bottom: 0px; left: 15%; width: 70%; height: 20px; background: white; text-align: center; }
 			.rightside { background: white; border: 1px solid black; }
