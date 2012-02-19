@@ -1,5 +1,5 @@
 <?php
-class platform {
+class platform extends platform_base {
 	private $handle;
 	private $opts;
 	private $isHiROM;
@@ -10,6 +10,9 @@ class platform {
 		$this->handle = $handle;
 		$this->opts = $opts;
 		$this->detectHiROM();
+	}
+	public static function getRegisters() {
+		return yaml_parse_file('platforms/snes_registers.yml');
 	}
 	public function map_rom($offset) {
 		if (($offset > 0xFFFFFF) || ($offset < 0))

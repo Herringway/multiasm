@@ -1,19 +1,15 @@
 <?php
-class core {
-	public $initialoffset;
-	public $currentoffset;
-	public $branches;
+class core extends core_base {
 	private $opts;
 	private $platform;
 	private $handle;
 	private $opcodes;
 	private $addrs;
-	
-	function __construct(&$handle,$opts,&$known_addresses) {
+	const opcodeformat = '%08X';
+	function __construct(&$handle,$opts,&$known_addresses, $platform) {
 		$this->opcodes = yaml_parse_file('./cpus/ARM_opcodes.yml');
 		$this->handle = $handle;
-		require_once sprintf('platforms/%s.php', $opts['platform']);
-		$this->platform = new platform($handle, $opts);
+		$this->platform = $platform;
 		$this->addrs = $known_addresses;
 		if (!isset($opts['THUMB']))
 			$opts['THUMB'] = 0;

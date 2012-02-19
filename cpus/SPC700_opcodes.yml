@@ -1206,7 +1206,7 @@
 0x5F:
   instruction: JMP
   size: 3
-  printformat: !abs	 
+  printformat: "%04X"
   cycles: 3
   registers: --------
   description:  PC <- abs
@@ -1220,7 +1220,7 @@
 0x3F:
   instruction: CALL
   size: 3
-  printformat: !abs	 
+  printformat: "%04X"
   cycles: 8
   registers: --------
   description:  Subroutine call

@@ -3,5 +3,32 @@ processor: ARM
 platform: gba
 title: "Mother 3 (JAP + translation)"
 ...
---- []
+---
+0x800ED940:
+  type: data
+  size: 0x1F3F
+  name: WEIRDTEXT
+  entries:
+  - name: Text
+    type: asciitext
+    terminator: 0
+0x81D0BC9F:
+  type: data
+  size: 0x10000
+  name: UNKNOWN_BG
+  entries:
+  - name: Unknown
+    type: bytearray
+    size: 0x90
+0x81D1FB30:
+  type: data
+  size: 3272
+  name: UNKNOWN_BG2
+  description:
+  entries:
+  - name: Offset
+    type: pointer
+    size: 4
+  - name: Size
+    size: 4
 ...

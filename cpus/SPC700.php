@@ -1,5 +1,5 @@
 <?php
-class core {
+class core extends core_base {
 	private $opcodes;
 	public $initialoffset;
 	public $currentoffset;
@@ -18,9 +18,7 @@ class core {
 		$this->opts = $opts;
 	}
 	public function getDefault() {
-	}
-	public function getMisc() {
-	
+		return 0x400;
 	}
 	public function execute($offset,$offsetname) {
 		try {
@@ -37,12 +35,12 @@ class core {
 			$size = isset($this->opcodes[$opcode]['size']) ? $this->opcodes[$opcode]['size'] : 1;
 			for ($i = 1; $i < $size; $i++)
 				$val += ($tmp['args'][] = ord(fgetc($this->handle)))<<(($i-1)*8);
-			if (($opcode == 0x6F) || ($opcode == 0x7F))
-				break;
 			$this->currentoffset += $size;
 			$tmp['value'] = $val;
 			$tmp['printformat'] = isset($this->opcodes[$opcode]['printformat']) ? $this->opcodes[$opcode]['printformat'] : '';
 			$output[] = $tmp;
+			if (($opcode == 0x6F) || ($opcode == 0x7F))
+				break;
 		}
 		return $output;
 	}

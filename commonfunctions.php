@@ -1,6 +1,7 @@
 <?php
 date_default_timezone_set('America/Halifax');
 set_error_handler('debug_handler');
+define('BRANCH_LIMIT', 5000);
 function debug_handler($errortype, $message, $file, $line) {
 	global $settings;
 	static $limit = 100;
@@ -108,18 +109,22 @@ function read_string($handle, &$size, $table, $terminator = null) {
 		if ($terminator !== null)
 			$size++;
 		$val = sprintf('%02X', ord(fgetc($handle)));
-		if (isset($table['lengths'][hexdec($val)])) {
-			$length = $table['lengths'][hexdec($val)];
-			for ($j = 1; $j < $length; $j++) {
-				$val .= sprintf('%02X', ord(fgetc($handle)));
-				if (isset($table['lengths'][hexdec($val)]))
-					$length = $table['lengths'][hexdec($val)];
-				$i++;
-				if ($terminator !== null)
-					$size++;
+		if ($table === null) {
+			$output .= chr(hexdec($val));
+		} else {
+			if (isset($table['lengths'][hexdec($val)])) {
+				$length = $table['lengths'][hexdec($val)];
+				for ($j = 1; $j < $length; $j++) {
+					$val .= sprintf('%02X', ord(fgetc($handle)));
+					if (isset($table['lengths'][hexdec($val)]))
+						$length = $table['lengths'][hexdec($val)];
+					$i++;
+					if ($terminator !== null)
+						$size++;
+				}
 			}
+			$output .= !isset($table['replacements'][hexdec($val)]) ? sprintf('[%s]',$val) : $table['replacements'][hexdec($val)];
 		}
-		$output .= !isset($table['replacements'][hexdec($val)]) ? sprintf('[%s]',$val) : $table['replacements'][hexdec($val)];
 		if (hexdec($val) === $terminator) {
 			break;
 		}
@@ -165,5 +170,27 @@ function read_tile($handle, $bpp, $palette = 0) {
 			}
 	}
 	return $output;
+}
+abstract class platform_base {
+	public static function getRegisters() {
+		return array();
+	}
+}
+
+abstract class core_base {
+	public $initialoffset;
+	public $currentoffset;
+	public $branches;
+	const addressformat = '%X';
+	const template = 'assembly.tpl';
+	const opcodeformat = '%02X';
+	public static function getRegisters() {
+		return array();
+	}
+	public function getDefault() {
+	}
+	public function getMisc() {
+		return array();
+	}
 }
 ?>

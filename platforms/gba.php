@@ -1,8 +1,9 @@
 <?php
-class platform {
+class platform extends platform_base {
 	private $handle;
 	private $opts;
 	private $isHiROM;
+	const extension = 'gba';
 	
 	function __construct(&$handle,$opts) {
 		$this->handle = $handle;

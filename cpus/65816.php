@@ -1,10 +1,8 @@
 <?php
-class core {
+class core extends core_base {
 	const addressformat = '%06X';
+	const template = 'snes.tpl';
 	private $opcodes;
-	public $initialoffset;
-	public $currentoffset;
-	public $branches;
 	private $handle;
 	private $accum = 16;
 	private $index = 16;
@@ -13,10 +11,10 @@ class core {
 	private $opts;
 	public $placeholdernames = false;
 	private $platform;
-	function __construct(&$handle,$opts,&$known_addresses) {
+	function __construct(&$handle,$opts,&$known_addresses, $platform) {
 		$this->opcodes = yaml_parse_file('./cpus/65816_opcodes.yml');
 		$this->handle = $handle;
-		$this->platform = new platform($handle, $opts);
+		$this->platform = $platform;
 		$this->addrs = $known_addresses;
 		$this->opts = $opts;
 	}
@@ -121,7 +119,7 @@ class core {
 					$accum = ($opcode == 0xC2) ? 16 : 8;
 			}
 			if ($opcode == 0x42)
-				trigger_error("WDM Encountered. You sure this is assembly?");
+				trigger_error("WDM encountered. You sure this is assembly?");
 				
 			$fulladdr = $this->fix_addr($opcode, $arg);
 			
@@ -147,7 +145,7 @@ class core {
 				$uri = sprintf('%s#%s', $offsetname, $this->addrs[$this->initialoffset]['labels'][$fulladdr&0xFFFF]);
 				$name = ($this->placeholdernames ? isset($this->addrs[$this->initialoffset]['name']) ? $this->addrs[$this->initialoffset]['name'].'_' : sprintf('UNKNOWN_%06X_', $this->initialoffset) : '').$this->addrs[$this->initialoffset]['labels'][$fulladdr&0xFFFF];
 			} else if (($this->opcodes[$opcode]['addressing']['type'] == 'relative') || (($this->opcodes[$opcode]['addressing']['type'] == 'absolutejmp') && (isset($this->opcodes[$opcode]['addressing']['jump'])))) {
-				if (!isset($this->branches[$fulladdr]))
+				if (!isset($this->branches[$fulladdr]) && (count($this->branches) < BRANCH_LIMIT))
 					$this->branches[$fulladdr] = '';
 			} else if ($this->placeholdernames) {
 				switch ($this->opcodes[$opcode]['addressing']['type']) {

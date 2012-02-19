@@ -1,9 +1,6 @@
 <?php
-class core {
+class core extends core_base {
 	private $opcodes;
-	public $initialoffset;
-	public $currentoffset;
-	public $branches;
 	private $handle;
 	private $accum = 16;
 	private $index = 16;
@@ -11,11 +8,10 @@ class core {
 	private $opts;
 	public $placeholdernames = false;
 	private $platform;
-	function __construct(&$handle,$opts,&$known_addresses) {
+	function __construct(&$handle,$opts,&$known_addresses, $platform) {
 		$this->opcodes = yaml_parse_file('./cpus/6502_opcodes.yml');
 		$this->handle = $handle;
-		require_once sprintf('platforms/%s.php', $opts['platform']);
-		$this->platform = new platform($handle, $opts);
+		$this->platform = $platform;
 		$this->addrs = $known_addresses;
 		$this->opts = $opts;
 	}
@@ -29,9 +25,6 @@ class core {
 		if ($opcode['addressing']['type'] == 'relative')
 			return (($this->currentoffset+uint($offset+2,8))&0xFFFF) + ($this->currentoffset&0xFF0000);
 		return ($this->initialoffset&0xFF0000) + $offset;
-	}
-	public function getMisc() {
-		return array();
 	}
 	private function get_processor_bits($arg) {
 		$output = '';

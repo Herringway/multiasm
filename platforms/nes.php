@@ -1,8 +1,10 @@
 <?php
-class platform {
+class platform extends platform_base {
 	private $handle;
 	private $opts;
 	private $details;
+	
+	const extension = 'nes';
 	
 	function __construct(&$handle,$opts) {
 		$this->handle = $handle;

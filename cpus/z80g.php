@@ -1,15 +1,12 @@
 <?php
-class core {
+class core extends core_base {
+	const addressformat = '%04X';
 	private $platform;
-	public $initialoffset;
-	public $currentoffset;
-	public $branches;
 	private $opcodes;
-	function __construct(&$handle,$opts,&$known_addresses) {
+	function __construct(&$handle,$opts,&$known_addresses, $platform) {
 		$this->opcodes = yaml_parse_file('./cpus/z80g_opcodes.yml');
 		$this->handle = $handle;
-		require_once sprintf('platforms/%s.php', $opts['platform']);
-		$this->platform = new platform($handle, $opts);
+		$this->platform = $platform;
 		$this->addrs = $known_addresses;
 		$this->opts = $opts;
 	}
@@ -22,13 +19,13 @@ class core {
 		fseek($this->handle, $this->platform->map_rom($offset));
 		while (true) {
 			$opcode = ord(fgetc($this->handle));
-			$args = array('','');
+			$args = array();
 			$val = 0;
 			for ($i = 0; $i < $this->opcodes[$opcode]['Size']; $i++) {
 				$args[$i] = ord(fgetc($this->handle));
 				$val += $args[$i]<<($i*8);
 			}
-			$output[] = array('offset' => $offset, 'opcode' => $opcode, 'instruction' => sprintf($this->opcodes[$opcode]['Format'], $val), 'arg1' => $args[0], 'arg2' => $args[1], 'interpretedargs' => '', 'uri' => '');
+			$output[] = array('offset' => $offset, 'opcode' => $opcode, 'instruction' => sprintf($this->opcodes[$opcode]['Format'], $val), 'args' => $args, 'interpretedargs' => '', 'uri' => '');
 			if (($opcode == 0xC9) || ($opcode == 0xD9))
 				break;
 			$offset += $this->opcodes[$opcode]['Size']+1;
@@ -36,28 +33,4 @@ class core {
 		return $output;
 	}
 }
-/*if (!isset($game))
-	die ('direct execution = bad');
-	
-if (!isset($offset))
-	$offset = 0x100;
-
-$val = 0; $args = array('','');
-require_once 'z80g_opcodes.php';
-fseek($handle, $offset);
-
-while (true) {
-	$opcode = ord(fgetc($handle));
-	for ($i = 0; $i < $opcodes[$opcode][0]; $i++) {
-		$args[$i] = ord(fgetc($handle));
-		$val += $args[$i]<<($i*8);
-	}
-	$instructionlist[] = array('offset' => $offset, 'opcode' => $opcode, 'instruction' => sprintf($opcodes[$opcode][1], $val), 'arg1' => $args[0], 'arg2' => $args[1], 'interpretedargs' => '', 'uri' => '');
-	if (($opcode == 0xC9) || ($opcode == 0xD9))
-		break;
-	$offset += $opcodes[$opcode][0]+1;
-	$args = array('','');
-	$val = 0;
-}
-$nextoffset = dechex($offset+1);*/
 ?>
