@@ -2,6 +2,7 @@
 class platform extends platform_base {
 	private $handle;
 	private $opts;
+	
 	const extension = 'gbc';
 	
 	function __construct(&$handle,$opts) {

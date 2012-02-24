@@ -1,6 +1,6 @@
 <?php
 function showstats() {
-	global $known_addresses, $gameid, $game;
+	global $known_addresses, $settings, $game;
 	$stats = array();
 	$counteddata = 0;
 	$biggest = array('size' => 0, 'offset' => 0);
@@ -35,22 +35,22 @@ function showstats() {
 		$divisions['Unknown'] = $game['size'] - $counteddata;
 	$stats['Size'] = $divisions;
 	$dwoo = new Dwoo();
-	$dwoo->output('templates/gamestats.tpl', array('stats' => $stats, 'game' => $gameid, 'title' => $game['title'], 'routines' => (isset($_GET['routinelist']) ? $routines : null)));
+	$dwoo->output('templates/gamestats.tpl', array('stats' => $stats, 'game' => $settings['gameid'], 'title' => $game['title'], 'routines' => (isset($_GET['routinelist']) ? $routines : null)));
 }
 if (array_search(__FILE__,get_included_files()) == 0) {
 	require_once 'Dwoo/dwooAutoload.php';
 	require_once 'commonfunctions.php';
 
-	$gameid = 'eb';
+	$settings['gameid'] = 'eb';
 	$rompath = '../rms/';
 
 	$argc = (isset($_SERVER['PATH_INFO']) ? explode('/', $_SERVER['PATH_INFO']) : array('',''));
 	if (isset($argc[1]) && ($argc[1] != null) && is_dir('./games_defines/'.$argc[1].'asm'))
-		$gameid = $argc[1];
+		$settings['gameid'] = $argc[1];
 
-	$game = yaml_parse_file('games_defines/'.$gameid.'asm/game.yml');
+	$game = yaml_parse_file('games_defines/'.$settings['gameid'].'asm/game.yml');
 
-	$known_addresses = yaml_parse_file('games_defines/'.$gameid.'asm/known_offsets.yml');
+	$known_addresses = yaml_parse_file('games_defines/'.$settings['gameid'].'asm/known_offsets.yml');
 	showstats();
 }
 ?>

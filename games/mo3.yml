@@ -12,6 +12,43 @@ title: "Mother 3 (JAP + translation)"
   - name: Text
     type: asciitext
     terminator: 0
+0x800F0080:
+  type: data
+  size: 0x800
+  entries:
+  - name: Unknown
+    type: bytearray
+    size: 8
+0x800F0880:
+  type: data
+  size: 0x400
+  entries:
+  - name: Unknown
+    type: bytearray
+    size: 4
+0x800F0C80:
+  type: data
+  size: 0xBB8
+  entries:
+  - name: Unknown
+    type: bytearray
+    size: 5
+0x800ED940:
+  type: data
+  size: 0x1F3F
+  name: MOREWEIRDTEXT
+  entries:
+  - name: Text
+    type: asciitext
+    terminator: 0
+0x80CF9A8A:
+  type: data
+  size: 0x17B0
+  name: ABILDESCTEXT
+  entries:
+  - name: Text
+    type: UTF-16
+    size: 0x17B0
 0x81D0BC9F:
   type: data
   size: 0x10000

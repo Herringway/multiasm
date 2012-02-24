@@ -22,7 +22,7 @@ function process_entries($handle, $offset, $end, $entries) {
 			else if ($entry['type'] == 'pointer')
 				$tmparray[$entry['name']] = strtoupper(dechex(read_int($handle, $entry['size'])));
 			else if ($entry['type'] == 'palette')
-				$tmparray[$entry['name']] = read_palette($handle, $entry['size']);
+				$tmparray[$entry['name']] = isset($game['yaml']) ? read_palette($handle, $entry['size']) : asprintf('<span class="palette" style="background-color: #%06X;">%1$06X</span>', read_palette($handle, $entry['size']));
 			else if ($entry['type'] == 'binary')
 				$tmparray[$entry['name']] = decbin(read_int($handle, $entry['size']));
 			else if ($entry['type'] == 'boolean')
@@ -32,7 +32,9 @@ function process_entries($handle, $offset, $end, $entries) {
 			else if (isset($game['texttables'][$entry['type']]))
 				$tmparray[$entry['name']] = read_string($handle, $bytesread, $game['texttables'][$entry['type']], isset($entry['terminator']) ? $entry['terminator'] : null);
 			else if ($entry['type'] == 'asciitext')
-				$tmparray[$entry['name']] = read_string($handle, $bytesread, null, isset($entry['terminator']) ? $entry['terminator'] : null);
+				$tmparray[$entry['name']] = read_string($handle, $bytesread, 'ascii', isset($entry['terminator']) ? $entry['terminator'] : null);
+			else if ($entry['type'] == 'UTF-16')
+				$tmparray[$entry['name']] = read_string($handle, $bytesread, 'utf16', isset($entry['terminator']) ? $entry['terminator'] : null);
 			else
 				$tmparray[$entry['name']] = read_bytes($handle, $entry['size']);
 			$offset += $bytesread;

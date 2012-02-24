@@ -70,9 +70,7 @@ function get_bit_flags2($arg, $values) {
 }
 
 function read_bytes($handle, $numbytes) {
-	$output = array();
-	while ($numbytes--)
-		$output[] = sprintf('%02X', ord(fgetc($handle)));
+	$output = unpack('C*', fread($handle, $numbytes));
 	return $output;
 }
 function read_int($handle, $size) {
@@ -83,24 +81,16 @@ function read_int($handle, $size) {
 }
 function read_palette($handle, $size) {
 	$palettes = array();
-	while ($size > 0) {
-		$snespal = (ord(fgetc($handle)))+(ord(fgetc($handle))<<8);
-		if (isset($_GET['YAML']))
-			$palettes[] = sprintf('%u',((($snespal%32)*8)<<16)+(((($snespal>>5)%32)*8)<<8)+((($snespal>>10)%32)*8));
-		else
-			$palettes[] = sprintf('<div class="palette" style="background-color: #%06X;">%04X</div>',((($snespal%32)*8)<<16)+(((($snespal>>5)%32)*8)<<8)+((($snespal>>10)%32)*8), $snespal);
-		$size -= 2;
-	}
+	$snespal = unpack('v*', fread($handle,2*$size));
+	for ($i = 1; $i <= $size/2; $i++)
+		$palettes[] = (($snespal[$i]&31)<<19)+(($snespal[$i]&0x3E0)<<6)+(($snespal[$i]&0x7C00)>>7);
 	return $palettes;
 }
-function getpalette($handle, $size) {
-	$palettes = array();
-	while ($size > 0) {
-		$snespal = (ord(fgetc($handle)))+(ord(fgetc($handle))<<8);
-		$palettes[] = array(((($snespal%32)*8)),(((($snespal>>5)%32)*8)),((($snespal>>10)%32)*8));
-		$size -= 2;
-	}
-	return $palettes;
+function asprintf($string, $haystack) {
+	$output = array();
+	foreach ($haystack as $needle)
+		$output[] = vsprintf($string, $needle);
+	return $output;
 }
 function read_string($handle, &$size, $table, $terminator = null) {
 	$initialsize = ($size == 0) ? 0x100000 : $size;
@@ -108,24 +98,27 @@ function read_string($handle, &$size, $table, $terminator = null) {
 	for ($i = 0; $i < $initialsize; $i++) {
 		if ($terminator !== null)
 			$size++;
-		$val = sprintf('%02X', ord(fgetc($handle)));
-		if ($table === null) {
-			$output .= chr(hexdec($val));
+		$val = ord(fgetc($handle));
+		if ($table === 'ascii') {
+			$output .= chr($val);
+		} else if ($table === 'utf16') {
+			$val = $val + (ord(fgetc($handle))<<8);
+			$output .= json_decode(sprintf('"\u%04X"',$val));
 		} else {
-			if (isset($table['lengths'][hexdec($val)])) {
-				$length = $table['lengths'][hexdec($val)];
+			if (isset($table['lengths'][$val])) {
+				$length = $table['lengths'][$val];
 				for ($j = 1; $j < $length; $j++) {
-					$val .= sprintf('%02X', ord(fgetc($handle)));
-					if (isset($table['lengths'][hexdec($val)]))
-						$length = $table['lengths'][hexdec($val)];
+					$val = ($val<<($j*8)) + ord(fgetc($handle));
+					if (isset($table['lengths'][$val]))
+						$length = $table['lengths'][$val];
 					$i++;
 					if ($terminator !== null)
 						$size++;
 				}
 			}
-			$output .= !isset($table['replacements'][hexdec($val)]) ? sprintf('[%s]',$val) : $table['replacements'][hexdec($val)];
+			$output .= !isset($table['replacements'][$val]) ? sprintf('[%02X]',$val) : $table['replacements'][$val];
 		}
-		if (hexdec($val) === $terminator) {
+		if ($val === $terminator) {
 			break;
 		}
 	}
@@ -165,7 +158,7 @@ function read_tile($handle, $bpp, $palette = 0) {
 			for ($y = 0; $y < 8; $y++) {
 				$tile = 0;
 				for ($bitplane = 0; $bitplane < $bpp; $bitplane++)
-					$tile += ((ord($data[$y*2+(floor($bitplane/2)*16+($bitplane&1))])    & (1 << 7-$x)) >> 7-$x) << $bitplane;
+					$tile += ((ord($data[$y*2+(floor($bitplane/2)*16+($bitplane&1))]) & (1 << 7-$x)) >> 7-$x) << $bitplane;
 				$output[$x][$y] = $tile;
 			}
 	}

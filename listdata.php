@@ -1,6 +1,6 @@
 <?php
 function listdata() {
-	global $game, $known_addresses_p, $handle, $gameid;
+	global $game, $known_addresses_p, $handle, $settings;
 	$platform = new platform($handle);
 	$output = array();
 	foreach ($known_addresses_p as $addr=>$data) {
@@ -11,6 +11,6 @@ function listdata() {
 		} catch (Exception $e) { }
 	}
 	$dwoo = new Dwoo();
-	$dwoo->output('templates/listdata.tpl', array('game' => $gameid, 'title' => $game['title'], 'data' => $output));
+	$dwoo->output('templates/listdata.tpl', array('game' => $settings['gameid'], 'title' => $game['title'], 'data' => $output));
 }
 ?>
