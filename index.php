@@ -14,7 +14,7 @@ class Backend {
 	public $nextoffset;
 	public $yamldata;
 	public $dataname;
-	public $menuitems;
+	public $menuitems = array();
 	
 	public function execute() {
 		require_once 'commonfunctions.php';

@@ -26,12 +26,11 @@ class table {
 		$this->main->nextoffset = $this->main->decimal_to_function($offset);
 		$this->main->yamldata[] = $table['entries'];
 		$this->main->yamldata[] = $entries;
-		$this->main->menuitems = array();
 		foreach ($entries as $k => $item)
 			if (isset($item['Name']))
-				$this->main->menuitems[$this->main->decimal_to_function($offsets[$k])] = $item['Name'];
+				$this->main->menuitems[sprintf(core::addressformat, $offsets[$k])] = $item['Name'];
 			else
-				$this->main->menuitems[$this->main->decimal_to_function($offsets[$k])] = $this->main->decimal_to_function($offsets[$k]);
+				$this->main->menuitems[sprintf(core::addressformat, $offsets[$k])] = sprintf(core::addressformat, $offsets[$k]);
 		return array('header' => $header,'entries' => $entries, 'offsets' => $offsets);
 	}
 	public static function shouldhandle($main) {
@@ -44,6 +43,7 @@ class table {
 		$offsets = array();
 		while ($offset < $end) {
 			$tmpoffset = $offset;
+			$tmparray = array();
 			foreach ($entries as $entry) {
 				$bytesread = isset($entry['size']) ? $entry['size'] : 0;
 				if (!isset($entry['type']) || ($entry['type'] == 'int')) {
@@ -79,7 +79,6 @@ class table {
 			}
 			$output[] = $tmparray;
 			$offsets[] = $tmpoffset;
-			$tmparray = array();
 		}
 		return array($output, $offsets, $offset);
 	}
