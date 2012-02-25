@@ -186,7 +186,7 @@ class Backend {
 			try {
 				$realaddr = $this->platform->map_rom($addr);
 				if ($realaddr !== null)
-					$output[] = array('address' => isset($this->opts['real_address']) ? $realaddr : $addr, 'type' => $data['type'], 'name' => !empty($data['name']) ? $data['name'] : '', 'description' => isset($data['description']) ? $data['description'] : '', 'size' => $data['size']);
+					$output[] = array('address' => isset($this->opts['real_address']) ? $realaddr : $addr, 'type' => isset($data['type']) ? $data['type'] : 'unknown', 'name' => !empty($data['name']) ? $data['name'] : '', 'description' => isset($data['description']) ? $data['description'] : '', 'size' => isset($data['size']) ? $data['size'] : 0);
 			} catch (Exception $e) { }
 		}
 		$this->yamldata[] = $output;
