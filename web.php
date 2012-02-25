@@ -15,7 +15,6 @@ class display {
 	private $main;
 	private $dwoo;
 	public $mode;
-	public $dataname;
 	
 	function __construct(&$main) {
 		$this->main = $main;
@@ -28,7 +27,7 @@ class display {
 	public function display($data) {
 		$this->main->debugvar($this->mode, 'displaymode');
 		header('Content-Type: text/html; charset=UTF-8');
-		$this->dwoo->output('templates/'.$this->mode.'.tpl', array('routinename' => $this->dataname, 'title' => $this->main->game['title'], 'nextoffset' => $this->main->nextoffset, 'game' => $this->main->gameid, 'data' => $data, 'thisoffset' => $this->main->offset, 'options' => $this->main->opts, 'offsetname' => $this->main->offsetname, 'addrformat' => core::addressformat, 'branches' => $this->main->core->branches, 'opcodeformat' => core::opcodeformat));
+		$this->dwoo->output('templates/'.$this->mode.'.tpl', array('routinename' => $this->main->dataname, 'title' => $this->main->game['title'], 'nextoffset' => $this->main->nextoffset, 'game' => $this->main->gameid, 'data' => $data, 'thisoffset' => $this->main->offset, 'options' => $this->main->opts, 'offsetname' => $this->main->offsetname, 'addrformat' => core::addressformat, 'branches' => $this->main->core->branches, 'opcodeformat' => core::opcodeformat));
 	}
 }
 ?>

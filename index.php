@@ -13,7 +13,7 @@ class Backend {
 	public $opts;
 	public $nextoffset;
 	public $yamldata;
-	
+	public $dataname;
 	public function execute() {
 		require_once 'commonfunctions.php';
 		$this->settings = load_settings();
@@ -202,9 +202,9 @@ class Backend {
 		$this->nextoffset = isset($this->addresses[$this->core->currentoffset]['name']) ? $this->addresses[$this->core->currentoffset]['name'] : sprintf(core::addressformat, $this->core->currentoffset);
 
 		if (isset($this->addresses[$this->core->initialoffset]['description']))
-			$this->routinename = $this->addresses[$this->core->initialoffset]['description'];
+			$this->dataname = $this->addresses[$this->core->initialoffset]['description'];
 		else
-			$this->routinename = sprintf('%X', $this->core->initialoffset);
+			$this->dataname = sprintf('%X', $this->core->initialoffset);
 		if (isset($this->addresses[$this->core->initialoffset]['arguments']))
 			$arguments = $this->addresses[$this->core->initialoffset]['arguments'];
 			
@@ -247,17 +247,18 @@ class Backend {
 		$tmparray = array();
 		$output = array();
 		$i = 0;
-		$tablename = sprintf(core::addressformat, $this->offset);
+		$this->dataname = sprintf(core::addressformat, $this->offset);
 		if (isset($table['description']))
-			$tablename = $table['description'];
+			$this->dataname = $table['description'];
 		$header = array();
 		$headerend = $this->offset;
 		if (isset($table['header']))
 			list($header, $headerend) = $this->process_entries($offset, $initialoffset+1, $table['header']);
 		list($entries,$offsets,$offset) = $this->process_entries($headerend, $initialoffset+$table['size'], $table['entries']);
-			$this->yamldata[] = $table['entries'];
-			$this->yamldata[] = $entries;
-			return array('header' => $header,'entries' => $entries, 'offsets' => $offsets);
+		$this->nextoffset = isset($this->addresses[$offset]['name']) ? $this->addresses[$offset]['name'] : sprintf(core::addressformat, $offset);
+		$this->yamldata[] = $table['entries'];
+		$this->yamldata[] = $entries;
+		return array('header' => $header,'entries' => $entries, 'offsets' => $offsets);
 	}
 	function prepare_hexdump() {
 		$realoffset = $this->platform->map_rom($this->offset);
@@ -277,7 +278,6 @@ class Backend {
 		return $hex;
 	}
 	function process_entries($offset, $end, $entries) {
-		global $game;
 		$output = array();
 		$offsets = array();
 		while ($offset < $end) {

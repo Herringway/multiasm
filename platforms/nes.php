@@ -1,25 +1,21 @@
 <?php
 class platform extends platform_base {
-	private $handle;
-	private $opts;
 	private $details;
 	
 	const extension = 'nes';
 	
 	function __construct(&$main) {
-		$this->handle = $main->gamehandle;
-		$this->opts = $main->opts;
 		$flagarray = array();
-		fseek($this->handle, 0);
-		$this->details['Valid'] = (fread($this->handle, 4) == 'NES');
-		$this->details['PRGROMSize'] = ord(fgetc($this->handle))*0x4000;
-		$this->details['CHRROMSize'] = ord(fgetc($this->handle))*0x2000;
-		$b1 = ord(fgetc($this->handle));
-		$b2 = ord(fgetc($this->handle));
+		fseek($main->gamehandle, 0);
+		$this->details['Valid'] = (fread($main->gamehandle, 4) == 'NES');
+		$this->details['PRGROMSize'] = ord(fgetc($main->gamehandle))*0x4000;
+		$this->details['CHRROMSize'] = ord(fgetc($main->gamehandle))*0x2000;
+		$b1 = ord(fgetc($main->gamehandle));
+		$b2 = ord(fgetc($main->gamehandle));
 		$this->details['Mapper'] = (($b1&0xF0)>>4) + ($b2&0xF0);
 		$flags = (($b1&0xF)<<20) + (($b2&0xF)<<16);
-		$this->details['PRGRAMSize'] = ord(fgetc($this->handle))*0x2000;
-		$flags += (ord(fgetc($this->handle))<<8) + ord(fgetc($this->handle));
+		$this->details['PRGRAMSize'] = ord(fgetc($main->gamehandle))*0x2000;
+		$flags += (ord(fgetc($main->gamehandle))<<8) + ord(fgetc($main->gamehandle));
 		for ($i = 0; $i < 24; $i++)
 			$this->details['Flags'][(isset($flagarray[$i]) ? $flagarray[$i] : $i)] = (($flags & (1<<$i)) != 0);
 	}
