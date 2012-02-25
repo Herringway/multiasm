@@ -27,8 +27,8 @@ class table {
 		$this->main->yamldata[] = $table['entries'];
 		$this->main->yamldata[] = $entries;
 		foreach ($entries as $k => $item)
-			if (isset($item['Name']))
-				$this->main->menuitems[sprintf(core::addressformat, $offsets[$k])] = $item['Name'];
+			if (isset($item['Name']) && (trim($item['Name']) !== ''))
+				$this->main->menuitems[sprintf(core::addressformat, $offsets[$k])] = trim($item['Name']);
 			else
 				$this->main->menuitems[sprintf(core::addressformat, $offsets[$k])] = sprintf(core::addressformat, $offsets[$k]);
 		return array('header' => $header,'entries' => $entries, 'offsets' => $offsets);
