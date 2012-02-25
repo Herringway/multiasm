@@ -199,15 +199,14 @@ class Backend {
 	}
 	function prepare_asm() {
 		$output = $this->core->execute($this->offset,$this->offsetname);
-		$nextoffset = $this->core->currentoffset;
-		$offset = $this->core->initialoffset;
+		$this->nextoffset = isset($this->addresses[$this->core->currentoffset]['name']) ? $this->addresses[$this->core->currentoffset]['name'] : sprintf(core::addressformat, $this->core->currentoffset);
 
-		if (isset($known_addresses[$offset]['description']))
-			$routinename = $known_addresses[$offset]['description'];
+		if (isset($this->addresses[$this->core->initialoffset]['description']))
+			$this->routinename = $this->addresses[$this->core->initialoffset]['description'];
 		else
-			$routinename = sprintf('%X', $offset);
-		if (isset($known_addresses[$offset]['arguments']))
-			$arguments = $known_addresses[$offset]['arguments'];
+			$this->routinename = sprintf('%X', $this->core->initialoffset);
+		if (isset($this->addresses[$this->core->initialoffset]['arguments']))
+			$arguments = $this->addresses[$this->core->initialoffset]['arguments'];
 			
 		$branches = array();
 		if (isset($this->addresses[$this->core->initialoffset]['labels']))

@@ -1,5 +1,7 @@
 <?php
 class core extends core_base {
+	const addressformat = '%04X';
+	
 	private $opcodes;
 	private $accum = 16;
 	private $index = 16;
@@ -12,8 +14,7 @@ class core extends core_base {
 	public function getDefault() {
 		$realoffset = $this->main->platform->map_rom(0xFFFC);
 		fseek($this->main->gamehandle, $realoffset);
-		$vector = ord(fgetc($this->main->gamehandle)) + (ord(fgetc($this->main->gamehandle))<<8);
-		return $vector;
+		return ord(fgetc($this->main->gamehandle)) + (ord(fgetc($this->main->gamehandle))<<8);
 	}
 	private function fix_addr($opcode, $offset) {
 		if ($opcode['addressing']['type'] == 'relative')

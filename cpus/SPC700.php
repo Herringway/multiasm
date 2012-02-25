@@ -4,10 +4,6 @@ class core extends core_base {
 	public $initialoffset;
 	public $currentoffset;
 	public $branches;
-	private $main;
-	private $accum = 16;
-	private $index = 16;
-	private $addrs;
 	public $placeholdernames = false;
 	
 	function __construct(&$main) {
@@ -15,7 +11,7 @@ class core extends core_base {
 		$this->main = $main;
 	}
 	public function getDefault() {
-		return 0x400;
+		return $this->main->platform->map_rom(0x200);
 	}
 	public function execute($offset,$offsetname) {
 		try {
