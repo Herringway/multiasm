@@ -6,7 +6,7 @@
 		{block "header"}{/block}
 	</head>
 <body>
-	<div class="right">{block "options"}{/block}{if $nextoffset}<a rel="next" accesskey="n" href="/{$game}/{string_format($nextoffset,'%s')}">Next Function</a>{/if}</div>
+	<div class="right">{if $nextoffset}<a rel="next" accesskey="n" href="/{$game}/{string_format($nextoffset,'%s')}">Next Function</a>{/if}{block "options"}{/block}</div>
 	<div class="menu"><div>
 	{block "menu"}{loop $branches}<a href="#{$}">{$}</a><br />{/loop}{/block}
 	</div></div>

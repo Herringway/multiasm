@@ -141,9 +141,9 @@ class Backend {
 			if (!isset($entry['description']) && (!isset($entry['type']) || ($entry['type'] != 'nullspace')))
 				$problems[] = 'No description defined';
 			if (isset($entry['size']) && !isset($this->addresses[$offset+$entry['size']]) && ($offset+$entry['size'] < $this->opts['rombase']+$this->game['size']))
-				$allproblems[$offset+$entry['size']] = array('Undefined area!');
+				$allproblems[$this->decimal_to_function($offset+$entry['size'])] = array('Undefined area!');
 			if ($problems != array())
-				$allproblems[(isset($entry['name']) ? $entry['name'] : strtoupper(dechex($offset)))] = $problems;
+				$allproblems[$this->decimal_to_function($offset)] = $problems;
 			$prev = $offset+(isset($entry['size']) ? $entry['size'] : 0);
 		}
 		return $allproblems;
@@ -199,7 +199,7 @@ class Backend {
 	}
 	function prepare_asm() {
 		$output = $this->core->execute($this->offset,$this->offsetname);
-		$this->nextoffset = isset($this->addresses[$this->core->currentoffset]['name']) ? $this->addresses[$this->core->currentoffset]['name'] : sprintf(core::addressformat, $this->core->currentoffset);
+		$this->nextoffset = $this->decimal_to_function($this->core->currentoffset);
 
 		if (isset($this->addresses[$this->core->initialoffset]['description']))
 			$this->dataname = $this->addresses[$this->core->initialoffset]['description'];
@@ -255,27 +255,28 @@ class Backend {
 		if (isset($table['header']))
 			list($header, $headerend) = $this->process_entries($offset, $initialoffset+1, $table['header']);
 		list($entries,$offsets,$offset) = $this->process_entries($headerend, $initialoffset+$table['size'], $table['entries']);
-		$this->nextoffset = isset($this->addresses[$offset]['name']) ? $this->addresses[$offset]['name'] : sprintf(core::addressformat, $offset);
+		$this->nextoffset = $this->decimal_to_function($offset);
 		$this->yamldata[] = $table['entries'];
 		$this->yamldata[] = $entries;
 		return array('header' => $header,'entries' => $entries, 'offsets' => $offsets);
 	}
+	private function decimal_to_function($input) {
+		return isset($this->addresses[$input]['name']) ? $this->addresses[$input]['name'] : sprintf(core::addressformat, $input);
+	}
 	function prepare_hexdump() {
-		$realoffset = $this->platform->map_rom($this->offset);
 		if (!isset($this->addresses[$this->offset]['size']))
 			die('Table has no size defined!');
 		require_once '../hexview.php';
-		fseek($this->gamehandle, $realoffset);
+		fseek($this->gamehandle, $this->platform->map_rom($this->offset));
 		$data = fread($this->gamehandle, $this->addresses[$this->offset]['size']);
-		$nextoffset = $this->offset+$this->addresses[$this->offset]['size'];
+		$this->nextoffset = $this->decimal_to_function($this->offset+$this->addresses[$this->offset]['size']);
 		if (isset($this->addresses[$this->offset]['charset']))
 			$charset = $game['texttables'][$this->addresses[$this->offset]['charset']]['replacements'];
 		else if (isset($game['defaulttext']))
 			$charset = $game['texttables'][$game['defaulttext']]['replacements'];
 		else
 			$charset = null;
-		$hex = hexview($data, isset($this->addresses[$this->offset]['width']) ? $this->addresses[$this->offset]['width'] : 16, $this->offset, $charset);
-		return $hex;
+		return hexview($data, isset($this->addresses[$this->offset]['width']) ? $this->addresses[$this->offset]['width'] : 16, $this->offset, $charset);
 	}
 	function process_entries($offset, $end, $entries) {
 		$output = array();
