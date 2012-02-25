@@ -6,6 +6,7 @@ class platform extends platform_base {
 	
 	function __construct(&$main) {
 		$this->main = $main;
+		$main->addresses += $this->getRegisters();
 		$this->detectHiROM();
 	}
 	public function base() {

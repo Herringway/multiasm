@@ -80,7 +80,7 @@ class Backend {
 				}
 			}
 		}
-		//What are we doing?
+		//What are we doing? (should this be modularized? I think so)
 		switch ($this->offset) {
 			case 'rommap':
 				$output = $this->prepare_rommap();
@@ -206,6 +206,7 @@ class Backend {
 		$branches = array();
 		if (isset($this->addresses[$this->core->initialoffset]['labels']))
 			$branches = $this->addresses[$this->core->initialoffset]['labels'];
+		//Saves a stub to the relevant YAML file. Work on this later.
 		/*if (isset($game['genstub'])) {
 			$branches = null;
 			if (isset($known_addresses_p[$core->initialoffset]['labels']))

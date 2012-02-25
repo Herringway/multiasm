@@ -6,6 +6,7 @@ class platform extends platform_base {
 	
 	function __construct(&$main) {
 		$flagarray = array();
+		$main->addresses += $this->getRegisters();
 		fseek($main->gamehandle, 0);
 		$this->details['Valid'] = (fread($main->gamehandle, 4) == 'NES');
 		$this->details['PRGROMSize'] = ord(fgetc($main->gamehandle))*0x4000;
@@ -18,6 +19,9 @@ class platform extends platform_base {
 		$flags += (ord(fgetc($main->gamehandle))<<8) + ord(fgetc($main->gamehandle));
 		for ($i = 0; $i < 24; $i++)
 			$this->details['Flags'][(isset($flagarray[$i]) ? $flagarray[$i] : $i)] = (($flags & (1<<$i)) != 0);
+	}
+	public static function getRegisters() {
+		return yaml_parse_file('platforms/nes_registers.yml');
 	}
 	public function map_rom($offset) {
 		if ($this->details['Mapper'] == 4) {
