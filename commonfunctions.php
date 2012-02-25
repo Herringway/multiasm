@@ -12,31 +12,11 @@ if (isset($_GET['begin'])) {
 	die();
 }
 date_default_timezone_set('America/Halifax');
-//set_error_handler('debug_handler');
 define('BRANCH_LIMIT', 5000);
-function debug_handler($errortype, $message, $file, $line) {
-	global $settings;
-	static $limit = 100;
-	if ($limit-- < 0)
-		return;
-	if ($settings['debug'])
-		switch($errortype) {
-			case E_USER_WARNING:
-			case E_WARNING: ChromePhp::error(sprintf("%s at %s:%d", $message, $file, $line)); break;
-			case E_USER_NOTICE:
-			case E_NOTICE: ChromePhp::warn(sprintf("%s at %s:%d", $message, $file, $line)); break;
-			default: ChromePhp::log(sprintf("%s at %s:%d", $message, $file, $line)); break;
-		}
-}
 function hexafixer($matches) {
 	if ($matches[0][0] === ' ')
 		return sprintf(' 0x%04X:', $matches[1]);
 	return sprintf('0x%06X:', $matches[1]);
-}
-function debugvar($var, $label) {
-	global $settings;
-	if ($settings['debug'])
-		ChromePhp::log($label, $var);
 }
 function convert_hex_keys_to_dec($tmpdata) {
 	$arr = array();
