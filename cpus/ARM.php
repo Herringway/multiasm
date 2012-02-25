@@ -6,14 +6,14 @@ class core extends core_base {
 	private $opcodes;
 	private $addrs;
 	const opcodeformat = '%08X';
-	function __construct(&$handle,$opts,&$known_addresses, $platform) {
+	function __construct(&$main) {
 		$this->opcodes = yaml_parse_file('./cpus/ARM_opcodes.yml');
-		$this->handle = $handle;
-		$this->platform = $platform;
-		$this->addrs = $known_addresses;
+		$this->handle = $main->gamehandle;
+		$this->platform = $main->platform;
+		$this->addrs = $main->addresses;
+		$this->opts = $main->opts;
 		if (!isset($opts['THUMB']))
-			$opts['THUMB'] = 0;
-		$this->opts = $opts;
+			$this->opts['THUMB'] = 0;
 	}
 	public function getDefault() {
 		return 0x8000000;

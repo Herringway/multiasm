@@ -1,4 +1,4 @@
 {extends "base.tpl"}
 {block "assembly"}
-{$hex}
+{$data}
 {/block}

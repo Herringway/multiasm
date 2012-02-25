@@ -6,10 +6,15 @@ class platform extends platform_base {
 	
 	const extension = 'sfc';
 	
-	function __construct(&$handle, $opts = null) {
-		$this->handle = $handle;
-		$this->opts = $opts;
+	function __construct(&$main) {
+		$this->handle = $main->gamehandle;
+		$this->opts = $main->opts;
 		$this->detectHiROM();
+	}
+	public function base() {
+		if ($this->isHiROM)
+			return 0xC00000;
+		return 0x800000;
 	}
 	public static function getRegisters() {
 		return yaml_parse_file('platforms/snes_registers.yml');

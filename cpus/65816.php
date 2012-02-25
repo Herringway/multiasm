@@ -1,33 +1,30 @@
 <?php
 class core extends core_base {
 	const addressformat = '%06X';
-	const template = 'snes.tpl';
+	const template = 'snes';
 	private $opcodes;
 	private $handle;
 	private $accum = 16;
 	private $index = 16;
 	private $addrs;
-	private $isHiROM;
-	private $opts;
 	public $placeholdernames = false;
 	private $platform;
-	function __construct(&$handle,$opts,&$known_addresses, $platform) {
+	function __construct(&$main) {
+		$this->main = $main;
 		$this->opcodes = yaml_parse_file('./cpus/65816_opcodes.yml');
-		$this->handle = $handle;
-		$this->platform = $platform;
-		$this->addrs = $known_addresses;
-		$this->opts = $opts;
+		$this->handle = $main->gamehandle;
+		$this->addrs = $main->addresses;
 	}
 	public function getDefault() {
-		$realoffset = $this->platform->map_rom(0x00FFFC);
+		$realoffset = $this->main->platform->map_rom(0x00FFFC);
 		fseek($this->handle, $realoffset);
 		return ord(fgetc($this->handle)) + (ord(fgetc($this->handle))<<8);
 	}
 	public function getMisc() {
 		$output = array();
-		if (isset($this->opts['accum']))
+		if (isset($this->main->opts['accum']))
 			$output['accumsize'] = 8;
-		if (isset($this->opts['index']))
+		if (isset($this->main->opts['index']))
 			$output['indexsize'] = 8;
 		return $output;
 	}
@@ -65,26 +62,26 @@ class core extends core_base {
 	}
 	public function execute($offset,$offsetname) {
 		try {
-			$realoffset = $this->platform->map_rom($offset);
+			$realoffset = $this->main->platform->map_rom($offset);
 		} catch (Exception $e) {
 			die (sprintf('Cannot disassemble %s!', $e->getMessage()));
 		}
 		$farthestbranch = $this->initialoffset = $this->currentoffset = $offset;
-		if (isset($opts['size']))
-			$deflength = $opts['size'];
+		if (isset($this->main->opts['size']))
+			$deflength = $this->main->opts['size'];
 		else if (isset($this->addrs[$this->initialoffset]['size']))
 			$deflength = $this->addrs[$this->initialoffset]['size'];
-		if (($realoffset < 0) || ($realoffset > $this->opts['size']))
+		if (($realoffset < 0) || ($realoffset > $this->main->game['size']))
 			die (sprintf('Bad offset (%X)!', $realoffset));
 		fseek($this->handle, $realoffset);
 		$unknownbranches = 0;
 		$opcode = 0;
 		$index = isset($this->addrs[$this->initialoffset]['indexsize']) ? $this->addrs[$this->initialoffset]['indexsize'] : $this->index;
 		$accum = isset($this->addrs[$this->initialoffset]['accumsize']) ? $this->addrs[$this->initialoffset]['accumsize'] : $this->accum;
-		if (isset($this->opts['accum']))
-			$accum = $this->opts['accum'];
-		if (isset($this->opts['index']))
-			$index = $this->opts['index'];
+		if (isset($this->main->opts['accum']))
+			$accum = 8;
+		if (isset($this->main->opts['index']))
+			$index = 8;
 		$output = array();
 		while (true) {
 			if (isset($deflength) && ($deflength+$this->initialoffset <= $this->currentoffset))
@@ -172,6 +169,8 @@ class core extends core_base {
 			$this->currentoffset += $size+1;
 			
 		}
+		if ($this->branches === null)
+			$this->branches = $this->main->addresses[$this->initialoffset]['labels'];
 		return $output;
 	}
 }

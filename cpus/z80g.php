@@ -1,22 +1,20 @@
 <?php
 class core extends core_base {
 	const addressformat = '%04X';
-	private $platform;
 	private $opcodes;
-	function __construct(&$handle,$opts,&$known_addresses, $platform) {
+	function __construct(&$main) {
 		$this->opcodes = yaml_parse_file('./cpus/z80g_opcodes.yml');
-		$this->handle = $handle;
-		$this->platform = $platform;
-		$this->addrs = $known_addresses;
-		$this->opts = $opts;
+		$this->handle = $main->gamehandle;
+		$this->addrs = $main->addresses;
+		$this->opts = $main->opts;
 	}
 	public function getDefault() {
-		$realoffset = $this->platform->map_rom(0x100);
+		$realoffset = $this->main->platform->map_rom(0x100);
 		return $realoffset;
 	}
 	public function execute($offset,$offsetname) {
 		$this->initialoffset = $this->currentoffset = $offset;
-		fseek($this->handle, $this->platform->map_rom($offset));
+		fseek($this->handle, $this->main->platform->map_rom($offset));
 		while (true) {
 			$opcode = ord(fgetc($this->handle));
 			$args = array();

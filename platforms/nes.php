@@ -6,20 +6,20 @@ class platform extends platform_base {
 	
 	const extension = 'nes';
 	
-	function __construct(&$handle,$opts) {
-		$this->handle = $handle;
-		$this->opts = $opts;
+	function __construct(&$main) {
+		$this->handle = $main->gamehandle;
+		$this->opts = $main->opts;
 		$flagarray = array();
-		fseek($handle, 0);
-		$this->details['Valid'] = (fread($handle, 4) == 'NES');
-		$this->details['PRGROMSize'] = ord(fgetc($handle))*0x4000;
-		$this->details['CHRROMSize'] = ord(fgetc($handle))*0x2000;
-		$b1 = ord(fgetc($handle));
-		$b2 = ord(fgetc($handle));
+		fseek($this->handle, 0);
+		$this->details['Valid'] = (fread($this->handle, 4) == 'NES');
+		$this->details['PRGROMSize'] = ord(fgetc($this->handle))*0x4000;
+		$this->details['CHRROMSize'] = ord(fgetc($this->handle))*0x2000;
+		$b1 = ord(fgetc($this->handle));
+		$b2 = ord(fgetc($this->handle));
 		$this->details['Mapper'] = (($b1&0xF0)>>4) + ($b2&0xF0);
 		$flags = (($b1&0xF)<<20) + (($b2&0xF)<<16);
-		$this->details['PRGRAMSize'] = ord(fgetc($handle))*0x2000;
-		$flags += (ord(fgetc($handle))<<8) + ord(fgetc($handle));
+		$this->details['PRGRAMSize'] = ord(fgetc($this->handle))*0x2000;
+		$flags += (ord(fgetc($this->handle))<<8) + ord(fgetc($this->handle));
 		for ($i = 0; $i < 24; $i++)
 			$this->details['Flags'][(isset($flagarray[$i]) ? $flagarray[$i] : $i)] = (($flags & (1<<$i)) != 0);
 	}

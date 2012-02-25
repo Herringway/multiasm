@@ -1,6 +1,18 @@
 <?php
+if (isset($_GET['begin'])) {
+	$options = '';
+	foreach ($_GET as $key => $val)
+		if (($key != 'begin') && ($key != 'game')) {
+			if ($val == 'true')
+				$options[] = $key;
+			else
+				$options[] = sprintf('%s=%s', $key, $val);
+		}
+	header(sprintf('Location: http://%s/%s/%s/%s',$_SERVER['SERVER_NAME'],$_GET['game'], $_GET['begin'], implode('/', $options)));
+	die();
+}
 date_default_timezone_set('America/Halifax');
-set_error_handler('debug_handler');
+//set_error_handler('debug_handler');
 define('BRANCH_LIMIT', 5000);
 function debug_handler($errortype, $message, $file, $line) {
 	global $settings;
@@ -164,9 +176,18 @@ function read_tile($handle, $bpp, $palette = 0) {
 	}
 	return $output;
 }
+function load_settings() { 
+	if (!file_exists('settings.yml'))
+		file_put_contents('settings.yml', yaml_emit(array('gameid' => 'eb', 'rompath' => '.', 'debug' => false)));
+	return yaml_parse_file('settings.yml');
+}
 abstract class platform_base {
+	protected $main;
 	public static function getRegisters() {
 		return array();
+	}
+	public function base() {
+	
 	}
 }
 
@@ -174,9 +195,13 @@ abstract class core_base {
 	public $initialoffset;
 	public $currentoffset;
 	public $branches;
+	protected $main;
 	const addressformat = '%X';
-	const template = 'assembly.tpl';
+	const template = 'assembly';
 	const opcodeformat = '%02X';
+	function __construct(&$main) {
+		$this->main = $main;
+	}
 	public static function getRegisters() {
 		return array();
 	}

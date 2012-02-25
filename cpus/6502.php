@@ -8,12 +8,11 @@ class core extends core_base {
 	private $opts;
 	public $placeholdernames = false;
 	private $platform;
-	function __construct(&$handle,$opts,&$known_addresses, $platform) {
+	function __construct(&$main) {
 		$this->opcodes = yaml_parse_file('./cpus/6502_opcodes.yml');
-		$this->handle = $handle;
-		$this->platform = $platform;
-		$this->addrs = $known_addresses;
-		$this->opts = $opts;
+		$this->handle = $main->gamehandle;
+		$this->platform = $main->platform;
+		$this->addrs = $main->addresses;
 	}
 	public function getDefault() {
 		$realoffset = $this->platform->map_rom(0xFFFC);
@@ -41,11 +40,11 @@ class core extends core_base {
 			die (sprintf('Cannot disassemble: %s!', $e->getMessage()));
 		}
 		$farthestbranch = $this->initialoffset = $this->currentoffset = $offset;
-		if (isset($opts['size']))
-			$deflength = $opts['size'];
+		if (isset($this->main->opts['size']))
+			$deflength = $this->main->opts['size'];
 		else if (isset($this->addrs[$this->initialoffset]['size']))
 			$deflength = $this->addrs[$this->initialoffset]['size'];
-		if (($realoffset < 0) || ($realoffset > $this->opts['size']))
+		if (($realoffset < 0) || ($realoffset > $this->main->opts['size']))
 			die (sprintf('Bad offset (%X)!', $realoffset));
 		fseek($this->handle, $realoffset);
 		$unknownbranches = 0;

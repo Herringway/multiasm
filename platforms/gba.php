@@ -5,9 +5,9 @@ class platform extends platform_base {
 	private $isHiROM;
 	const extension = 'gba';
 	
-	function __construct(&$handle,$opts) {
-		$this->handle = $handle;
-		$this->opts = $opts;
+	function __construct(&$main) {
+		$this->handle = $main->gamehandle;
+		$this->opts = $main->opts;
 	}
 	public function map_rom($offset) {
 		if ($offset > 0x8000000)
