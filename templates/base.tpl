@@ -8,7 +8,7 @@
 <body>
 	<div class="right">{if $nextoffset}<a rel="next" accesskey="n" href="/{$game}/{string_format($nextoffset,'%s')}">Next Function</a>{/if}{block "options"}{/block}</div>
 	<div class="menu"><div>
-	{block "menu"}{loop $branches}<a href="#{$}">{$}</a><br />{/loop}{/block}
+	{block "menu"}{loop $menuitems}<a href="#{$_key}">{$}</a><br />{/loop}{/block}
 	</div></div>
 	<span class="top" title="{loop $arguments}
 	{$_key}:{$} 

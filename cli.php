@@ -38,7 +38,7 @@ class display {
 	}
 	private function rommap($data) {
 		foreach ($data as $entry)
-			printf(core::addressformat.' - '.core::addressformat.' ('.core::addressformat.'): %s'.PHP_EOL, $entry['address'], $entry['address'] + $entry['size'], $entry['size'], $entry['name'] === '' ? sprintf('%s_'.core::addressformat, $entry['type'], $entry['address']) : $entry['name']);
+			printf(core::addressformat.' - '.core::addressformat.' ('.core::addressformat.'): %s'.PHP_EOL, $entry['address'], $entry['address'] + $entry['size'], $entry['size'], $entry['name'] === '' ? 'UNKNOWN' : $entry['name']);
 	}
 }
 ?>

@@ -125,10 +125,10 @@ function read_tile($handle, $bpp, $palette = 0) {
 			}
 		}
 		ob_start();
-		imagegif($img);
+		imagepng($img);
 		$image = ob_get_contents();
 		ob_end_clean();
-		$output = sprintf('<img src="data:image/gif;base64,%s" />', base64_encode($image));
+		$output = sprintf('<img src="data:image/png;base64,%s"/>', base64_encode($image));
 	} else { 
 		for ($x = 0; $x < 8; $x++)
 			for ($y = 0; $y < 8; $y++) {
@@ -151,7 +151,6 @@ abstract class platform_base {
 		return array();
 	}
 	public function base() {
-	
 	}
 }
 
