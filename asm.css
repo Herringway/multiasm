@@ -6,7 +6,7 @@ a[title] { text-decoration: underline; }
 div.right	{ position: fixed; background: white; border: none; right: 0px; width: 13%; }
 div.right:empty { display: none; }
 pre		{  left: 15%; position: absolute; top: 0px; text-align: left; font-family: monospace; color: black; background-color: #EEE; padding: 2px; overflow: auto; width: 70%; max-height: 95%; z-index: 0; border: 1px inset;}
-div.menu	{ position: fixed; left: 0px; top: 0px; background: white; font-size: 9pt; text-align: center; width: 15%;  overflow: auto; }
+div.menu	{ position: fixed; left: 0px; top: 0px; background: white; font-size: 9pt; text-align: center; width: 15%;  overflow: auto; height: 100%; }
 div.menu > div		{ width: auto; height: auto; margin-top: 6%; }
 span.top	{ position: relative; top: -5px;  margin-left: auto; margin-right: auto; display: block;  width: 20%; background:white; border: 2px outset; z-index: 1;}
 small	{ position: fixed; bottom: 0px; left: 15%; width: 70%; height: 20px; background: white; text-align: center; }
