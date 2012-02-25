@@ -17,8 +17,6 @@ class Backend {
 	public function execute() {
 		require_once 'commonfunctions.php';
 		$this->settings = load_settings();
-		$this->debugvar($this->settings, 'settings');
-		$this->debugvar($_SERVER, 'Server');
 		
 		if (PHP_SAPI === 'cli')
 			require 'cli.php';
@@ -26,6 +24,8 @@ class Backend {
 			require 'web.php';
 		$display = new display($this);
 		$argv = $display->getArgv();
+		$this->debugvar($this->settings, 'settings');
+		$this->debugvar($_SERVER, 'Server');
 		$this->debugvar($argv, 'args');
 		
 		//Options!
@@ -319,12 +319,8 @@ class Backend {
 		return array($output, $offsets, $offset);
 	}
 	function debugvar($var, $label) {
-		if (isset($this->settings['debug']) && $this->settings['debug']) {
-			if (PHP_SAPI === 'cli') {
-				echo $label.': '; var_dump($var);
-			} else 
-				ChromePhp::log($label, $var);
-		}
+		if (isset($this->settings['debug']) && $this->settings['debug'])
+			display::debugvar($var, $label);
 	}
 }
 

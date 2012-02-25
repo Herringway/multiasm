@@ -40,5 +40,8 @@ class display {
 		header('Content-Type: text/html; charset=UTF-8');
 		$this->dwoo->output('templates/'.$this->mode.'.tpl', array('routinename' => $this->main->dataname, 'title' => $this->main->game['title'], 'nextoffset' => $this->main->nextoffset, 'game' => $this->main->gameid, 'data' => $data, 'thisoffset' => $this->main->offset, 'options' => $this->main->opts, 'offsetname' => $this->main->offsetname, 'addrformat' => core::addressformat, 'branches' => $this->main->core->branches, 'opcodeformat' => core::opcodeformat));
 	}
+	public static debugvar($var, $label) {
+		ChromePhp::log($label, $var);
+	}
 }
 ?>
