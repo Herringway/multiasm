@@ -319,7 +319,7 @@ class Backend {
 		return array($output, $offsets, $offset);
 	}
 	function debugvar($var, $label) {
-		if ($this->settings['debug']) {
+		if (isset($this->settings['debug']) && $this->settings['debug']) {
 			if (PHP_SAPI === 'cli') {
 				echo $label.': '; var_dump($var);
 			} else 
