@@ -24,6 +24,17 @@ class display {
 	public function getArgv() {
 		return array_slice(explode('/', str_replace($_SERVER['SCRIPT_NAME'], '', $_SERVER['REQUEST_URI'])),1);
 	}
+	public function getOpts($argv) {
+		$opts = array();
+		for ($i = 2; $i < count($argv); $i++) {
+			$v = explode('=', $argv[$i]);
+			if (isset($v[1]))
+				$opts[$v[0]] = $v[1];
+			else
+				$opts[$v[0]] = true;
+		}
+		return $opts;
+	}
 	public function display($data) {
 		$this->main->debugvar($this->mode, 'displaymode');
 		header('Content-Type: text/html; charset=UTF-8');

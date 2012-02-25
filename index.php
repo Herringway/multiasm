@@ -29,14 +29,9 @@ class Backend {
 		$this->debugvar($argv, 'args');
 		
 		//Options!
-		for ($i = 2; $i < count($argv); $i++) {
-			$v = explode('=', $argv[$i]);
-			if (isset($v[1]))
-				$this->opts[$v[0]] = $v[1];
-			else
-				$this->opts[$v[0]] = true;
-		}
+		$this->opts = $display->getOpts($argv);
 		$this->debugvar($this->opts, 'options');
+		
 		//Determine which game to work with
 		if (isset($argv[0]) && ($argv[0] != null) && file_exists(sprintf('games/%s.yml', $argv[0])))
 			$this->gameid = $argv[0];
@@ -85,7 +80,7 @@ class Backend {
 				}
 			}
 		}
-		
+		//What are we doing?
 		switch ($this->offset) {
 			case 'rommap':
 				$output = $this->prepare_rommap();
