@@ -1,4 +1,16 @@
 <?php
+if (isset($_GET['begin'])) {
+	$options = '';
+	foreach ($_GET as $key => $val)
+		if (($key != 'begin') && ($key != 'game')) {
+			if ($val == 'true')
+				$options[] = $key;
+			else
+				$options[] = sprintf('%s=%s', $key, $val);
+		}
+	header(sprintf('Location: http://%s/%s/%s/%s',$_SERVER['SERVER_NAME'],$_GET['game'], $_GET['begin'], implode('/', $options)));
+	die();
+}
 class display {
 	private $main;
 	private $dwoo;

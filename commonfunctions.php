@@ -1,16 +1,4 @@
 <?php
-if (isset($_GET['begin'])) {
-	$options = '';
-	foreach ($_GET as $key => $val)
-		if (($key != 'begin') && ($key != 'game')) {
-			if ($val == 'true')
-				$options[] = $key;
-			else
-				$options[] = sprintf('%s=%s', $key, $val);
-		}
-	header(sprintf('Location: http://%s/%s/%s/%s',$_SERVER['SERVER_NAME'],$_GET['game'], $_GET['begin'], implode('/', $options)));
-	die();
-}
 date_default_timezone_set('America/Halifax');
 define('BRANCH_LIMIT', 5000);
 function hexafixer($matches) {
@@ -35,10 +23,6 @@ function convert_dec_keys_to_hex($tmpdata) {
 	foreach ($tmpdata as $key => $data)
 		$arr[sprintf('%04X', $key)] = $data;
 	return $arr;
-}
-function insert_yml($file, $data1, $data2) {
-	if ($data2 != $data1)
-		file_put_contents($file, Spyc::YAMLDump($data2));
 }
 function relative_to_absolute($offset, $val, $size) {
 	return ($offset & 0xFF0000) + (($offset+uint($val+$size+1,$size*8))&0xFFFF);

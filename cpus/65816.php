@@ -3,22 +3,18 @@ class core extends core_base {
 	const addressformat = '%06X';
 	const template = 'snes';
 	private $opcodes;
-	private $handle;
 	private $accum = 16;
 	private $index = 16;
-	private $addrs;
 	public $placeholdernames = false;
 	private $platform;
 	function __construct(&$main) {
 		$this->main = $main;
 		$this->opcodes = yaml_parse_file('./cpus/65816_opcodes.yml');
-		$this->handle = $main->gamehandle;
-		$this->addrs = $main->addresses;
 	}
 	public function getDefault() {
 		$realoffset = $this->main->platform->map_rom(0x00FFFC);
-		fseek($this->handle, $realoffset);
-		return ord(fgetc($this->handle)) + (ord(fgetc($this->handle))<<8);
+		fseek($this->main->gamehandle, $realoffset);
+		return ord(fgetc($this->main->gamehandle)) + (ord(fgetc($this->main->gamehandle))<<8);
 	}
 	public function getMisc() {
 		$output = array();
@@ -39,7 +35,7 @@ class core extends core_base {
 	private function fix_addr($instruction, $val) {
 		switch($this->opcodes[$instruction]['addressing']['type']) {
 			case 'absolute':
-				if (array_key_exists(0x7E0000+$val, $this->addrs))
+				if (isset($this->main->addresses[0x7E0000+$val]))
 					return 0x7E0000+$val;
 			case 'absolutelong':
 			case 'absolutelongjmp':
@@ -50,7 +46,7 @@ class core extends core_base {
 				return ($this->currentoffset&0xFF0000)+$val;
 			case 'absoluteindexedx':
 			case 'absoluteindexedy':
-				if (array_key_exists(0x7E0000+$val, $this->addrs))
+				if (isset($this->main->addresses[0x7E0000+$val]))
 					return 0x7E0000+$val;
 				break;
 			case 'relative':
@@ -69,15 +65,15 @@ class core extends core_base {
 		$farthestbranch = $this->initialoffset = $this->currentoffset = $offset;
 		if (isset($this->main->opts['size']))
 			$deflength = $this->main->opts['size'];
-		else if (isset($this->addrs[$this->initialoffset]['size']))
-			$deflength = $this->addrs[$this->initialoffset]['size'];
+		else if (isset($this->main->addresses[$this->initialoffset]['size']))
+			$deflength = $this->main->addresses[$this->initialoffset]['size'];
 		if (($realoffset < 0) || ($realoffset > $this->main->game['size']))
 			die (sprintf('Bad offset (%X)!', $realoffset));
-		fseek($this->handle, $realoffset);
+		fseek($this->main->gamehandle, $realoffset);
 		$unknownbranches = 0;
 		$opcode = 0;
-		$index = isset($this->addrs[$this->initialoffset]['indexsize']) ? $this->addrs[$this->initialoffset]['indexsize'] : $this->index;
-		$accum = isset($this->addrs[$this->initialoffset]['accumsize']) ? $this->addrs[$this->initialoffset]['accumsize'] : $this->accum;
+		$index = isset($this->main->addresses[$this->initialoffset]['indexsize']) ? $this->main->addresses[$this->initialoffset]['indexsize'] : $this->index;
+		$accum = isset($this->main->addresses[$this->initialoffset]['accumsize']) ? $this->main->addresses[$this->initialoffset]['accumsize'] : $this->accum;
 		if (isset($this->main->opts['accum']))
 			$accum = 8;
 		if (isset($this->main->opts['index']))
@@ -90,9 +86,9 @@ class core extends core_base {
 				break;
 			if (($this->initialoffset&0xFF0000) != ($this->currentoffset&0xFF0000))
 				break;
-			if (isset($this->addrs[$this->initialoffset]['labels']) && isset($this->addrs[$this->initialoffset]['labels'][$this->currentoffset&0xFFFF]))
-				$output[] = array('label' => $this->addrs[$this->initialoffset]['labels'][$this->currentoffset&0xFFFF]);
-			$opcode = ord(fgetc($this->handle));
+			if (isset($this->main->addresses[$this->initialoffset]['labels']) && isset($this->main->addresses[$this->initialoffset]['labels'][$this->currentoffset&0xFFFF]))
+				$output[] = array('label' => $this->main->addresses[$this->initialoffset]['labels'][$this->currentoffset&0xFFFF]);
+			$opcode = ord(fgetc($this->main->gamehandle));
 			$uri = null;
 			$name = '';
 			$args = array();
@@ -105,7 +101,7 @@ class core extends core_base {
 				$size = $this->opcodes[$opcode]['addressing']['size'];
 			$arg = 0;
 			for($j = 0; $j < $size; $j++) {
-				$t = ord(fgetc($this->handle));
+				$t = ord(fgetc($this->main->gamehandle));
 				$args[] = $t;
 				$arg += $t<<($j*8);
 			}
@@ -124,23 +120,23 @@ class core extends core_base {
 				$farthestbranch = $fulladdr + ($this->currentoffset&0xFF0000);
 				
 			if ((($this->opcodes[$opcode]['addressing']['type'] == 'absolutejmp') || ($this->opcodes[$opcode]['addressing']['type'] == 'absolutelongjmp'))) {
-				if ((isset($this->addrs[$fulladdr]['name']) && !empty($this->addrs[$fulladdr]['name'])))
-					$uri = $this->addrs[$fulladdr]['name'];
+				if ((isset($this->main->addresses[$fulladdr]['name']) && !empty($this->main->addresses[$fulladdr]['name'])))
+					$uri = $this->main->addresses[$fulladdr]['name'];
 				else
 					$uri = sprintf('%06X', $fulladdr);
 			}
 			if ($this->opcodes[$opcode]['addressing']['type'] == 'relativelong')
 				$uri = sprintf('%06X', $fulladdr+($this->currentoffset&0xFF0000));
-			if (isset($this->addrs[$fulladdr]['final processor state']['accum']))
-				$accum = $this->addrs[$fulladdr]['final processor state']['accum'];
-			if (isset($this->addrs[$fulladdr]['final processor state']['index']))
-				$index = $this->addrs[$fulladdr]['final processor state']['index'];
+			if (isset($this->main->addresses[$fulladdr]['final processor state']['accum']))
+				$accum = $this->main->addresses[$fulladdr]['final processor state']['accum'];
+			if (isset($this->main->addresses[$fulladdr]['final processor state']['index']))
+				$index = $this->main->addresses[$fulladdr]['final processor state']['index'];
 			
-			if (isset($this->addrs[$fulladdr]['name'])) {
-				$name = $this->addrs[$fulladdr]['name'];
-			} else if (isset($this->addrs[$this->initialoffset]['labels'][$fulladdr&0xFFFF])) {
-				$uri = sprintf('%s#%s', $offsetname, $this->addrs[$this->initialoffset]['labels'][$fulladdr&0xFFFF]);
-				$name = ($this->placeholdernames ? isset($this->addrs[$this->initialoffset]['name']) ? $this->addrs[$this->initialoffset]['name'].'_' : sprintf('UNKNOWN_%06X_', $this->initialoffset) : '').$this->addrs[$this->initialoffset]['labels'][$fulladdr&0xFFFF];
+			if (isset($this->main->addresses[$fulladdr]['name'])) {
+				$name = $this->main->addresses[$fulladdr]['name'];
+			} else if (isset($this->main->addresses[$this->initialoffset]['labels'][$fulladdr&0xFFFF])) {
+				$uri = sprintf('%s#%s', $offsetname, $this->main->addresses[$this->initialoffset]['labels'][$fulladdr&0xFFFF]);
+				$name = ($this->placeholdernames ? isset($this->main->addresses[$this->initialoffset]['name']) ? $this->main->addresses[$this->initialoffset]['name'].'_' : sprintf('UNKNOWN_%06X_', $this->initialoffset) : '').$this->main->addresses[$this->initialoffset]['labels'][$fulladdr&0xFFFF];
 			} else if (($this->opcodes[$opcode]['addressing']['type'] == 'relative') || (($this->opcodes[$opcode]['addressing']['type'] == 'absolutejmp') && (isset($this->opcodes[$opcode]['addressing']['jump'])))) {
 				if (!isset($this->branches[$fulladdr]) && (count($this->branches) < BRANCH_LIMIT))
 					$this->branches[$fulladdr] = '';
@@ -160,8 +156,8 @@ class core extends core_base {
 							'instruction' => $this->opcodes[$opcode]['mnemonic'],
 							'offset' => $this->currentoffset,
 							'args' => $args,
-							'comment' => isset($this->addrs[$fulladdr]['description']) ? $this->addrs[$fulladdr]['description'] : '',
-							'commentarguments' => isset($this->addrs[$fulladdr]['arguments']) ? $this->addrs[$fulladdr]['arguments'] : '',
+							'comment' => isset($this->main->addresses[$fulladdr]['description']) ? $this->main->addresses[$fulladdr]['description'] : '',
+							'commentarguments' => isset($this->main->addresses[$fulladdr]['arguments']) ? $this->main->addresses[$fulladdr]['arguments'] : '',
 							'name' => $name,
 							'uri' => $uri,
 							'value' => $arg,
