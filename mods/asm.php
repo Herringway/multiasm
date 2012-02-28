@@ -48,7 +48,7 @@ class asm {
 		return $output;
 	}
 	public static function shouldhandle($main) {
-		if ($main->addresses[$main->offset]['type'] !== 'data')
+		if (!isset($main->addresses[$main->offset]['type']) || ($main->addresses[$main->offset]['type'] !== 'data'))
 			return true;
 		return false;
 	}

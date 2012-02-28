@@ -17,6 +17,8 @@ class Backend {
 	public $menuitems = array();
 	
 	public function execute() {
+		ob_start();
+		$time_start = microtime(true);
 		require_once 'commonfunctions.php';
 		$this->settings = load_settings();
 		
@@ -24,6 +26,10 @@ class Backend {
 			require 'cli.php';
 		else
 			require 'web.php';
+		require 'cache.php';
+		
+		$this->cache = new cache();
+		
 		$display = new display($this);
 		$argv = $display->getArgv();
 		$this->debugvar($this->settings, 'settings');
@@ -39,9 +45,12 @@ class Backend {
 			$this->gameid = $argv[0];
 		else
 			$this->gameid = $this->settings['gameid'];
-			
-		//Load game data & platform class
-		list($this->game,$this->addresses) = yaml_parse_file(sprintf('games/%s.yml', $this->gameid), -1);
+		if (isset($this->cache[sprintf('MPASM.ymlmodified.%s', $this->gameid)]) && ($this->cache[sprintf('MPASM.ymlmodified.%s', $this->gameid)] === filemtime(sprintf('games/%s.yml', $this->gameid))))
+			list($this->game,$this->addresses) = $this->cache[sprintf('MPASM.ymlcache.%s', $this->gameid)];
+		else { //Load game data & platform class from yml
+			list($this->game,$this->addresses) = $this->cache[sprintf('MPASM.ymlcache.%s', $this->gameid)] = yaml_parse_file(sprintf('games/%s.yml', $this->gameid), -1);
+			$this->cache[sprintf('MPASM.ymlmodified.%s', $this->gameid)] = filemtime(sprintf('games/%s.yml', $this->gameid));
+		}
 		
 		require_once sprintf('platforms/%s.php', $this->game['platform']);
 		
@@ -108,16 +117,17 @@ class Backend {
 		$display->mode = $modname;
 		if (method_exists($module, 'getTemplate'))
 			$display->mode = $module->getTemplate();
-			
 		//Display stuff
 		if (isset($this->opts['yaml'])) {
 			header('Content-Type: text/plain; charset=UTF-8');
 			if ($this->yamldata !== null)
 				foreach ($this->yamldata as $yamldoc)
 					echo yaml_emit($yamldoc);
-		} else {	
+		} else {
 			$display->display($output);
 		}
+		$this->debugvar(sprintf('%f seconds', microtime(true) - $time_start), 'Execution time');
+		ob_end_flush();
 	}
 	public function decimal_to_function($input) {
 		return isset($this->addresses[$input]['name']) ? $this->addresses[$input]['name'] : sprintf(core::addressformat, $input);

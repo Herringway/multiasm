@@ -21,7 +21,7 @@ class hexview {
 		return hexview($data, isset($this->main->addresses[$this->main->offset]['width']) ? $this->main->addresses[$this->main->offset]['width'] : 16, $this->main->offset, $charset);
 	}
 	public static function shouldhandle($main) {
-		if (($main->addresses[$main->offset]['type'] === 'data') && !isset($main->addresses[$main->offset]['entries']))
+		if (isset($main->addresses[$main->offset]['type']) && ($main->addresses[$main->offset]['type'] === 'data') && !isset($main->addresses[$main->offset]['entries']))
 			return true;
 		return false;
 	}

@@ -34,7 +34,7 @@ class table {
 		return array('header' => $header,'entries' => $entries, 'offsets' => $offsets);
 	}
 	public static function shouldhandle($main) {
-		if (($main->addresses[$main->offset]['type'] === 'data') && isset($main->addresses[$main->offset]['entries']))
+		if (isset($main->addresses[$main->offset]['type']) && ($main->addresses[$main->offset]['type'] === 'data') && isset($main->addresses[$main->offset]['entries']))
 			return true;
 		return false;
 	}
