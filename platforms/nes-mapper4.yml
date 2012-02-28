@@ -1,0 +1,10 @@
+---
+0x8000:
+  description: Bank Select
+  name: BANKSELECT
+  writeonly: true
+0xA001:
+  description: PRG-RAM protection
+  name: PRGRAMPROTECT
+  writeonly: true
+...

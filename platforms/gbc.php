@@ -5,12 +5,12 @@ class platform extends platform_base {
 	
 	const extension = 'gbc';
 	
-	function __construct(&$main) {
+	function __construct($main) {
 		$this->handle = $main->gamehandle;
 		$this->opts = $main->opts;
 	}
 	public function map_rom($offset) {
-		throw new Exception("Incomplete");
+		throw new Exception("GBC platform implementation lacks rom mapping!");
 	}
 }
 ?>

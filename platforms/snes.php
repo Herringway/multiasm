@@ -14,7 +14,7 @@ class platform extends platform_base {
 			return 0xC00000;
 		return 0x800000;
 	}
-	public static function getRegisters() {
+	public function getRegisters() {
 		return yaml_parse_file('platforms/snes_registers.yml');
 	}
 	public function map_rom($offset) {
@@ -35,7 +35,7 @@ class platform extends platform_base {
 			if ($offset&0x400000)
 				return $offset&0x3FFFFF;
 			else if (!($offset&0x8000))
-				return -1;
+				throw new Exception('non-ROM');
 			else
 				return (($offset&0x7F0000)>>1) + ($offset&0x7FFF);
 		

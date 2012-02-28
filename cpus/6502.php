@@ -19,7 +19,11 @@ class core extends core_base {
 	private function fix_addr($opcode, $offset) {
 		if ($opcode['addressing']['type'] == 'relative')
 			return (($this->currentoffset+uint($offset+2,8))&0xFFFF) + ($this->currentoffset&0xFF0000);
-		return ($this->initialoffset&0xFF0000) + $offset;
+		else if ($opcode['addressing']['type'] == 'absolute')
+			return ($this->initialoffset&0xFF0000) + $offset;
+		else if ($opcode['addressing']['type'] == 'absolutejmp')
+			return ($this->initialoffset&0xFF0000) + $offset;
+		return -1;
 	}
 	private function get_processor_bits($arg) {
 		$output = '';
@@ -78,7 +82,6 @@ class core extends core_base {
 			}
 			if (($opcodeinfo['addressing']['type'] == 'relative') && ($fulladdr > $farthestbranch))
 				$farthestbranch = $fulladdr;
-			
 			if (isset($this->main->addresses[$fulladdr]['name'])) {
 				$name = $this->main->addresses[$fulladdr]['name'];
 			} else if (isset($this->main->addresses[$this->initialoffset]['labels'][$fulladdr])) {

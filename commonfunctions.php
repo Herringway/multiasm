@@ -1,9 +1,12 @@
 <?php
 date_default_timezone_set('America/Halifax');
 set_exception_handler('print_exception');
+set_error_handler('error_handling');
 define('BRANCH_LIMIT', 5000);
 function print_exception($exception) {
 	display::display_error(array('trace' => $exception->getTrace(), 'message' => $exception->getMessage()));
+}
+function error_handling() {
 }
 function hexafixer($matches) {
 	if ($matches[0][0] === ' ')
@@ -151,7 +154,7 @@ function load_settings() {
 }
 abstract class platform_base {
 	protected $main;
-	public static function getRegisters() {
+	public function getRegisters() {
 		return array();
 	}
 	public function base() {

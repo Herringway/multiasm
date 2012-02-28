@@ -117,7 +117,7 @@ class Backend {
 			}
 		}
 		//What are we doing?
-		if (in_array($this->offset, $magicvalues))
+		if (in_array($this->offset, $magicvalues, true))
 			$modname = $this->offset;
 		else
 			foreach ($othermods as $mod)

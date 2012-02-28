@@ -15,10 +15,10 @@
 	<div class="menu"><div>
 	{block "menu"}{loop $menuitems}<a href="#{$_key}">{$}</a><br />{/loop}{/block}
 	</div></div>
-	<span class="top" title="{loop $arguments}
+	<span class="{if $error}error{else}top{/if}" title="{loop $arguments}
 	{$_key}:{$} 
 	{/loop}">{$title}{if $routinename} - {$routinename}{/if}</span>
-	<pre>
+	<pre{if $error} class="error"{/if}>
 {block "assembly"}{/block}	</pre>
 	<small><a href="/{$game}/stats">Stats</a> <a href="/{$game}/issues">Issues</a> <a href="/{$game}/rommap">Known Addresses</a></small>
 </body>

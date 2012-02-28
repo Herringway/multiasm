@@ -4,9 +4,7 @@ class core extends core_base {
 	private $opcodes;
 	function __construct(&$main) {
 		$this->opcodes = yaml_parse_file('./cpus/z80g_opcodes.yml');
-		$this->handle = $main->gamehandle;
-		$this->addrs = $main->addresses;
-		$this->opts = $main->opts;
+		$this->main = $main;
 	}
 	public function getDefault() {
 		$realoffset = $this->main->platform->map_rom(0x100);

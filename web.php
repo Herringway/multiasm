@@ -42,7 +42,7 @@ class display {
 	}
 	public static function display_error($error) {
 		$dwoo = new Dwoo();
-		$dwoo->output('templates/error.tpl', array('routinename' => '', 'title' => 'SERIOUS ERROR', 'nextoffset' => '', 'game' => '', 'data' => $error, 'thisoffset' => '', 'options' => '', 'offsetname' => '', 'addrformat' => '', 'menuitems' => '', 'opcodeformat' => '', 'gamelist' => ''));
+		$dwoo->output('templates/error.tpl', array('routinename' => '', 'title' => 'FLAGRANT SYSTEM ERROR', 'nextoffset' => '', 'game' => '', 'data' => $error, 'thisoffset' => '', 'options' => '', 'offsetname' => '', 'addrformat' => '', 'menuitems' => '', 'opcodeformat' => '', 'gamelist' => '', 'error' => 1));
 	}
 	public static function debugvar($var, $label) {
 		ChromePhp::log($label, $var);

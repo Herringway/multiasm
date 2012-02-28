@@ -6,7 +6,6 @@ class platform extends platform_base {
 	
 	function __construct(&$main) {
 		$flagarray = array();
-		$main->addresses += $this->getRegisters();
 		fseek($main->gamehandle, 0);
 		$this->details['Valid'] = (fread($main->gamehandle, 4) == 'NES');
 		$this->details['PRGROMSize'] = ord(fgetc($main->gamehandle))*0x4000;
@@ -19,12 +18,18 @@ class platform extends platform_base {
 		$flags += (ord(fgetc($main->gamehandle))<<8) + ord(fgetc($main->gamehandle));
 		for ($i = 0; $i < 24; $i++)
 			$this->details['Flags'][(isset($flagarray[$i]) ? $flagarray[$i] : $i)] = (($flags & (1<<$i)) != 0);
+		$main->addresses += $this->getRegisters();
 	}
-	public static function getRegisters() {
-		return yaml_parse_file('platforms/nes_registers.yml');
+	public function getRegisters() {
+		return yaml_parse_file('platforms/nes_registers.yml') + (file_exists(sprintf('platforms/nes-mapper%d.yml', $this->details['Mapper'])) ? yaml_parse_file(sprintf('platforms/nes-mapper%d.yml', $this->details['Mapper'])) : array());
 	}
 	public function map_rom($offset) {
-		if ($this->details['Mapper'] == 4) {
+		if ($this->details['Mapper'] == 0) {
+			if ($offset & 0x8000) {
+				return ($offset & 0x7FFF) + 0x10;
+			}
+			throw new Exception('Not ROM');
+		} else if ($this->details['Mapper'] == 4) {
 			if ($offset & 0x8000) {
 				if ($offset & 0x4000)
 					return ($offset & 0x3FFF) + $this->details['PRGROMSize']-0x4000 + 0x10;

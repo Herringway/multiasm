@@ -7,7 +7,7 @@ class asm {
 	}
 	public function execute() {
 		$output = $this->main->core->execute($this->main->offset,$this->main->offsetname);
-		$this->nextoffset = $this->main->decimal_to_function($this->main->core->currentoffset);
+		$this->main->nextoffset = $this->main->decimal_to_function($this->main->core->currentoffset);
 
 		if (isset($this->main->addresses[$this->main->core->initialoffset]['description']))
 			$this->main->dataname = $this->main->addresses[$this->main->core->initialoffset]['description'];

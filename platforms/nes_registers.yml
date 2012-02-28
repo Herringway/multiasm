@@ -1,21 +1,30 @@
 ---
 0x2000:
+  name: PPUCONTROL1
   description: PPU Control Register 1
 0x2001:
+  name: PPUCONTROL2
   description: PPU Control Register 2
 0x2002:
+  name: PPUSTATUS
   description: PPU Status Register
 0x2003:
+  name: SPRRAMADDR
   description: SPR-RAM Address Register
 0x2004:
+  name: SPRRAMIO
   description: SPR-RAM I/O Register
 0x2005:
+  name: VRAMADDR1
   description: VRAM Address Register 1
 0x2006:
+  name: VRAMADDR2
   description: VRAM Address Register 2
 0x2007:
+  name: VRAMIO
   description: VRAM I/O Register
 0x4000:
+  name: PAPU1CONTROL
   description: pAPU Pulse 1 Control Register
 0x4001:
   description: pAPU Pulse 1 Ramp Control Register
@@ -60,17 +69,9 @@
 0x4015:
   description: pAPU Sound / Vertical Clock Signal Register
 0x4016:
+  name: JOYPAD1
   description: Joypad 1
 0x4017:
+  name: JOYPAD2
   description: Joypad 2
-0x8000:
-  description: Bank Select
-  name: BANKSELECT
-  writeonly: true
-  mapper: 4
-0xA001:
-  description: PRG-RAM protection
-  name: PRGRAMPROTECT
-  writeonly: true
-  mapper: 4
 ...
