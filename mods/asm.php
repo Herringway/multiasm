@@ -10,9 +10,9 @@ class asm {
 		$this->nextoffset = $this->main->decimal_to_function($this->main->core->currentoffset);
 
 		if (isset($this->main->addresses[$this->main->core->initialoffset]['description']))
-			$this->dataname = $this->main->addresses[$this->main->core->initialoffset]['description'];
+			$this->main->dataname = $this->main->addresses[$this->main->core->initialoffset]['description'];
 		else
-			$this->dataname = sprintf('%X', $this->main->core->initialoffset);
+			$this->main->dataname = sprintf('%X', $this->main->core->initialoffset);
 			
 		if (isset($this->main->addresses[$this->main->core->initialoffset]['arguments']))
 			$arguments = $this->main->addresses[$this->main->core->initialoffset]['arguments'];

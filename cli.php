@@ -33,6 +33,9 @@ class display {
 				printf("\t%s %s".PHP_EOL, $instruction['instruction'], $instruction['name'] !== '' ? $instruction['name'] : $instruction['value']);
 		}
 	}
+	public static function display_error($error) {
+		printf("Unhandled Exception: %s\n", $error['message']);
+	}
 	private function showtable($data) {
 		echo yaml_emit($data['entries']);
 	}

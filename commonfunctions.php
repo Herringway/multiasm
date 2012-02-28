@@ -1,6 +1,10 @@
 <?php
 date_default_timezone_set('America/Halifax');
+set_exception_handler('print_exception');
 define('BRANCH_LIMIT', 5000);
+function print_exception($exception) {
+	display::display_error(array('trace' => $exception->getTrace(), 'message' => $exception->getMessage()));
+}
 function hexafixer($matches) {
 	if ($matches[0][0] === ' ')
 		return sprintf(' 0x%04X:', $matches[1]);

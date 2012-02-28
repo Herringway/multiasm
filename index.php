@@ -15,6 +15,7 @@ class Backend {
 	public $yamldata;
 	public $dataname;
 	public $menuitems = array();
+	public $gamelist = array();
 	
 	public function execute() {
 		ob_start();
@@ -40,11 +41,20 @@ class Backend {
 		$this->opts = $display->getOpts($argv);
 		$this->debugvar($this->opts, 'options');
 		
+		for ($dir = opendir('./games/'); $file = readdir($dir); ) {
+			if (substr($file, -4) == ".yml") {
+				$game = yaml_parse_file('./games/'.$file, 0);
+				$this->gamelist[substr($file, 0, -4)] = $game['title'];
+			}
+		}
+		
 		//Determine which game to work with
 		if (isset($argv[0]) && ($argv[0] != null) && file_exists(sprintf('games/%s.yml', $argv[0])))
 			$this->gameid = $argv[0];
 		else
 			$this->gameid = $this->settings['gameid'];
+			
+		//Load game data. from cache if possible
 		if (isset($this->cache[sprintf('MPASM.ymlmodified.%s', $this->gameid)]) && ($this->cache[sprintf('MPASM.ymlmodified.%s', $this->gameid)] === filemtime(sprintf('games/%s.yml', $this->gameid))))
 			list($this->game,$this->addresses) = $this->cache[sprintf('MPASM.ymlcache.%s', $this->gameid)];
 		else { //Load game data & platform class from yml
@@ -53,7 +63,8 @@ class Backend {
 		}
 		
 		require_once sprintf('platforms/%s.php', $this->game['platform']);
-		
+		if (!file_exists($this->settings['rompath'].$this->gameid.'.'.platform::extension))
+			die ('Could not locate source data!');
 		$this->game['size'] = filesize($this->settings['rompath'].$this->gameid.'.'.platform::extension);
 		
 		$this->gamehandle = fopen($this->settings['rompath'].$this->gameid.'.'.platform::extension, 'r');

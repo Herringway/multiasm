@@ -165,7 +165,7 @@ class core extends core_base {
 			$this->currentoffset += $size+1;
 			
 		}
-		if ($this->branches === null)
+		if (($this->branches === null) && isset($this->main->addresses[$this->initialoffset]['labels']))
 			$this->branches = $this->main->addresses[$this->initialoffset]['labels'];
 		return $output;
 	}
