@@ -20,6 +20,6 @@
 	{/loop}">{$title}{if $routinename} - {$routinename}{/if}</span>
 	<pre{if $error} class="error"{/if}>
 {block "assembly"}{/block}	</pre>
-	<small><a href="/{$game}/stats">Stats</a> <a href="/{$game}/issues">Issues</a> <a href="/{$game}/rommap">Known Addresses</a></small>
+	{if $game}<small><a href="/{$game}/stats">Stats</a> <a href="/{$game}/issues">Issues</a> <a href="/{$game}/rommap">Known Addresses</a></small>{/if}
 </body>
 </html>
