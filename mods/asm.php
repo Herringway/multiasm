@@ -6,7 +6,7 @@ class asm {
 		$this->main = $main;
 	}
 	public function execute() {
-		$output = $this->main->core->execute($this->main->offset,$this->main->offsetname);
+		$output = $this->main->core->execute($this->main->offset);
 		$this->main->nextoffset = $this->main->decimal_to_function($this->main->core->currentoffset);
 
 		if (isset($this->main->addresses[$this->main->core->initialoffset]['description']))
@@ -15,7 +15,7 @@ class asm {
 			$this->main->dataname = sprintf('%X', $this->main->core->initialoffset);
 			
 		if (isset($this->main->addresses[$this->main->core->initialoffset]['arguments']))
-			$arguments = $this->main->addresses[$this->main->core->initialoffset]['arguments'];
+			$this->main->comments = $this->main->addresses[$this->main->core->initialoffset]['arguments'];
 			
 		if (isset($this->main->addresses[$this->main->core->initialoffset]['labels']))
 			foreach ($this->main->addresses[$this->main->core->initialoffset]['labels'] as $branch)

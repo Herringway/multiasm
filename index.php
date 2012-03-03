@@ -14,6 +14,7 @@ class Backend {
 	public $nextoffset;
 	public $yamldata;
 	public $dataname;
+	public $comments;
 	public $menuitems = array();
 	public $gamelist = array();
 	
@@ -47,7 +48,6 @@ class Backend {
 				$this->gamelist[substr($file, 0, -4)] = $game['title'];
 			}
 		}
-		
 		//Determine which game to work with
 		if (isset($argv[0]) && ($argv[0] != null) && file_exists(sprintf('games/%s.yml', $argv[0])))
 			$this->gameid = $argv[0];
@@ -104,8 +104,6 @@ class Backend {
 			if (in_array($argv[1], $magicvalues))
 				$this->offset = $argv[1];
 			else {
-				$this->offsetname = $argv[1];
-				$this->offset = hexdec($argv[1]);
 				if (strtoupper(dechex(hexdec($argv[1]))) != strtoupper($argv[1])) {
 					foreach ($this->addresses as $k => $addr)
 						if (isset($addr['name']) && ($addr['name'] == $argv[1])) {
@@ -113,6 +111,9 @@ class Backend {
 							$this->offsetname = $argv[1];
 							break;
 						}
+				} else {
+					$this->offsetname = $argv[1];
+					$this->offset = hexdec($argv[1]);
 				}
 			}
 		}
@@ -138,7 +139,9 @@ class Backend {
 			$display->display($output);
 		}
 		$this->debugvar(sprintf('%f seconds', microtime(true) - $time_start), 'Execution time');
-		ob_end_flush();
+	}
+	public function getOffsetName($offset) {
+		return isset($this->addresses[$offset]['name']) ? $this->addresses[$offset]['name'] : '';
 	}
 	public function decimal_to_function($input) {
 		return isset($this->addresses[$input]['name']) ? $this->addresses[$input]['name'] : sprintf(core::addressformat, $input);

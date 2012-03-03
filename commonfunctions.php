@@ -1,4 +1,6 @@
 <?php
+ini_set('display_errors', 'Off');
+register_shutdown_function('flagrant_system_error');
 date_default_timezone_set('America/Halifax');
 set_exception_handler('print_exception');
 set_error_handler('error_handling');
@@ -6,7 +8,21 @@ define('BRANCH_LIMIT', 5000);
 function print_exception($exception) {
 	display::display_error(array('trace' => $exception->getTrace(), 'message' => $exception->getMessage()));
 }
-function error_handling() {
+function error_handling($errno, $message, $file, $line) {
+	//display::display_error(array('trace' => $message, 'message' => $message));
+	return true;
+}
+function flagrant_system_error() {
+	if (($error = error_get_last()) !== null) {
+		if ($error['type'] == 1) {
+			if (PHP_SAPI == 'cli')
+				printf('SERIOUS ERROR: %s in %s:%d', $error['message'], $error['file'], $error['line']);
+			else
+				display::display_error(array('trace' => debug_backtrace(), 'message' => $error['message']));
+		}
+	} else {
+		ob_end_flush();
+	}
 }
 function hexafixer($matches) {
 	if ($matches[0][0] === ' ')

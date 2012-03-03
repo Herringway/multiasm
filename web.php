@@ -38,11 +38,25 @@ class display {
 	public function display($data) {
 		$this->main->debugvar($this->mode, 'displaymode');
 		header('Content-Type: text/html; charset=UTF-8');
-		$this->dwoo->output('templates/'.$this->mode.'.tpl', array('routinename' => $this->main->dataname, 'title' => $this->main->game['title'], 'nextoffset' => $this->main->nextoffset, 'game' => $this->main->gameid, 'data' => $data, 'thisoffset' => $this->main->offset, 'options' => $this->main->opts, 'offsetname' => $this->main->offsetname, 'addrformat' => core::addressformat, 'menuitems' => $this->main->menuitems, 'opcodeformat' => core::opcodeformat, 'gamelist' => $this->main->gamelist));
+		$this->dwoo->output('templates/'.$this->mode.'.tpl',
+		array(
+		'routinename' => $this->main->dataname, 
+		'title' => $this->main->game['title'], 
+		'nextoffset' => $this->main->nextoffset, 
+		'game' => $this->main->gameid, 
+		'data' => $data, 
+		'thisoffset' => $this->main->offset, 
+		'options' => $this->main->opts, 
+		'offsetname' => $this->main->offsetname, 
+		'addrformat' => core::addressformat, 
+		'menuitems' => $this->main->menuitems, 
+		'opcodeformat' => core::opcodeformat,
+		'comments' => $this->main->comments,
+		'gamelist' => $this->main->gamelist));
 	}
 	public static function display_error($error) {
 		$dwoo = new Dwoo();
-		$dwoo->output('templates/error.tpl', array('routinename' => '', 'title' => 'FLAGRANT SYSTEM ERROR', 'nextoffset' => '', 'game' => '', 'data' => $error, 'thisoffset' => '', 'options' => '', 'offsetname' => '', 'addrformat' => '', 'menuitems' => '', 'opcodeformat' => '', 'gamelist' => '', 'error' => 1));
+		$dwoo->output('/etc/nginx/html/disasm/templates/error.tpl', array('routinename' => '', 'title' => 'FLAGRANT SYSTEM ERROR', 'nextoffset' => '', 'game' => '', 'data' => $error, 'thisoffset' => '', 'options' => '', 'offsetname' => '', 'addrformat' => '', 'menuitems' => '', 'opcodeformat' => '', 'gamelist' => '', 'error' => 1));
 	}
 	public static function debugvar($var, $label) {
 		ChromePhp::log($label, $var);

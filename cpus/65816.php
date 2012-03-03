@@ -56,11 +56,11 @@ class core extends core_base {
 		}
 		return $val;
 	}
-	public function execute($offset,$offsetname) {
+	public function execute($offset) {
 		try {
 			$realoffset = $this->main->platform->map_rom($offset);
 		} catch (Exception $e) {
-			die (sprintf('Cannot disassemble %s!', $e->getMessage()));
+			throw new Exception (sprintf('Cannot disassemble %s!', $e->getMessage()));
 		}
 		$farthestbranch = $this->initialoffset = $this->currentoffset = $offset;
 		if (isset($this->main->opts['size']))
@@ -68,7 +68,7 @@ class core extends core_base {
 		else if (isset($this->main->addresses[$this->initialoffset]['size']))
 			$deflength = $this->main->addresses[$this->initialoffset]['size'];
 		if (($realoffset < 0) || ($realoffset > $this->main->game['size']))
-			die (sprintf('Bad offset (%X)!', $realoffset));
+			throw new Exception (sprintf('Bad offset (%X)!', $realoffset));
 		fseek($this->main->gamehandle, $realoffset);
 		$unknownbranches = 0;
 		$opcode = 0;
@@ -135,7 +135,7 @@ class core extends core_base {
 			if (isset($this->main->addresses[$fulladdr]['name'])) {
 				$name = $this->main->addresses[$fulladdr]['name'];
 			} else if (isset($this->main->addresses[$this->initialoffset]['labels'][$fulladdr&0xFFFF])) {
-				$uri = sprintf('%s#%s', $offsetname, $this->main->addresses[$this->initialoffset]['labels'][$fulladdr&0xFFFF]);
+				$uri = sprintf('%s#%s', $this->main->getOffsetName($this->initialoffset), $this->main->addresses[$this->initialoffset]['labels'][$fulladdr&0xFFFF]);
 				$name = ($this->placeholdernames ? isset($this->main->addresses[$this->initialoffset]['name']) ? $this->main->addresses[$this->initialoffset]['name'].'_' : sprintf('UNKNOWN_%06X_', $this->initialoffset) : '').$this->main->addresses[$this->initialoffset]['labels'][$fulladdr&0xFFFF];
 			} else if (($this->opcodes[$opcode]['addressing']['type'] == 'relative') || (($this->opcodes[$opcode]['addressing']['type'] == 'absolutejmp') && (isset($this->opcodes[$opcode]['addressing']['jump'])))) {
 				if (!isset($this->branches[$fulladdr]) && (count($this->branches) < BRANCH_LIMIT))
