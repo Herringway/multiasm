@@ -21,4 +21,7 @@
 Known Data: {string_format($data.Known_Data, '%06X')}
 Biggest Data:  <a href="/{$game}/{$data.Biggest.name}">{$data.Biggest.name}</a> - 0x{string_format($data.Biggest.size, '%06X')} bytes
 Biggest Routine: <a href="/{$game}/{$data.Biggest_Routine.name}">{$data.Biggest_Routine.name}</a> - 0x{string_format($data.Biggest_Routine.size, '%04X')} bytes
-<div id="chart_div" style="text-align: center"></div>{/block}
+<div id="chart_div" style="text-align: center"></div>{loop $miscdata}
+{$_key}: {if is_array($)}{loop $}
+
+{$_key}: {$}{/loop}{else}{$}{/if}<br />{/loop}{/block}

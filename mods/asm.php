@@ -20,6 +20,10 @@ class asm {
 		if (isset($this->main->addresses[$this->main->core->initialoffset]['labels']))
 			foreach ($this->main->addresses[$this->main->core->initialoffset]['labels'] as $branch)
 				$this->main->menuitems[$branch] = $branch;
+		else if (isset($this->main->core->branches))
+			foreach ($this->main->core->branches as $branch)
+				$this->main->menuitems[$branch] = $branch;
+			
 		//Saves a stub to the relevant YAML file. Work on this later.
 		/*if (isset($game['genstub'])) {
 			$branches = null;

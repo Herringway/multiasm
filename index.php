@@ -102,7 +102,7 @@ class Backend {
 			if (in_array($argv[1], $magicvalues))
 				$this->offset = $argv[1];
 			else {
-				if (strtoupper(dechex(hexdec($argv[1]))) != strtoupper($argv[1])) {
+				if (isset($this->addresses) && (strtoupper(dechex(hexdec($argv[1]))) != strtoupper($argv[1]))) {
 					foreach ($this->addresses as $k => $addr)
 						if (isset($addr['name']) && ($addr['name'] == $argv[1])) {
 							$this->offset = $k;
@@ -117,6 +117,7 @@ class Backend {
 		}
 		$this->debugvar($this->offset, 'Location');
 		$this->debugvar($this->offsetname, 'Location_Fancy');
+		
 		//What are we doing?
 		if (in_array($this->offset, $magicvalues, true))
 			$modname = $this->offset;
@@ -152,6 +153,6 @@ class Backend {
 	}
 }
 
-$singleton = new Backend();
-$singleton->execute();
+$backend = new Backend();
+$backend->execute();
 ?>

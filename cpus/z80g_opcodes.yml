@@ -1,738 +1,971 @@
 
 ---
 0x00:
-  Format: NOP
+  Instruction: NOP
   Size: 0
 0x01:
-  Format: LD BC, %04X
+  Instruction: LD
+  Address: BC, %04X
   Size: 2
 0x02:
-  Format: LD (BC), A
+  Instruction: LD
+  Address: (BC), A
   Size: 0
 0x03:
-  Format: INC BC
+  Instruction: INC
+  Address: BC
   Size: 0
 0x04:
-  Format: INC B
+  Instruction: INC
+  Address: B
   Size: 0
 0x05:
-  Format: DEC B
+  Instruction: DEC
+  Address: B
   Size: 0
 0x06:
-  Format: LD B, %02X
+  Instruction: LD
+  Address: B, %02X
   Size: 1
 0x07:
-  Format: RLCA
+  Instruction: RLCA
   Size: 0
 0x08:
-  Format: LD (%04X), SP
+  Instruction: LD
+  Address: (%04X), SP
   Size: 2
 0x09:
-  Format: ADD HL, BC
+  Instruction: ADD
+  Address: HL, BC
   Size: 0
 0x0a:
-  Format: LD A, (BC)
+  Instruction: LD
+  Address: A, (BC)
   Size: 0
 0x0b:
-  Format: DEC BC
+  Instruction: DEC
+  Address: BC
   Size: 0
 0x0c:
-  Format: INC C
+  Instruction: INC
+  Address: C
   Size: 0
 0x0d:
-  Format: DEC C
+  Instruction: DEC
+  Address: C
   Size: 0
 0x0e:
-  Format: LD C, %02X
+  Instruction: LD
+  Address: C, %02X
   Size: 1
 0x0f:
-  Format: RRCA
+  Instruction: RRCA
   Size: 0
 0x10:
-  Format: NYI
+  Instruction: NYI
   Size: 1
 0x11:
-  Format: LD DE, %04X
+  Instruction: LD
+  Address: DE, %04X
   Size: 2
 0x12:
-  Format: LD (DE), A
+  Instruction: LD
+  Address: (DE), A
   Size: 0
 0x13:
-  Format: INC DE
+  Instruction: INC
+  Address: DE
   Size: 0
 0x14:
-  Format: INC D
+  Instruction: INC
+  Address: D
   Size: 0
 0x15:
-  Format: DEC D
+  Instruction: DEC
+  Address: D
   Size: 0
 0x16:
-  Format: LD D, %02X
+  Instruction: LD
+  Address: D, %02X
   Size: 1
 0x17:
-  Format: RLA
+  Instruction: RLA
   Size: 0
 0x18:
-  Format: JR %02X
+  Instruction: JR
+  Address: "%02X"
   Size: 1
 0x19:
-  Format: ADD HL, DE
+  Instruction: ADD
+  Address: HL, DE
   Size: 0
 0x1a:
-  Format: LD A, (DE)
+  Instruction: LD
+  Address: A, (DE)
   Size: 0
 0x1b:
-  Format: DEC DE
+  Instruction: DEC
+  Address: DE
   Size: 0
 0x1c:
-  Format: INC E
+  Instruction: INC
+  Address: E
   Size: 0
 0x1d:
-  Format: DEC E
+  Instruction: DEC
+  Address: E
   Size: 0
 0x1e:
-  Format: LD E, %02X
+  Instruction: LD
+  Address: E, %02X
   Size: 1
 0x1f:
-  Format: RRA
+  Instruction: RRA
   Size: 0
 0x20:
-  Format: JR NZ, %02X
+  Instruction: JR
+  Address: NZ, %02X
   Size: 1
 0x21:
-  Format: LD HL, %04X
+  Instruction: LD
+  Address: HL, %04X
   Size: 2
 0x22:
-  Format: LDI (HL), A
+  Instruction: LDI
+  Address: (HL), A
   Size: 0
 0x23:
-  Format: INC HL
+  Instruction: INC
+  Address: HL
   Size: 0
 0x24:
-  Format: INC H
+  Instruction: INC
+  Address: H
   Size: 0
 0x25:
-  Format: DEC H
+  Instruction: DEC
+  Address: H
   Size: 0
 0x26:
-  Format: LD H, %02X
+  Instruction: LD
+  Address: H, %02X
   Size: 1
 0x27:
-  Format: DAA
+  Instruction: DAA
   Size: 0
 0x28:
-  Format: JR Z, %02X
+  Instruction: JR
+  Address: Z, %02X
   Size: 1
 0x29:
-  Format: ADD HL, HL
+  Instruction: ADD
+  Address: HL, HL
   Size: 0
 0x2a:
-  Format: LDI A, (HL)
+  Instruction: LDI
+  Address: A, (HL)
   Size: 0
 0x2b:
-  Format: DEC HL
+  Instruction: DEC
+  Address: HL
   Size: 0
 0x2c:
-  Format: INC L
+  Instruction: INC
+  Address: L
   Size: 0
 0x2d:
-  Format: DEC L
+  Instruction: DEC
+  Address: L
   Size: 0
 0x2e:
-  Format: LD L, %02X
+  Instruction: LD
+  Address: L, %02X
   Size: 1
 0x2f:
-  Format: CPL
+  Instruction: CPL
   Size: 0
 0x30:
-  Format: JR NC, %02X
+  Instruction: JR
+  Address: NC, %02X
   Size: 1
 0x31:
-  Format: LD SP, %04X
+  Instruction: LD
+  Address: SP, %04X
   Size: 2
 0x32:
-  Format: LDD (HL), A
+  Instruction: LDD
+  Address: (HL), A
   Size: 0
 0x33:
-  Format: INC SP
+  Instruction: INC
+  Address: SP
   Size: 0
 0x34:
-  Format: INC (HL)
+  Instruction: INC
+  Address: (HL)
   Size: 0
 0x35:
-  Format: DEC (HL)
+  Instruction: DEC
+  Address: (HL)
   Size: 0
 0x36:
-  Format: LD (HL), %02X
+  Instruction: LD
+  Address: (HL), %02X
   Size: 1
 0x37:
-  Format: SCF
+  Instruction: SCF
   Size: 0
 0x38:
-  Format: JR C, %02X
+  Instruction: JR
+  Address: C, %02X
   Size: 1
 0x39:
-  Format: ADD HL, SP
+  Instruction: ADD
+  Address: HL, SP
   Size: 0
 0x3a:
-  Format: LDD A, (HL)
+  Instruction: LDD
+  Address: A, (HL)
   Size: 0
 0x3b:
-  Format: DEC SP
+  Instruction: DEC
+  Address: SP
   Size: 0
 0x3c:
-  Format: INC A
+  Instruction: INC
+  Address: A
   Size: 0
 0x3d:
-  Format: DEC A
+  Instruction: DEC
+  Address: A
   Size: 0
 0x3e:
-  Format: LD A, %02X
+  Instruction: LD
+  Address: A, %02X
   Size: 1
 0x3f:
-  Format: CCF
+  Instruction: CCF
   Size: 0
 0x40:
-  Format: LD B, B
+  Instruction: LD
+  Address: B, B
   Size: 0
 0x41:
-  Format: LD B, C
+  Instruction: LD
+  Address: B, C
   Size: 0
 0x42:
-  Format: LD B, D
+  Instruction: LD
+  Address: B, D
   Size: 0
 0x43:
-  Format: LD B, E
+  Instruction: LD
+  Address: B, E
   Size: 0
 0x44:
-  Format: LD B, H
+  Instruction: LD
+  Address: B, H
   Size: 0
 0x45:
-  Format: LD B, L
+  Instruction: LD
+  Address: B, L
   Size: 0
 0x46:
-  Format: LD B, (HL)
+  Instruction: LD
+  Address: B, (HL)
   Size: 0
 0x47:
-  Format: LD B, A
+  Instruction: LD
+  Address: B, A
   Size: 0
 0x48:
-  Format: LD C, B
+  Instruction: LD
+  Address: C, B
   Size: 0
 0x49:
-  Format: LD C, C
+  Instruction: LD
+  Address: C, C
   Size: 0
 0x4a:
-  Format: LD C, D
+  Instruction: LD
+  Address: C, D
   Size: 0
 0x4b:
-  Format: LD C, E
+  Instruction: LD
+  Address: C, E
   Size: 0
 0x4c:
-  Format: LD C, H
+  Instruction: LD
+  Address: C, H
   Size: 0
 0x4d:
-  Format: LD C, L
+  Instruction: LD
+  Address: C, L
   Size: 0
 0x4e:
-  Format: LD C, (HL)
+  Instruction: LD
+  Address: C, (HL)
   Size: 0
 0x4f:
-  Format: LD C, A
+  Instruction: LD
+  Address: C, A
   Size: 0
 0x50:
-  Format: LD D, B
+  Instruction: LD
+  Address: D, B
   Size: 0
 0x51:
-  Format: LD D, C
+  Instruction: LD
+  Address: D, C
   Size: 0
 0x52:
-  Format: LD D, D
+  Instruction: LD
+  Address: D, D
   Size: 0
 0x53:
-  Format: LD D, E
+  Instruction: LD
+  Address: D, E
   Size: 0
 0x54:
-  Format: LD D, H
+  Instruction: LD
+  Address: D, H
   Size: 0
 0x55:
-  Format: LD D, L
+  Instruction: LD
+  Address: D, L
   Size: 0
 0x56:
-  Format: LD D, (HL)
+  Instruction: LD
+  Address: D, (HL)
   Size: 0
 0x57:
-  Format: LD D, A
+  Instruction: LD
+  Address: D, A
   Size: 0
 0x58:
-  Format: LD E, B
+  Instruction: LD
+  Address: E, B
   Size: 0
 0x59:
-  Format: LD E, C
+  Instruction: LD
+  Address: E, C
   Size: 0
 0x5a:
-  Format: LD E, D
+  Instruction: LD
+  Address: E, D
   Size: 0
 0x5b:
-  Format: LD E, E
+  Instruction: LD
+  Address: E, E
   Size: 0
 0x5c:
-  Format: LD E, H
+  Instruction: LD
+  Address: E, H
   Size: 0
 0x5d:
-  Format: LD E, L
+  Instruction: LD
+  Address: E, L
   Size: 0
 0x5e:
-  Format: LD E, (HL)
+  Instruction: LD
+  Address: E, (HL)
   Size: 0
 0x5f:
-  Format: LD E, A
+  Instruction: LD
+  Address: E, A
   Size: 0
 0x60:
-  Format: LD H, B
+  Instruction: LD
+  Address: H, B
   Size: 0
 0x61:
-  Format: LD H, C
+  Instruction: LD
+  Address: H, C
   Size: 0
 0x62:
-  Format: LD H, D
+  Instruction: LD
+  Address: H, D
   Size: 0
 0x63:
-  Format: LD H, E
+  Instruction: LD
+  Address: H, E
   Size: 0
 0x64:
-  Format: LD H, H
+  Instruction: LD
+  Address: H, H
   Size: 0
 0x65:
-  Format: LD H, L
+  Instruction: LD
+  Address: H, L
   Size: 0
 0x66:
-  Format: LD H, (HL)
+  Instruction: LD
+  Address: H, (HL)
   Size: 0
 0x67:
-  Format: LD H, A
+  Instruction: LD
+  Address: H, A
   Size: 0
 0x68:
-  Format: LD L, B
+  Instruction: LD
+  Address: L, B
   Size: 0
 0x69:
-  Format: LD L, C
+  Instruction: LD
+  Address: L, C
   Size: 0
 0x6a:
-  Format: LD L, D
+  Instruction: LD
+  Address: L, D
   Size: 0
 0x6b:
-  Format: LD L, E
+  Instruction: LD
+  Address: L, E
   Size: 0
 0x6c:
-  Format: LD L, H
+  Instruction: LD
+  Address: L, H
   Size: 0
 0x6d:
-  Format: LD L, L
+  Instruction: LD
+  Address: L, L
   Size: 0
 0x6e:
-  Format: LD L, (HL)
+  Instruction: LD
+  Address: L, (HL)
   Size: 0
 0x6f:
-  Format: LD L, A
+  Instruction: LD
+  Address: L, A
   Size: 0
 0x70:
-  Format: LD (HL), B
+  Instruction: LD
+  Address: (HL), B
   Size: 0
 0x71:
-  Format: LD (HL), C
+  Instruction: LD
+  Address: (HL), C
   Size: 0
 0x72:
-  Format: LD (HL), D
+  Instruction: LD
+  Address: (HL), D
   Size: 0
 0x73:
-  Format: LD (HL), E
+  Instruction: LD
+  Address: (HL), E
   Size: 0
 0x74:
-  Format: LD (HL), H
+  Instruction: LD
+  Address: (HL), H
   Size: 0
 0x75:
-  Format: LD (HL), L
+  Instruction: LD
+  Address: (HL), L
   Size: 0
 0x76:
-  Format: HALT
+  Instruction: HALT
   Size: 0
 0x77:
-  Format: LD (HL), A
+  Instruction: LD
+  Address: (HL), A
   Size: 0
 0x78:
-  Format: LD A, B
+  Instruction: LD
+  Address: A, B
   Size: 0
 0x79:
-  Format: LD A, C
+  Instruction: LD
+  Address: A, C
   Size: 0
 0x7a:
-  Format: LD A, D
+  Instruction: LD
+  Address: A, D
   Size: 0
 0x7b:
-  Format: LD A, E
+  Instruction: LD
+  Address: A, E
   Size: 0
 0x7c:
-  Format: LD A, H
+  Instruction: LD
+  Address: A, H
   Size: 0
 0x7d:
-  Format: LD A, L
+  Instruction: LD
+  Address: A, L
   Size: 0
 0x7e:
-  Format: LD A, (HL)
+  Instruction: LD
+  Address: A, (HL)
   Size: 0
 0x7f:
-  Format: LD A, A
+  Instruction: LD
+  Address: A, A
   Size: 0
 0x80:
-  Format: ADD A, B
+  Instruction: ADD
+  Address: A, B
   Size: 0
 0x81:
-  Format: ADD A, C
+  Instruction: ADD
+  Address: A, C
   Size: 0
 0x82:
-  Format: ADD A, D
+  Instruction: ADD
+  Address: A, D
   Size: 0
 0x83:
-  Format: ADD A, E
+  Instruction: ADD
+  Address: A, E
   Size: 0
 0x84:
-  Format: ADD A, H
+  Instruction: ADD
+  Address: A, H
   Size: 0
 0x85:
-  Format: ADD A, L
+  Instruction: ADD
+  Address: A, L
   Size: 0
 0x86:
-  Format: ADD A, (HL)
+  Instruction: ADD
+  Address: A, (HL)
   Size: 0
 0x87:
-  Format: ADD A, A
+  Instruction: ADD
+  Address: A, A
   Size: 0
 0x88:
-  Format: ADC A, B
+  Instruction: ADC
+  Address: A, B
   Size: 0
 0x89:
-  Format: ADC A, C
+  Instruction: ADC
+  Address: A, C
   Size: 0
 0x8a:
-  Format: ADC A, D
+  Instruction: ADC
+  Address: A, D
   Size: 0
 0x8b:
-  Format: ADC A, E
+  Instruction: ADC
+  Address: A, E
   Size: 0
 0x8c:
-  Format: ADC A, H
+  Instruction: ADC
+  Address: A, H
   Size: 0
 0x8d:
-  Format: ADC A, L
+  Instruction: ADC
+  Address: A, L
   Size: 0
 0x8e:
-  Format: ADC A, (HL)
+  Instruction: ADC
+  Address: A, (HL)
   Size: 0
 0x8f:
-  Format: ADC A, A
+  Instruction: ADC
+  Address: A, A
   Size: 0
 0x90:
-  Format: SUB B
+  Instruction: SUB
+  Address: B
   Size: 0
 0x91:
-  Format: SUB C
+  Instruction: SUB
+  Address: C
   Size: 0
 0x92:
-  Format: SUB D
+  Instruction: SUB
+  Address: D
   Size: 0
 0x93:
-  Format: SUB E
+  Instruction: SUB
+  Address: E
   Size: 0
 0x94:
-  Format: SUB H
+  Instruction: SUB
+  Address: H
   Size: 0
 0x95:
-  Format: SUB L
+  Instruction: SUB
+  Address: L
   Size: 0
 0x96:
-  Format: SUB (HL)
+  Instruction: SUB
+  Address: (HL)
   Size: 0
 0x97:
-  Format: SUB A
+  Instruction: SUB
+  Address: A
   Size: 0
 0x98:
-  Format: SBC B
+  Instruction: SBC
+  Address: B
   Size: 0
 0x99:
-  Format: SBC C
+  Instruction: SBC
+  Address: C
   Size: 0
 0x9a:
-  Format: SBC D
+  Instruction: SBC
+  Address: D
   Size: 0
 0x9b:
-  Format: SBC E
+  Instruction: SBC
+  Address: E
   Size: 0
 0x9c:
-  Format: SBC H
+  Instruction: SBC
+  Address: H
   Size: 0
 0x9d:
-  Format: SBC L
+  Instruction: SBC
+  Address: L
   Size: 0
 0x9e:
-  Format: SBC (HL)
+  Instruction: SBC
+  Address: (HL)
   Size: 0
 0x9f:
-  Format: SBC A
+  Instruction: SBC
+  Address: A
   Size: 0
 0xa0:
-  Format: AND B
+  Instruction: AND
+  Address: B
   Size: 0
 0xa1:
-  Format: AND C
+  Instruction: AND
+  Address: C
   Size: 0
 0xa2:
-  Format: AND D
+  Instruction: AND
+  Address: D
   Size: 0
 0xa3:
-  Format: AND E
+  Instruction: AND
+  Address: E
   Size: 0
 0xa4:
-  Format: AND H
+  Instruction: AND
+  Address: H
   Size: 0
 0xa5:
-  Format: AND L
+  Instruction: AND
+  Address: L
   Size: 0
 0xa6:
-  Format: AND (HL)
+  Instruction: AND
+  Address: (HL)
   Size: 0
 0xa7:
-  Format: AND A
+  Instruction: AND
+  Address: A
   Size: 0
 0xa8:
-  Format: XOR B
+  Instruction: XOR
+  Address: B
   Size: 0
 0xa9:
-  Format: XOR C
+  Instruction: XOR
+  Address: C
   Size: 0
 0xaa:
-  Format: XOR D
+  Instruction: XOR
+  Address: D
   Size: 0
 0xab:
-  Format: XOR E
+  Instruction: XOR
+  Address: E
   Size: 0
 0xac:
-  Format: XOR H
+  Instruction: XOR
+  Address: H
   Size: 0
 0xad:
-  Format: XOR L
+  Instruction: XOR
+  Address: L
   Size: 0
 0xae:
-  Format: XOR (HL)
+  Instruction: XOR
+  Address: (HL)
   Size: 0
 0xaf:
-  Format: XOR A
+  Instruction: XOR
+  Address:  A
   Size: 0
 0xb0:
-  Format: OR B
+  Instruction: OR
+  Address: B
   Size: 0
 0xb1:
-  Format: OR C
+  Instruction: OR
+  Address: C
   Size: 0
 0xb2:
-  Format: OR D
+  Instruction: OR
+  Address: D
   Size: 0
 0xb3:
-  Format: OR E
+  Instruction: OR
+  Address: E
   Size: 0
 0xb4:
-  Format: OR H
+  Instruction: OR
+  Address: H
   Size: 0
 0xb5:
-  Format: OR L
+  Instruction: OR
+  Address: L
   Size: 0
 0xb6:
-  Format: OR (HL)
+  Instruction: OR
+  Address: (HL)
   Size: 0
 0xb7:
-  Format: OR A
+  Instruction: OR
+  Address: A
   Size: 0
 0xb8:
-  Format: CP B
+  Instruction: CP
+  Address: B
   Size: 0
 0xb9:
-  Format: CP C
+  Instruction: CP
+  Address: C
   Size: 0
 0xba:
-  Format: CP D
+  Instruction: CP
+  Address: D
   Size: 0
 0xbb:
-  Format: CP E
+  Instruction: CP
+  Address: E
   Size: 0
 0xbc:
-  Format: CP H
+  Instruction: CP
+  Address: H
   Size: 0
 0xbd:
-  Format: CP L
+  Instruction: CP
+  Address: L
   Size: 0
 0xbe:
-  Format: CP (HL)
+  Instruction: CP
+  Address: (HL)
   Size: 0
 0xbf:
-  Format: CP A
+  Instruction: CP
+  Address: A
   Size: 0
 0xc0:
-  Format: RET
+  Instruction: RET
   Size: 0
 0xc1:
-  Format: POP BC
+  Instruction: POP
+  Address: BC
   Size: 0
 0xc2:
-  Format: JP NZ, %04X
+  Instruction: JP
+  Address: NZ, %04X
   Size: 2
 0xc3:
-  Format: JP %04X
+  Instruction: JP
+  Address: "%04X"
   Size: 2
+  Jump: y
 0xc4:
-  Format: CALL NZ, %04X
+  Instruction: CALL
+  Address: NZ, %04X
   Size: 2
 0xc5:
-  Format: PUSH BC
+  Instruction: PUSH
+  Address: BC
   Size: 0
 0xc6:
-  Format: 'ADD A, #'
+  Address: 'ADD A, #'
   Size: 0
 0xc7:
-  Format: RST 00
+  Address: RST 00
   Size: 0
 0xc8:
-  Format: RET
+  Instruction: RET
   Size: 0
 0xc9:
-  Format: RET
+  Instruction: RET
   Size: 0
 0xca:
-  Format: JP Z,%04X
+  Instruction: JP
+  Address: Z,%04X
   Size: 2
 0xcb:
-  Format: NYI
+  Instruction: NYI
   Size: 1
 0xcc:
-  Format: CALL Z, %04X
+  Instruction: CALL
+  Address: Z, %04X
   Size: 2
 0xcd:
-  Format: CALL %04X
+  Instruction: CALL
+  Address: "%04X"
+  Jump: y
   Size: 2
 0xce:
-  Format: ADC A, %02X
+  Instruction: ADC
+  PrintFormat: A, %s
+  Address: "%02X"
   Size: 1
 0xcf:
-  Format: RST 08
+  Instruction: RST
+  Address: "08"
   Size: 0
 0xd0:
-  Format: RET
+  Instruction: RET
   Size: 0
 0xd1:
-  Format: POP DE
+  Instruction: POP
+  Address: DE
   Size: 0
 0xd2:
-  Format: JP NC, %04X
+  Instruction: JP
+  Address: NC, %04X
   Size: 2
 0xd4:
-  Format: CALL NC, %04X
+  Instruction: CALL
+  Address: NC, %04X
   Size: 2
 0xd5:
-  Format: PUSH DE
+  Instruction: PUSH
+  Address: DE
   Size: 0
 0xd6:
-  Format: 'SUB #'
+  Instruction: SUB
+  Address: '#'
   Size: 0
 0xd7:
-  Format: RST 10
+  Instruction: RST
+  Address: 10
   Size: 0
 0xd8:
-  Format: RET
+  Instruction: RET
   Size: 0
 0xd9:
-  Format: RETI
+  Instruction: RETI
   Size: 0
 0xda:
-  Format: JP C, %04X
+  Instruction: JP
+  Address: "%04X"
+  PrintFormat: C, %s
   Size: 2
 0xdc:
-  Format: CALL C, %04X
+  Instruction: CALL
+  Address: "%04X"
+  PrintFormat: C, %s
   Size: 2
 0xdd:
-  Format: DB %02X
+  Instruction: DB
+  Address: "%02X"
   Size: 1
 0xdf:
-  Format: RST 18
+  Instruction: RST
+  Address: "18"
   Size: 0
 0xe0:
-  Format: LD ($FF00+%02X), A
+  Instruction: LD
+  Address: $FF%02X
+  PrintFormat: (%s), A
   Size: 1
 0xe1:
-  Format: POP HL
+  Instruction: POP
+  Address: HL
   Size: 0
 0xe2:
-  Format: LD ($FF00+C), A
+  Instruction: LD
+  Address: ($FF00+C), A
   Size: 0
 0xe5:
-  Format: PUSH HL
+  Instruction: PUSH
+  Address: HL
   Size: 0
 0xe6:
-  Format: 'AND #'
+  Instruction: AND
+  Address: '#'
   Size: 0
 0xe7:
-  Format: RST 20
+  Instruction: RST
+  Address: "20"
   Size: 0
 0xe8:
-  Format: ADD SP, %02X
+  Instruction: ADD
+  Address: "%02X"
+  PrintFormat: SP, %s
   Size: 1
 0xe9:
-  Format: JP (HL)
+  Instruction: JP
+  Address: (HL)
   Size: 0
 0xea:
-  Format: LD (%04X), A
+  Instruction: LD
+  Address: (%04X), A
   Size: 2
 0xee:
-  Format: 'XOR #'
+  Instruction: XOR
+  Address: '#'
   Size: 0
 0xef:
-  Format: RST 28
+  Instruction: RST
+  Address: "28"
   Size: 0
 0xf0:
-  Format: LD A, ($FF00+%02X)
+  Instruction: LD
+  Address: $FF%02X
+  PrintFormat: A, (%s)
   Size: 1
 0xf1:
-  Format: POP AF
+  Instruction: POP
+  Address: AF
   Size: 0
 0xf2:
-  Format: LD A, ($FF00+C)
+  Instruction: LD
+  Address: A, ($FF00+C)
   Size: 0
 0xf3:
-  Format: DI
+  Instruction: DI
   Size: 0
 0xf5:
-  Format: PUSH AF
+  Instruction: PUSH
+  Address: AF
   Size: 0
 0xf6:
-  Format: 'OR #'
+  Instruction: OR
+  Address: '#'
   Size: 0
 0xf7:
-  Format: RST 30
+  Instruction: RST
+  Address: "30"
   Size: 0
 0xf8:
-  Format: LDHL SP, %02X
+  Instruction: LDHL
+  Address: "%02X"
+  PrintFormat: SP, %s
   Size: 1
 0xf9:
-  Format: LD SP, HL
+  Instruction: LD
+  Address: SP, HL
   Size: 0
 0xfa:
-  Format: LD A, (%04X)
+  Instruction: LD
+  Address: "%04X"
+  PrintFormat: A, (%s)
   Size: 2
 0xfb:
-  Format: EI
+  Instruction: EI
   Size: 0
 0xfe:
-  Format: CP %02X
+  Instruction: CP
+  Address: "%02X"
   Size: 1
 0xff:
-  Format: RST 38
+  Instruction: RST
+  Address: "38"
   Size: 0
 ...

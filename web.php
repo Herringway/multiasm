@@ -53,7 +53,7 @@ class display {
 		'menuitems' => $this->main->menuitems, 
 		'opcodeformat' => core::opcodeformat,
 		'comments' => $this->main->comments,
-		'miscoutput' => $miscoutput,
+		'miscdata' => $this->main->platform->getMiscInfo(),
 		'gamelist' => $this->main->gamelist));
 	}
 	public static function display_error($error) {

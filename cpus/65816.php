@@ -5,7 +5,6 @@ class core extends core_base {
 	private $opcodes;
 	private $accum = 16;
 	private $index = 16;
-	public $placeholdernames = false;
 	private $platform;
 	function __construct(&$main) {
 		$this->main = $main;

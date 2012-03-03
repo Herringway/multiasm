@@ -1,5 +1,4 @@
 <?php
-//ini_set('display_errors', 'Off');
 register_shutdown_function('flagrant_system_error');
 date_default_timezone_set('America/Halifax');
 set_exception_handler('print_exception');
@@ -10,6 +9,7 @@ function print_exception($exception) {
 }
 function error_handling($errno, $message, $file, $line) {
 	static $errors = 0;
+	ini_set('display_errors', 'Off');
 	if ($errors++ < 100)
 		display::debugmessage(sprintf("%s on %s:%d", $message, $file, $line));
 	return true;
@@ -177,12 +177,16 @@ abstract class platform_base {
 	}
 	public function base() {
 	}
+	public function getMiscInfo() {
+		return array();
+	}
 }
 
 abstract class core_base {
 	public $initialoffset;
 	public $currentoffset;
 	public $branches;
+	public $placeholdernames = false;
 	protected $main;
 	const addressformat = '%X';
 	const template = 'assembly';

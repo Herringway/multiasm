@@ -41,5 +41,8 @@ class platform extends platform_base {
 		}
 		throw new Exception(sprintf('Mapper %d unsupported',$this->details['Mapper']));
 	}
+	public function getMiscInfo() {
+		return $this->details;
+	}
 }
 ?>
