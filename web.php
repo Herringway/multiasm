@@ -36,6 +36,7 @@ class display {
 		return $opts;
 	}
 	public function display($data) {
+		global $miscoutput;
 		$this->main->debugvar($this->mode, 'displaymode');
 		header('Content-Type: text/html; charset=UTF-8');
 		$this->dwoo->output('templates/'.$this->mode.'.tpl',
@@ -52,6 +53,7 @@ class display {
 		'menuitems' => $this->main->menuitems, 
 		'opcodeformat' => core::opcodeformat,
 		'comments' => $this->main->comments,
+		'miscoutput' => $miscoutput,
 		'gamelist' => $this->main->gamelist));
 	}
 	public static function display_error($error) {
@@ -60,6 +62,9 @@ class display {
 	}
 	public static function debugvar($var, $label) {
 		ChromePhp::log($label, $var);
+	}
+	public static function debugmessage($message) {
+		ChromePhp::error($message);
 	}
 }
 ?>

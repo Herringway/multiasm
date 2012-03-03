@@ -7,18 +7,18 @@ class core extends core_base {
 		$this->main = $main;
 	}
 	public function getDefault() {
-		$realoffset = $this->main->platform->map_rom(0x100);
-		return $realoffset;
+		fseek($this->main->gamehandle,$this->main->platform->map_rom(0x102));
+		return $this->main->platform->map_rom(ord(fgetc($this->main->gamehandle)) + (ord(fgetc($this->main->gamehandle))<<8));
 	}
-	public function execute($offset,$offsetname) {
+	public function execute($offset) {
 		$this->initialoffset = $this->currentoffset = $offset;
-		fseek($this->handle, $this->main->platform->map_rom($offset));
+		fseek($this->main->gamehandle, $this->main->platform->map_rom($offset));
 		while (true) {
-			$opcode = ord(fgetc($this->handle));
+			$opcode = ord(fgetc($this->main->gamehandle));
 			$args = array();
 			$val = 0;
 			for ($i = 0; $i < $this->opcodes[$opcode]['Size']; $i++) {
-				$args[$i] = ord(fgetc($this->handle));
+				$args[$i] = ord(fgetc($this->main->gamehandle));
 				$val += $args[$i]<<($i*8);
 			}
 			$output[] = array('offset' => $offset, 'opcode' => $opcode, 'instruction' => sprintf($this->opcodes[$opcode]['Format'], $val), 'args' => $args, 'interpretedargs' => '', 'uri' => '');

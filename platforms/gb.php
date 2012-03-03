@@ -3,7 +3,7 @@ class platform extends platform_base {
 	private $handle;
 	private $opts;
 	
-	const extension = 'gbc';
+	const extension = 'gb';
 	
 	function __construct($main) {
 		$this->handle = $main->gamehandle;

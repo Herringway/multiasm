@@ -72,8 +72,6 @@ class Backend {
 		
 		$this->opts['rombase'] = $this->platform->base();
 		
-		$this->debugvar($this->offset, 'Location');
-		$this->debugvar($this->offsetname, 'Location_Fancy');
 		
 		//Load CPU Class
 		
@@ -117,6 +115,8 @@ class Backend {
 				}
 			}
 		}
+		$this->debugvar($this->offset, 'Location');
+		$this->debugvar($this->offsetname, 'Location_Fancy');
 		//What are we doing?
 		if (in_array($this->offset, $magicvalues, true))
 			$modname = $this->offset;

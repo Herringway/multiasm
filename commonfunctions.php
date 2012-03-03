@@ -1,5 +1,5 @@
 <?php
-ini_set('display_errors', 'Off');
+//ini_set('display_errors', 'Off');
 register_shutdown_function('flagrant_system_error');
 date_default_timezone_set('America/Halifax');
 set_exception_handler('print_exception');
@@ -9,7 +9,9 @@ function print_exception($exception) {
 	display::display_error(array('trace' => $exception->getTrace(), 'message' => $exception->getMessage()));
 }
 function error_handling($errno, $message, $file, $line) {
-	//display::display_error(array('trace' => $message, 'message' => $message));
+	static $errors = 0;
+	if ($errors++ < 100)
+		display::debugmessage(sprintf("%s on %s:%d", $message, $file, $line));
 	return true;
 }
 function flagrant_system_error() {
