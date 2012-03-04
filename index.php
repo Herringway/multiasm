@@ -15,6 +15,8 @@ class Backend {
 	public $yamldata;
 	public $dataname;
 	public $comments;
+	public $realname = '';
+	public $realdesc = '';
 	public $menuitems = array();
 	public $gamelist = array();
 	
@@ -55,12 +57,7 @@ class Backend {
 			$this->gameid = $this->settings['gameid'];
 			
 		//Load game data. from cache if possible
-		if (isset($this->cache[sprintf('MPASM.ymlmodified.%s', $this->gameid)]) && ($this->cache[sprintf('MPASM.ymlmodified.%s', $this->gameid)] === filemtime(sprintf('games/%s.yml', $this->gameid))))
-			list($this->game,$this->addresses) = $this->cache[sprintf('MPASM.ymlcache.%s', $this->gameid)];
-		else { //Load game data & platform class from yml
-			list($this->game,$this->addresses) = $this->cache[sprintf('MPASM.ymlcache.%s', $this->gameid)] = yaml_parse_file(sprintf('games/%s.yml', $this->gameid), -1);
-			$this->cache[sprintf('MPASM.ymlmodified.%s', $this->gameid)] = filemtime(sprintf('games/%s.yml', $this->gameid));
-		}
+		list($this->game, $this->addresses) = $this->loadYAML($this->gameid);
 		
 		require_once sprintf('platforms/%s.php', $this->game['platform']);
 		if (!file_exists($this->settings['rompath'].$this->gameid.'.'.platform::extension))
@@ -102,11 +99,13 @@ class Backend {
 			if (in_array($argv[1], $magicvalues))
 				$this->offset = $argv[1];
 			else {
-				if (isset($this->addresses) && (strtoupper(dechex(hexdec($argv[1]))) != strtoupper($argv[1]))) {
+				if (isset($this->addresses) && !is_numeric('0x'.$argv[1])) {
 					foreach ($this->addresses as $k => $addr)
 						if (isset($addr['name']) && ($addr['name'] == $argv[1])) {
 							$this->offset = $k;
-							$this->offsetname = $argv[1];
+							$this->realname = $this->offsetname = $argv[1];
+							if (isset($addr['description']))
+								$this->realdesc = $addr['description'];
 							break;
 						}
 				} else {
@@ -144,8 +143,17 @@ class Backend {
 	public function getOffsetName($offset) {
 		return isset($this->addresses[$offset]['name']) ? $this->addresses[$offset]['name'] : '';
 	}
+	public function loadYAML($id) {
+		if (isset($this->cache[sprintf('MPASM.ymlmodified.%s', $id)]) && ($this->cache[sprintf('MPASM.ymlmodified.%s', $id)] === filemtime(sprintf('games/%s.yml', $id))))
+			list($game,$addresses) = $this->cache[sprintf('MPASM.ymlcache.%s', $id)];
+		else { //Load game data & platform class from yml
+			list($game,$addresses) = $this->cache[sprintf('MPASM.ymlcache.%s', $id)] = yaml_parse_file(sprintf('games/%s.yml', $id), -1);
+			$this->cache[sprintf('MPASM.ymlmodified.%s', $id)] = filemtime(sprintf('games/%s.yml', $id));
+		}
+		return array($game,$addresses);
+	}
 	public function decimal_to_function($input) {
-		return isset($this->addresses[$input]['name']) ? $this->addresses[$input]['name'] : sprintf(core::addressformat, $input);
+		return (isset($this->addresses[$input]['name']) && ($this->addresses[$input]['name'] != "")) ? $this->addresses[$input]['name'] : sprintf(core::addressformat, $input);
 	}
 	function debugvar($var, $label) {
 		if (isset($this->settings['debug']) && $this->settings['debug'])

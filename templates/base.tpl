@@ -9,7 +9,7 @@
 	{if !empty($gamelist)}<div class="right"><select onchange="top.location.href = '/' + this.options[this.selectedIndex].value">{loop $gamelist}<option value="{$_key}"{if $_.title == $} selected="yes"{/if}>{$}</option>{/loop}</select>
 	{if $nextoffset}<a rel="next" accesskey="n" href="/{$game}/{string_format($nextoffset,'%s')}">Next Function</a>{/if}
 	<form action="/index.php"><input type="hidden" name="game" value="{$game}">
-	<label>Offset:      <input type="text" value="{$offsetname}" name="begin"></label><br />{block "options"}{/block}
+	<label>Offset<input type="text" value="{$offsetname}" name="begin"></label><br />{block "options"}{/block}
 	<input type="submit" value="Submit">
 	</form></div>{/if}
 	<div class="menu"><div>

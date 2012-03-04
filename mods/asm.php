@@ -23,33 +23,40 @@ class asm {
 		else if (isset($this->main->core->branches))
 			foreach ($this->main->core->branches as $branch)
 				$this->main->menuitems[$branch] = $branch;
-			
-		//Saves a stub to the relevant YAML file. Work on this later.
-		/*if (isset($game['genstub'])) {
-			$branches = null;
-			if (isset($known_addresses_p[$core->initialoffset]['labels']))
-				$branches = $known_addresses_p[$core->initialoffset]['labels'];
-			if ($core->branches !== null) {
-				ksort($core->branches);
-				$unknownbranches = 0;
-				foreach ($core->branches as $k=>$branch)
-					$branches[$k] = 'UNKNOWN'.$unknownbranches++;
-			}
-			if (!isset($known_addresses_p[$core->initialoffset]['name']))
-				$known_addresses_p[$core->initialoffset]['name'] = '';
-			if (!isset($known_addresses_p[$core->initialoffset]['description']))
-				$known_addresses_p[$core->initialoffset]['description'] = '';
-			$known_addresses_p[$core->initialoffset]['type'] = 'assembly';
-			$known_addresses_p[$core->initialoffset]['size'] = $core->currentoffset-$core->initialoffset;
-			foreach ($core->getMisc() as $k=>$val)
-				$known_addresses_p[$core->initialoffset][$k] = $val;
-			$known_addresses_p[$core->initialoffset]['labels'] = $branches;
-			ksort($known_addresses_p);
-			$output = preg_replace_callback('/ ?(\d+):/', 'hexafixer', yaml_emit($gameorig).yaml_emit($known_addresses_p));
-			file_put_contents('games/'.$settings['gameid'].'.yml', $output);
-		}*/
+		if (isset($this->main->opts['genstub']) && ((hash('sha256', $this->main->opts['genstub']) === $this->main->settings['password']) || ($_COOKIE['pass'] === $this->main->settings['password'])))
+			$this->saveData();
 		$this->main->yamldata[] = $output;
 		return $output;
+	}
+	//Saves a stub to the relevant YAML file. Work on this later.
+	private function saveData() {
+		if (!isset($_COOKIE['pass']))
+			setcookie('pass', $this->main->settings['password'], pow(2,31)-1, '/', $_SERVER['SERVER_NAME']);
+		else
+			$this->main->debugvar($_COOKIE, 'cookie set!');
+		$branches = null;
+		list($gameorig,$addresses) = $this->main->loadYAML($this->main->gameid);
+		if (isset($addresses[$this->main->core->initialoffset]['labels']))
+			$branches = $addresses[$this->main->core->initialoffset]['labels'];
+		if ($this->main->core->branches !== null) {
+			ksort($this->main->core->branches);
+			$unknownbranches = 0;
+			foreach ($this->main->core->branches as $k=>$branch)
+				$branches[$k] = 'UNKNOWN'.$unknownbranches++;
+		}
+		if (!isset($addresses[$this->main->core->initialoffset]['name']) && (isset($this->main->opts['name'])))
+			$addresses[$this->main->core->initialoffset]['name'] = $this->main->opts['name'];
+		if (!isset($addresses[$this->main->core->initialoffset]['description']) && (isset($this->main->opts['desc'])))
+			$addresses[$this->main->core->initialoffset]['description'] = $this->main->opts['desc'];
+		$addresses[$this->main->core->initialoffset]['type'] = 'assembly';
+		$addresses[$this->main->core->initialoffset]['size'] = $this->main->core->currentoffset-$this->main->core->initialoffset;
+		foreach ($this->main->core->getMisc() as $k=>$val)
+			$addresses[$this->main->core->initialoffset][$k] = $val;
+		if ($branches != null)
+			$addresses[$this->main->core->initialoffset]['labels'] = $branches;
+		ksort($addresses);
+		$output = preg_replace_callback('/ ?(\d+):/', 'hexafixer', yaml_emit($gameorig).yaml_emit($addresses));
+		//file_put_contents('games/'.$this->main->gameid.'.yml', $output);
 	}
 	public static function shouldhandle($main) {
 		if (!isset($main->addresses[$main->offset]['type']) || ($main->addresses[$main->offset]['type'] !== 'data'))

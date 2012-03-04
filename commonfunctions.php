@@ -167,7 +167,7 @@ function read_tile($handle, $bpp, $palette = 0) {
 }
 function load_settings() { 
 	if (!file_exists('settings.yml'))
-		file_put_contents('settings.yml', yaml_emit(array('gameid' => 'eb', 'rompath' => '.', 'debug' => false)));
+		file_put_contents('settings.yml', yaml_emit(array('gameid' => 'eb', 'rompath' => '.', 'debug' => false, 'password' => 'changeme')));
 	return yaml_parse_file('settings.yml');
 }
 abstract class platform_base {

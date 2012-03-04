@@ -3,8 +3,9 @@ a		{ text-decoration: none; }
 small a		{ text-decoration: underline; }
 .palette { text-shadow: 0 0 0.5em white; width: 100px; height: 100px; text-align: center; display: table-cell; vertical-align:middle;}
 a[title] { text-decoration: underline; }
-div.right	{ position: fixed; background: white; border: none; right: 0px; width: 14%; }
+div.right	{ text-align: left; position: fixed; background: white; border: none; right: 0px; width: 14%; }
 div.right > select	{ width: 100%; }
+div.right input	{ position: absolute; right: 0px; }
 div.right:empty { display: none; }
 pre		{  left: 15%; position: absolute; top: 0px; text-align: left; font-family: monospace; color: black; background-color: #EEE; padding: 2px; overflow: auto; width: 70%; max-height: 95%; z-index: 0; border: 1px inset;}
 div.menu	{ position: fixed; left: 0px; top: 0px; background: white; font-size: 9pt; text-align: center; width: 15%;  overflow: auto; height: 100%; }
