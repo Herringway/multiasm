@@ -3,7 +3,7 @@
 {if $writemode}
 <label>Name<input type="text" value="true" name="name"></label><br />
 <label>Desc<input type="text" value="true" name="desc"></label><br />
-<label>Write to file<input type="checkbox" name="genstub" value="true"></label><br />
+<label>Write to file<input type="checkbox" name="write" value="true"></label><br />
 {/if}
 {/block}
 {block "assembly"}{loop $data}{if !$label}

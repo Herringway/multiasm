@@ -23,17 +23,13 @@ class asm {
 		else if (isset($this->main->core->branches))
 			foreach ($this->main->core->branches as $branch)
 				$this->main->menuitems[$branch] = $branch;
-		if (isset($this->main->opts['genstub']) && ((hash('sha256', $this->main->opts['genstub']) === $this->main->settings['password']) || ($_COOKIE['pass'] === $this->main->settings['password'])))
+		if (isset($this->main->opts['write']) && ($this->main->godpowers))
 			$this->saveData();
 		$this->main->yamldata[] = $output;
 		return $output;
 	}
 	//Saves a stub to the relevant YAML file. Work on this later.
 	private function saveData() {
-		if (!isset($_COOKIE['pass']))
-			setcookie('pass', $this->main->settings['password'], pow(2,31)-1, '/', $_SERVER['SERVER_NAME']);
-		else
-			$this->main->debugvar($_COOKIE, 'cookie set!');
 		$branches = null;
 		list($gameorig,$addresses) = $this->main->loadYAML($this->main->gameid);
 		if (isset($addresses[$this->main->core->initialoffset]['labels']))

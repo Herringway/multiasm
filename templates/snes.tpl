@@ -9,6 +9,6 @@
 <label>Simpler Output<input type="checkbox" name="clean" value="true"></label><br />
 <label>YAML Output<input type="checkbox" name="yaml" value="true"></label><br />
 {if $writemode}
-<label>Write to file<input type="checkbox" name="genstub" value="true"></label><br />
+<label>Write to file<input type="checkbox" name="write" value="true"></label><br />
 {/if}
 {/block}

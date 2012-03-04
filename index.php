@@ -17,6 +17,7 @@ class Backend {
 	public $comments;
 	public $realname = '';
 	public $realdesc = '';
+	public $godpowers = false;
 	public $menuitems = array();
 	public $gamelist = array();
 	
@@ -43,7 +44,8 @@ class Backend {
 		//Options!
 		$this->opts = $display->getOpts($argv);
 		$this->debugvar($this->opts, 'options');
-		
+		$this->godpowers = $display->canWrite();
+			
 		for ($dir = opendir('./games/'); $file = readdir($dir); ) {
 			if (substr($file, -4) == ".yml") {
 				$game = yaml_parse_file('./games/'.$file, 0);

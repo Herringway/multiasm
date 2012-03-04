@@ -277,6 +277,11 @@ texttables:
     0x065A: UNKNOWN35
     0x0660: UNKNOWN36
     0x0676: UNKNOWN37
+0xC00692:
+  type: assembly
+  size: 31
+  labels:
+    0x06B0: UNKNOWN0
 0xC00817:
   type: assembly
   size: 197
@@ -389,6 +394,17 @@ texttables:
 0xC40008:
   type: assembly
   size: 3
+0xC407EC:
+  type: assembly
+  size: 162
+  labels:
+    0x0801: UNKNOWN0
+    0x080F: UNKNOWN1
+    0x0816: UNKNOWN2
+    0x082A: UNKNOWN3
+    0x0840: UNKNOWN4
+    0x0850: UNKNOWN5
+    0x086E: UNKNOWN6
 0xC95B39:
   type: assembly
   size: 40

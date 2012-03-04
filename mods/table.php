@@ -26,11 +26,12 @@ class table {
 		$this->main->nextoffset = $this->main->decimal_to_function($offset);
 		$this->main->yamldata[] = $table['entries'];
 		$this->main->yamldata[] = $entries;
+		$i = 0;
 		foreach ($entries as $k => $item)
 			if (isset($item['Name']) && (trim($item['Name']) !== ''))
 				$this->main->menuitems[sprintf(core::addressformat, $offsets[$k])] = trim($item['Name']);
 			else
-				$this->main->menuitems[sprintf(core::addressformat, $offsets[$k])] = sprintf(core::addressformat, $offsets[$k]);
+				$this->main->menuitems[sprintf(core::addressformat, $offsets[$k])] = sprintf(core::addressformat.' (%04X)', $offsets[$k], $i++);
 		return array('header' => $header,'entries' => $entries, 'offsets' => $offsets);
 	}
 	public static function shouldhandle($main) {

@@ -36,6 +36,9 @@ class display {
 	public static function display_error($error) {
 		printf("Unhandled Exception: %s\n", $error['message']);
 	}
+	public function canWrite() {
+		return true;
+	}
 	private function showtable($data) {
 		echo yaml_emit($data['entries']);
 	}

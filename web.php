@@ -48,7 +48,7 @@ class display {
 		'data' => $data, 
 		'thisoffset' => $this->main->offset, 
 		'options' => $this->main->opts, 
-		'writemode' => (isset($_COOKIE['pass']) && ($_COOKIE['pass'] === $this->main->settings['password'])),
+		'writemode' => $this->main->godpowers,
 		'offsetname' => $this->main->offsetname, 
 		'realname' => $this->main->realname,
 		'realdesc' => $this->main->realdesc,
@@ -68,6 +68,17 @@ class display {
 	}
 	public static function debugmessage($message) {
 		ChromePhp::error($message);
+	}
+	public function canWrite() {
+		if (isset($this->main->opts['logout'])) {
+			setcookie('pass', null, -1, '/', $_SERVER['SERVER_NAME']);
+			return false;
+		} else if (hash('sha256', $this->main->opts['login']) === $this->main->settings['password']) {
+			setcookie('pass', $this->main->settings['password'], pow(2,31)-1, '/', $_SERVER['SERVER_NAME']);
+			return true;
+		} else if ($_COOKIE['pass'] === $this->main->settings['password'])
+			return true;
+		return false;
 	}
 }
 ?>
