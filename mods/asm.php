@@ -56,7 +56,7 @@ class asm {
 			$addresses[$this->main->core->initialoffset]['labels'] = $branches;
 		ksort($addresses);
 		$output = preg_replace_callback('/ ?(\d+):/', 'hexafixer', yaml_emit($gameorig).yaml_emit($addresses));
-		//file_put_contents('games/'.$this->main->gameid.'.yml', $output);
+		file_put_contents('games/'.$this->main->gameid.'.yml', $output);
 	}
 	public static function shouldhandle($main) {
 		if (!isset($main->addresses[$main->offset]['type']) || ($main->addresses[$main->offset]['type'] !== 'data'))

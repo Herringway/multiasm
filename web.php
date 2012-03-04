@@ -5,7 +5,7 @@ if (isset($_GET['begin'])) {
 		if (($key != 'begin') && ($key != 'game')) {
 			if ($val == 'true')
 				$options[] = $key;
-			else
+			else if ($val != null)
 				$options[] = sprintf('%s=%s', $key, $val);
 		}
 	header(sprintf('Location: http://%s/%s/%s/%s',$_SERVER['SERVER_NAME'],$_GET['game'], $_GET['begin'], implode('/', $options)));

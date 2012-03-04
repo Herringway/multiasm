@@ -224,6 +224,9 @@ texttables:
   type: assembly
   size: 206
   accumsize: 8
+0xC00208:
+  type: assembly
+  size: 90
 0xC00262:
   type: assembly
   size: 5
