@@ -991,6 +991,34 @@
   Instruction: RST
   Address: "38"
   Size: 0
+0xCB30:
+  Instruction: SWAP
+  Address: B
+  Size: 1
+0xCB31:
+  Instruction: SWAP
+  Address: C
+  Size: 1
+0xCB32:
+  Instruction: SWAP
+  Address: D
+  Size: 1
+0xCB33:
+  Instruction: SWAP
+  Address: E
+  Size: 1
+0xCB34:
+  Instruction: SWAP
+  Address: H
+  Size: 1
+0xCB35:
+  Instruction: SWAP
+  Address: L
+  Size: 1
+0xCB36:
+  Instruction: SWAP
+  Address: (HL)
+  Size: 1
 0xCB37:
   Instruction: SWAP
   Address: A
