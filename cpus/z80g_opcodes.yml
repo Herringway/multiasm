@@ -790,6 +790,7 @@
   Instruction: JP
   Address: "$%04X"
   Size: 2
+  Fixaddr: 4
   Jump: y
 0xc4:
   Instruction: CALL
@@ -990,4 +991,8 @@
   Instruction: RST
   Address: "38"
   Size: 0
+0xCB37:
+  Instruction: SWAP
+  Address: A
+  Size: 1
 ...

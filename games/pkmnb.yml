@@ -11,6 +11,10 @@ platform: gb
     0x0157: UNKNOWN0
     0x0159: UNKNOWN1
 0x001F54:
+  name: TEST
+  description: TESTCOMMENT
+  arguments:
+    x: wut
   type: assembly
   size: 346
   labels:

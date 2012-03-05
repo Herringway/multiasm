@@ -17,6 +17,8 @@ class core extends core_base {
 		fseek($this->main->gamehandle, $this->main->platform->map_rom($offset));
 		while (true) {
 			$opcode = ord(fgetc($this->main->gamehandle));
+			if ($opcode == 0xCB)
+				$opcode = ($opcode<<8)+ord(fgetc($this->main->gamehandle));
 			$args = array();
 			$val = 0;
 			if (isset($this->main->addresses[$this->initialoffset]['labels']) && isset($this->main->addresses[$this->initialoffset]['labels'][$this->currentoffset&0xFFFF]))
@@ -39,12 +41,14 @@ class core extends core_base {
 					$lookup = $val;
 				else if ($this->opcodes[$opcode]['Fixaddr'] == 2)
 					$lookup = $val;
-				if (isset($this->main->addresses[$this->initialoffset][$lookup]['name']))
-					$tmp['name'] = $this->main->addresses[$this->initialoffset][$lookup]['name'];
-				if (isset($this->main->addresses[$this->initialoffset][$lookup]['description']))
-					$tmp['comment'] = $this->main->addresses[$this->initialoffset][$lookup]['description'];
-				if (isset($this->main->addresses[$this->initialoffset][$lookup]['arguments']))
-					$tmp['commentarguments'] = $this->main->addresses[$this->initialoffset][$lookup]['arguments'];
+				if (isset($this->main->addresses[$lookup]['name']))
+					$tmp['name'] = $this->main->addresses[$lookup]['name'];
+					
+				if (isset($this->main->addresses[$lookup]['description']))
+					$tmp['comment'] = $this->main->addresses[$lookup]['description'];
+					
+				if (isset($this->main->addresses[$lookup]['arguments']))
+					$tmp['commentarguments'] = $this->main->addresses[$lookup]['arguments'];
 			}
 			if (isset($this->opcodes[$opcode]['branch'])) {
 				$val = $this->currentoffset+uint($val, 8)+$this->opcodes[$opcode]['Size']+1;
