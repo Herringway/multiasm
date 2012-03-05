@@ -73,7 +73,7 @@ class display {
 		if (isset($this->main->opts['logout'])) {
 			setcookie('pass', null, -1, '/', $_SERVER['SERVER_NAME']);
 			return false;
-		} else if (hash('sha256', $this->main->opts['login']) === $this->main->settings['password']) {
+		} else if (isset($this->main->opts['login']) && (hash('sha256', $this->main->opts['login']) === $this->main->settings['password'])) {
 			setcookie('pass', $this->main->settings['password'], pow(2,31)-1, '/', $_SERVER['SERVER_NAME']);
 			return true;
 		} else if ($_COOKIE['pass'] === $this->main->settings['password'])

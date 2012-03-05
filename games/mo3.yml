@@ -1,7 +1,7 @@
 ---
 processor: ARM
 platform: gba
-title: "Mother 3 (JAP + translation)"
+title: "Mother 3 (JPN + translation)"
 ...
 ---
 0x800ED940:

@@ -394,6 +394,19 @@ texttables:
 0xC40008:
   type: assembly
   size: 3
+0xC4000B:
+  type: assembly
+  size: 273
+  labels:
+    0x0030: UNKNOWN0
+    0x003E: UNKNOWN1
+    0x005D: UNKNOWN2
+    0x0075: UNKNOWN3
+    0x0081: UNKNOWN4
+    0x00A4: UNKNOWN5
+    0x00BE: UNKNOWN6
+    0x00D0: UNKNOWN7
+    0x0100: UNKNOWN8
 0xC407EC:
   type: assembly
   size: 162

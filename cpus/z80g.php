@@ -4,6 +4,8 @@ class core extends core_base {
 	private $opcodes;
 	function __construct(&$main) {
 		$this->opcodes = yaml_parse_file('./cpus/z80g_opcodes.yml');
+		if ($this->opcodes === false)
+			throw new Exception('Error parsing opcodes!');
 		$this->main = $main;
 	}
 	public function getDefault() {
@@ -17,27 +19,45 @@ class core extends core_base {
 			$opcode = ord(fgetc($this->main->gamehandle));
 			$args = array();
 			$val = 0;
+			if (isset($this->main->addresses[$this->initialoffset]['labels']) && isset($this->main->addresses[$this->initialoffset]['labels'][$this->currentoffset&0xFFFF]))
+				$output[] = array('label' => $this->main->addresses[$this->initialoffset]['labels'][$this->currentoffset&0xFFFF]);
 			if (!isset($this->opcodes[$opcode]))
 				throw new Exception(sprintf('Undefined opcode: 0x%02X', $opcode));
 			for ($i = 0; $i < $this->opcodes[$opcode]['Size']; $i++) {
 				$args[$i] = ord(fgetc($this->main->gamehandle));
 				$val += $args[$i]<<($i*8);
 			}
-			$output[] =  array(
-				'offset' => $offset,
+			$tmp =  array(
+				'offset' => $this->currentoffset,
 				'opcode' => $opcode,
 				'instruction' => $this->opcodes[$opcode]['Instruction'],
 				'args' => $args,
-				'value' => sprintf($this->opcodes[$opcode]['Address'], $val),
 				'printformat' => isset($this->opcodes[$opcode]['PrintFormat']) ? $this->opcodes[$opcode]['PrintFormat'] : '%s',
-				'uri' => isset($this->opcodes[$opcode]['Jump']) ? sprintf($this->opcodes[$opcode]['Address'], $val) : '');
-				/*
-							'comment' => isset($this->main->addresses[$fulladdr]['description']) ? $this->main->addresses[$fulladdr]['description'] : '',
-							'commentarguments' => isset($this->main->addresses[$fulladdr]['arguments']) ? $this->main->addresses[$fulladdr]['arguments'] : '',
-							'name' => $name,*/
+				'uri' => isset($this->opcodes[$opcode]['Jump']) ? sprintf('%04X', $val) : '');
+			if (isset($this->opcodes[$opcode]['Fixaddr'])) {
+				if ($this->opcodes[$opcode]['Fixaddr'] == 4)
+					$lookup = $val;
+				else if ($this->opcodes[$opcode]['Fixaddr'] == 2)
+					$lookup = $val;
+				if (isset($this->main->addresses[$this->initialoffset][$lookup]['name']))
+					$tmp['name'] = $this->main->addresses[$this->initialoffset][$lookup]['name'];
+				if (isset($this->main->addresses[$this->initialoffset][$lookup]['description']))
+					$tmp['comment'] = $this->main->addresses[$this->initialoffset][$lookup]['description'];
+				if (isset($this->main->addresses[$this->initialoffset][$lookup]['arguments']))
+					$tmp['commentarguments'] = $this->main->addresses[$this->initialoffset][$lookup]['arguments'];
+			}
+			if (isset($this->opcodes[$opcode]['branch'])) {
+				$val = $this->currentoffset+uint($val, 8)+$this->opcodes[$opcode]['Size']+1;
+				$tmp['uri'] = sprintf('%04X#%s', $this->initialoffset, $this->main->addresses[$this->initialoffset]['labels'][$val&0xFFFF]);
+				$tmp['name'] = $this->main->addresses[$this->initialoffset]['labels'][$val&0xFFFF];
+				$this->branches[$val] = '';
+			}
+			if (isset($this->opcodes[$opcode]['Address']))
+				$tmp['value'] = sprintf($this->opcodes[$opcode]['Address'], $val);
+			$output[] = $tmp;
 			if (($opcode == 0xC9) || ($opcode == 0xD9))
 				break;
-			$offset += $this->opcodes[$opcode]['Size']+1;
+			$this->currentoffset += $this->opcodes[$opcode]['Size']+1;
 		}
 		return $output;
 	}

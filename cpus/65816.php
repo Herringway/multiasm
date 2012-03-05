@@ -133,7 +133,7 @@ class core extends core_base {
 			
 			if (isset($this->main->addresses[$fulladdr]['name'])) {
 				$name = $this->main->addresses[$fulladdr]['name'];
-			} else if (isset($this->main->addresses[$this->initialoffset]['labels'][$fulladdr&0xFFFF])) {
+			} else if ((($this->opcodes[$opcode]['addressing']['type'] == 'relative') || ($this->opcodes[$opcode]['addressing']['type'] == 'absolutejmp')) && isset($this->main->addresses[$this->initialoffset]['labels'][$fulladdr&0xFFFF])) {
 				$uri = sprintf('%s#%s', $this->main->getOffsetName($this->initialoffset), $this->main->addresses[$this->initialoffset]['labels'][$fulladdr&0xFFFF]);
 				$name = ($this->placeholdernames ? isset($this->main->addresses[$this->initialoffset]['name']) ? $this->main->addresses[$this->initialoffset]['name'].'_' : sprintf('UNKNOWN_%06X_', $this->initialoffset) : '').$this->main->addresses[$this->initialoffset]['labels'][$fulladdr&0xFFFF];
 			} else if (($this->opcodes[$opcode]['addressing']['type'] == 'relative') || (($this->opcodes[$opcode]['addressing']['type'] == 'absolutejmp') && (isset($this->opcodes[$opcode]['addressing']['jump'])))) {

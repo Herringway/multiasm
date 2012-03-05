@@ -5,7 +5,8 @@
   Size: 0
 0x01:
   Instruction: LD
-  Address: BC, %04X
+  PrintFormat: BC, %s
+  Address: $%04X
   Size: 2
 0x02:
   Instruction: LD
@@ -25,14 +26,16 @@
   Size: 0
 0x06:
   Instruction: LD
-  Address: B, %02X
+  PrintFormat: B, %s
+  Address: $%02X
   Size: 1
 0x07:
   Instruction: RLCA
   Size: 0
 0x08:
   Instruction: LD
-  Address: (%04X), SP
+  PrintFormat: (%s), SP
+  Address: $%04X
   Size: 2
 0x09:
   Instruction: ADD
@@ -94,6 +97,7 @@
 0x18:
   Instruction: JR
   Address: "%02X"
+  branch: y
   Size: 1
 0x19:
   Instruction: ADD
@@ -124,11 +128,14 @@
   Size: 0
 0x20:
   Instruction: JR
-  Address: NZ, %02X
+  PrintFormat: NZ, %s
+  Address: "%02X"
+  branch: y
   Size: 1
 0x21:
   Instruction: LD
-  Address: HL, %04X
+  PrintFormat: HL, %s
+  Address: $%04X
   Size: 2
 0x22:
   Instruction: LDI
@@ -155,7 +162,9 @@
   Size: 0
 0x28:
   Instruction: JR
-  Address: Z, %02X
+  PrintFormat: Z, %s
+  Address: "%02X"
+  branch: y
   Size: 1
 0x29:
   Instruction: ADD
@@ -186,11 +195,14 @@
   Size: 0
 0x30:
   Instruction: JR
-  Address: NC, %02X
+  PrintFormat: NC, %s
+  Address: "%02X"
+  branch: y
   Size: 1
 0x31:
   Instruction: LD
-  Address: SP, %04X
+  PrintFormat: SP, %s
+  Address: $%04X
   Size: 2
 0x32:
   Instruction: LDD
@@ -210,14 +222,17 @@
   Size: 0
 0x36:
   Instruction: LD
-  Address: (HL), %02X
+  PrintFormat: (HL), %s
+  Address: "%02X"
   Size: 1
 0x37:
   Instruction: SCF
   Size: 0
 0x38:
   Instruction: JR
-  Address: C, %02X
+  PrintFormat: C, %s
+  Address: "%02X"
+  branch: y
   Size: 1
 0x39:
   Instruction: ADD
@@ -241,7 +256,8 @@
   Size: 0
 0x3e:
   Instruction: LD
-  Address: A, %02X
+  PrintFormat: A, %s
+  Address: "#$%02X"
   Size: 1
 0x3f:
   Instruction: CCF
@@ -766,16 +782,20 @@
   Size: 0
 0xc2:
   Instruction: JP
-  Address: NZ, %04X
+  PrintFormat: NZ, %s
+  Address: $%04X
+  Jump: y
   Size: 2
 0xc3:
   Instruction: JP
-  Address: "%04X"
+  Address: "$%04X"
   Size: 2
   Jump: y
 0xc4:
   Instruction: CALL
-  Address: NZ, %04X
+  PrintFormat: NZ, %s
+  Address: "$%04X"
+  Jump: y
   Size: 2
 0xc5:
   Instruction: PUSH
@@ -795,18 +815,20 @@
   Size: 0
 0xca:
   Instruction: JP
-  Address: Z,%04X
+  PrintFormat: Z, %s
+  Address: "$%04X"
+  Jump: y
   Size: 2
-0xcb:
-  Instruction: NYI
-  Size: 1
 0xcc:
   Instruction: CALL
-  Address: Z, %04X
+  PrintFormat: Z, %s
+  Address: $%04X
+  Jump: y
   Size: 2
 0xcd:
   Instruction: CALL
-  Address: "%04X"
+  Address: "$%04X"
+  Fixaddr: 4
   Jump: y
   Size: 2
 0xce:
@@ -896,7 +918,7 @@
   Size: 0
 0xe8:
   Instruction: ADD
-  Address: "%02X"
+  Address: "#$%02X"
   PrintFormat: SP, %s
   Size: 1
 0xe9:
@@ -945,7 +967,7 @@
   Size: 0
 0xf8:
   Instruction: LDHL
-  Address: "%02X"
+  Address: "$%02X"
   PrintFormat: SP, %s
   Size: 1
 0xf9:
