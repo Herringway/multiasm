@@ -1023,4 +1023,36 @@
   Instruction: SWAP
   Address: A
   Size: 1
+0xCB38:
+  Instruction: SRL
+  Address: B
+  Size: 1
+0xCB39:
+  Instruction: SRL
+  Address: C
+  Size: 1
+0xCB3A:
+  Instruction: SRL
+  Address: D
+  Size: 1
+0xCB3B:
+  Instruction: SRL
+  Address: E
+  Size: 1
+0xCB3C:
+  Instruction: SRL
+  Address: H
+  Size: 1
+0xCB3D:
+  Instruction: SRL
+  Address: L
+  Size: 1
+0xCB3E:
+  Instruction: SRL
+  Address: (HL)
+  Size: 1
+0xCB3F:
+  Instruction: SRL
+  Address: A
+  Size: 1
 ...
