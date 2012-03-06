@@ -28,7 +28,7 @@ class asm {
 		$this->main->yamldata[] = $output;
 		return $output;
 	}
-	//Saves a stub to the relevant YAML file. Work on this later.
+	//Saves a stub to the relevant YAML file.
 	private function saveData() {
 		$branches = null;
 		list($gameorig,$addresses) = $this->main->loadYAML($this->main->gameid);
