@@ -1118,6 +1118,69 @@
 0xCB1F:
   Instruction: RR
   Address: A
+0xCB20:
+  Instruction: SLA
+  Address: B
+  Size: 1
+0xCB21:
+  Instruction: SLA
+  Address: C
+  Size: 1
+0xCB22:
+  Instruction: SLA
+  Address: D
+  Size: 1
+0xCB23:
+  Instruction: SLA
+  Address: E
+  Size: 1
+0xCB24:
+  Instruction: SLA
+  Address: H
+  Size: 1
+0xCB25:
+  Instruction: SLA
+  Address: L
+  Size: 1
+0xCB26:
+  Instruction: SLA
+  Address: (HL)
+  Size: 1
+0xCB27:
+  Instruction: SLA
+  Address: A
+  Size: 1
+0xCB28:
+  Instruction: SRA
+  Address: B
+  Size: 1
+0xCB29:
+  Instruction: SRA
+  Address: C
+  Size: 1
+0xCB2A:
+  Instruction: SRA
+  Address: D
+  Size: 1
+0xCB2B:
+  Instruction: SRA
+  Address: E
+  Size: 1
+0xCB2C:
+  Instruction: SRA
+  Address: H
+  Size: 1
+0xCB2D:
+  Instruction: SRA
+  Address: L
+  Size: 1
+0xCB2E:
+  Instruction: SRA
+  Address: (HL)
+  Size: 1
+0xCB2F:
+  Instruction: SRA
+  Address: A
   Size: 1
 0xCB30:
   Instruction: SWAP
