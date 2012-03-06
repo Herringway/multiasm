@@ -1055,4 +1055,100 @@
   Instruction: SRL
   Address: A
   Size: 1
+0xCB40:
+  Instruction: BIT
+  Address: B
+  Size: 1
+0xCB41:
+  Instruction: BIT
+  Address: C
+  Size: 1
+0xCB42:
+  Instruction: BIT
+  Address: D
+  Size: 1
+0xCB43:
+  Instruction: BIT
+  Address: E
+  Size: 1
+0xCB44:
+  Instruction: BIT
+  Address: H
+  Size: 1
+0xCB45:
+  Instruction: BIT
+  Address: L
+  Size: 1
+0xCB46:
+  Instruction: BIT
+  Address: (HL)
+  Size: 1
+0xCB47:
+  Instruction: BIT
+  Address: A
+  Size: 1
+0xCB80:
+  Instruction: RES
+  Address: B
+  Size: 1
+0xCB81:
+  Instruction: RES
+  Address: C
+  Size: 1
+0xCB82:
+  Instruction: RES
+  Address: D
+  Size: 1
+0xCB83:
+  Instruction: RES
+  Address: E
+  Size: 1
+0xCB84:
+  Instruction: RES
+  Address: H
+  Size: 1
+0xCB85:
+  Instruction: RES
+  Address: L
+  Size: 1
+0xCB86:
+  Instruction: RES
+  Address: (HL)
+  Size: 1
+0xCB87:
+  Instruction: RES
+  Address: A
+  Size: 1
+0xCBC0:
+  Instruction: SET
+  Address: B
+  Size: 1
+0xCBC1:
+  Instruction: SET
+  Address: C
+  Size: 1
+0xCBC2:
+  Instruction: SET
+  Address: D
+  Size: 1
+0xCBC3:
+  Instruction: SET
+  Address: E
+  Size: 1
+0xCBC4:
+  Instruction: SET
+  Address: H
+  Size: 1
+0xCBC5:
+  Instruction: SET
+  Address: L
+  Size: 1
+0xCBC6:
+  Instruction: SET
+  Address: (HL)
+  Size: 1
+0xCBC7:
+  Instruction: SET
+  Address: A
+  Size: 1
 ...
