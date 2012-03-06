@@ -991,6 +991,134 @@
   Instruction: RST
   Address: "38"
   Size: 0
+0xCB00:
+  Instruction: RLC
+  Address: B
+  Size: 1
+0xCB01:
+  Instruction: RLC
+  Address: C
+  Size: 1
+0xCB02:
+  Instruction: RLC
+  Address: D
+  Size: 1
+0xCB03:
+  Instruction: RLC
+  Address: E
+  Size: 1
+0xCB04:
+  Instruction: RLC
+  Address: H
+  Size: 1
+0xCB05:
+  Instruction: RLC
+  Address: L
+  Size: 1
+0xCB06:
+  Instruction: RLC
+  Address: (HL)
+  Size: 1
+0xCB07:
+  Instruction: RLC
+  Address: A
+  Size: 1
+0xCB08:
+  Instruction: RRC
+  Address: B
+  Size: 1
+0xCB09:
+  Instruction: RRC
+  Address: C
+  Size: 1
+0xCB0A:
+  Instruction: RRC
+  Address: D
+  Size: 1
+0xCB0B:
+  Instruction: RRC
+  Address: E
+  Size: 1
+0xCB0C:
+  Instruction: RRC
+  Address: H
+  Size: 1
+0xCB0D:
+  Instruction: RRC
+  Address: L
+  Size: 1
+0xCB0E:
+  Instruction: RRC
+  Address: (HL)
+  Size: 1
+0xCB0F:
+  Instruction: RRC
+  Address: A
+  Size: 1
+0xCB10:
+  Instruction: RL
+  Address: B
+  Size: 1
+0xCB11:
+  Instruction: RL
+  Address: C
+  Size: 1
+0xCB12:
+  Instruction: RL
+  Address: D
+  Size: 1
+0xCB13:
+  Instruction: RL
+  Address: E
+  Size: 1
+0xCB14:
+  Instruction: RL
+  Address: H
+  Size: 1
+0xCB15:
+  Instruction: RL
+  Address: L
+  Size: 1
+0xCB16:
+  Instruction: RL
+  Address: (HL)
+  Size: 1
+0xCB17:
+  Instruction: RL
+  Address: A
+  Size: 1
+0xCB18:
+  Instruction: RR
+  Address: B
+  Size: 1
+0xCB19:
+  Instruction: RR
+  Address: C
+  Size: 1
+0xCB1A:
+  Instruction: RR
+  Address: D
+  Size: 1
+0xCB1B:
+  Instruction: RR
+  Address: E
+  Size: 1
+0xCB1C:
+  Instruction: RR
+  Address: H
+  Size: 1
+0xCB1D:
+  Instruction: RR
+  Address: L
+  Size: 1
+0xCB1E:
+  Instruction: RR
+  Address: (HL)
+  Size: 1
+0xCB1F:
+  Instruction: RR
+  Address: A
+  Size: 1
 0xCB30:
   Instruction: SWAP
   Address: B
