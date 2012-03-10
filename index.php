@@ -45,13 +45,13 @@ class Backend {
 		$this->opts = $display->getOpts($argv);
 		$this->debugvar($this->opts, 'options');
 		$this->godpowers = $display->canWrite();
-			
-		for ($dir = opendir('./games/'); $file = readdir($dir); ) {
-			if (substr($file, -4) == ".yml") {
-				$game = yaml_parse_file('./games/'.$file, 0);
-				$this->gamelist[substr($file, 0, -4)] = $game['title'];
+		if (!isset($this->settings['gamemenu']) || ($this->settings['gamemenu']))
+			for ($dir = opendir('./games/'); $file = readdir($dir); ) {
+				if (substr($file, -4) == ".yml") {
+					$game = yaml_parse_file('./games/'.$file, 0);
+					$this->gamelist[substr($file, 0, -4)] = $game['title'];
+				}
 			}
-		}
 		//Determine which game to work with
 		if (isset($argv[0]) && ($argv[0] != null) && file_exists(sprintf('games/%s.yml', $argv[0])))
 			$this->gameid = $argv[0];
