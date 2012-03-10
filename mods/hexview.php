@@ -8,7 +8,7 @@ class hexview {
 	public function execute() {
 		if (!isset($this->main->addresses[$this->main->offset]['size']))
 			die('Data has no size defined!');
-		require_once '../hexview.php';
+		require_once 'hexview.php';
 		fseek($this->main->gamehandle, $this->main->platform->map_rom($this->main->offset));
 		$data = fread($this->main->gamehandle, $this->main->addresses[$this->main->offset]['size']);
 		$this->main->nextoffset = $this->main->decimal_to_function($this->main->offset+$this->main->addresses[$this->main->offset]['size']);
