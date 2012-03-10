@@ -59,7 +59,7 @@ class table {
 				else if ($entry['type'] == 'hexint')
 					$tmparray[$entry['name']] = str_pad(strtoupper(dechex(read_int($this->main->gamehandle, $entry['size']))),$entry['size']*2, '0', STR_PAD_LEFT);
 				else if ($entry['type'] == 'pointer')
-					$tmparray[$entry['name']] = strtoupper(dechex(read_int($this->main->gamehandle, $entry['size'])));
+					$tmparray[$entry['name']] = $this->main->decimal_to_function(read_int($this->main->gamehandle, $entry['size']));
 				else if ($entry['type'] == 'palette')
 					$tmparray[$entry['name']] = asprintf('<span class="palette" style="background-color: #%06X;">%1$06X</span>', read_palette($this->main->gamehandle, $entry['size']));
 				else if ($entry['type'] == 'binary')
