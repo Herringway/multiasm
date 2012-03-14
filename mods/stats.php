@@ -42,6 +42,7 @@ class stats {
 			$divisions['Unknown'] = $this->main->game['size'] - $counteddata;
 		$stats['Size'] = $divisions;
 		$this->main->yamldata[] = $stats;
+		$this->main->dataname = 'ROM Stats';
 		return $stats;
 	}
 }

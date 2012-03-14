@@ -95,6 +95,7 @@ function asprintf($string, $haystack) {
 }
 function read_string($handle, &$size, $table, $terminator = null) {
 	$initialsize = ($size == 0) ? 0x100000 : $size;
+	static $chars = 0;
 	$output = '';
 	for ($i = 0; $i < $initialsize; $i++) {
 		if ($terminator !== null)
@@ -106,18 +107,33 @@ function read_string($handle, &$size, $table, $terminator = null) {
 			$val = $val + (ord(fgetc($handle))<<8);
 			$output .= json_decode(sprintf('"\u%04X"',$val));
 		} else {
+			unset($replacement);
+			if (isset($table['replacements'][$val]))
+				$replacement = $table['replacements'][$val];
 			if (isset($table['lengths'][$val])) {
-				$length = $table['lengths'][$val];
+				$cval = 0;
+				$length = $entry = $table['lengths'][$val];
+				if (is_array($entry))
+					$length = $entry['default'];
+					
 				for ($j = 1; $j < $length; $j++) {
-					$val = ($val<<($j*8)) + ord(fgetc($handle));
-					if (isset($table['lengths'][$val]))
-						$length = $table['lengths'][$val];
+					$cval = ord(fgetc($handle));
+					$val = ($val<<($j*8)) + $cval;
+					if (isset($entry[$cval])) {
+						$length = $entry = $entry[$cval];
+						if (is_array($entry))
+							$length = $entry['default'];
+					}
+					if (isset($replacement[$cval]))
+						$replacement = $replacement[$cval];
+					else
+						unset($replacement);
 					$i++;
 					if ($terminator !== null)
 						$size++;
 				}
 			}
-			$output .= !isset($table['replacements'][$val]) ? sprintf('[%02X]',$val) : $table['replacements'][$val];
+			$output .= !isset($replacement) ? sprintf('[%02X]',$val) : $replacement;
 		}
 		if ($val === $terminator) {
 			break;

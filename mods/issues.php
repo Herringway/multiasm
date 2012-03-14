@@ -32,6 +32,8 @@ class issues {
 				$allproblems[$this->main->decimal_to_function($offset)] = $problems;
 			$prev = $offset+(isset($entry['size']) ? $entry['size'] : 0);
 		}
+		
+		$this->main->dataname = 'Issues';
 		return $allproblems;
 	}
 }

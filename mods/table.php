@@ -53,13 +53,15 @@ class table {
 						$tmparray[$entry['name']] = $entry['values'][$num];
 					else if (isset($entry['bitvalues']))
 						$tmparray[$entry['name']] = get_bit_flags2($num,$entry['bitvalues']);
+					else if (isset($entry['signed']) && ($entry['signed'] == true))
+						$tmparray[$entry['name']] = uint($num, $entry['size']*8);
 					else
 						$tmparray[$entry['name']] = $num;
 				}
 				else if ($entry['type'] == 'hexint')
 					$tmparray[$entry['name']] = str_pad(strtoupper(dechex(read_int($this->main->gamehandle, $entry['size']))),$entry['size']*2, '0', STR_PAD_LEFT);
 				else if ($entry['type'] == 'pointer')
-					$tmparray[$entry['name']] = $this->main->decimal_to_function(read_int($this->main->gamehandle, $entry['size']));
+					$tmparray[$entry['name']] = $this->read_pointer($entry['size']);
 				else if ($entry['type'] == 'palette')
 					$tmparray[$entry['name']] = asprintf('<span class="palette" style="background-color: #%06X;">%1$06X</span>', read_palette($this->main->gamehandle, $entry['size']));
 				else if ($entry['type'] == 'binary')
@@ -82,6 +84,9 @@ class table {
 			$offsets[] = $tmpoffset;
 		}
 		return array($output, $offsets, $offset);
+	}
+	private function read_pointer($size) {
+		return $this->main->decimal_to_function(read_int($this->main->gamehandle, $size));
 	}
 }
 ?>

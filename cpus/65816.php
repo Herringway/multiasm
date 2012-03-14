@@ -120,9 +120,16 @@ class core extends core_base {
 				
 			if ((($this->opcodes[$opcode]['addressing']['type'] == 'absolutejmp') || ($this->opcodes[$opcode]['addressing']['type'] == 'absolutelongjmp'))) {
 				if ((isset($this->main->addresses[$fulladdr]['name']) && !empty($this->main->addresses[$fulladdr]['name'])))
-					$uri = $this->main->addresses[$fulladdr]['name'];
-				else
-					$uri = sprintf('%06X', $fulladdr);
+					try {
+						$this->main->platform->map_rom($fulladdr);
+						$uri = $this->main->addresses[$fulladdr]['name'];
+					} catch (Exception $e) { }
+				else {
+					try {
+						$this->main->platform->map_rom($fulladdr);
+						$uri = sprintf('%06X', $fulladdr);
+					} catch (Exception $e) { }
+				}
 			}
 			if ($this->opcodes[$opcode]['addressing']['type'] == 'relativelong')
 				$uri = sprintf('%06X', $fulladdr+($this->currentoffset&0xFF0000));
@@ -133,6 +140,10 @@ class core extends core_base {
 			
 			if (isset($this->main->addresses[$fulladdr]['name'])) {
 				$name = $this->main->addresses[$fulladdr]['name'];
+				try {
+					$this->main->platform->map_rom($fulladdr);
+					$uri = $name;
+				} catch (Exception $e) { }
 			} else if ((($this->opcodes[$opcode]['addressing']['type'] == 'relative') || ($this->opcodes[$opcode]['addressing']['type'] == 'absolutejmp')) && isset($this->main->addresses[$this->initialoffset]['labels'][$fulladdr&0xFFFF])) {
 				$uri = sprintf('%s#%s', $this->main->getOffsetName($this->initialoffset), $this->main->addresses[$this->initialoffset]['labels'][$fulladdr&0xFFFF]);
 				$name = ($this->placeholdernames ? isset($this->main->addresses[$this->initialoffset]['name']) ? $this->main->addresses[$this->initialoffset]['name'].'_' : sprintf('UNKNOWN_%06X_', $this->initialoffset) : '').$this->main->addresses[$this->initialoffset]['labels'][$fulladdr&0xFFFF];
@@ -148,7 +159,14 @@ class core extends core_base {
 				}
 			} else
 				$name = '';
-				
+			if (isset($this->main->game['localvars'])) {
+				switch ($this->main->game['localvars']) {
+					case 'directpage':
+						if ((($this->opcodes[$opcode]['addressing']['type'] === 'directpage') || ($this->opcodes[$opcode]['addressing']['type'] === 'dpindirectlong') || ($this->opcodes[$opcode]['addressing']['type'] === 'dpindirectlongindexedy')) && isset($this->main->addresses[$this->initialoffset]['localvars'][$arg]))
+							$name = '.'.$this->main->addresses[$this->initialoffset]['localvars'][$arg];
+						break;
+				}
+			}
 			$arg = sprintf($this->opcodes[$opcode]['addressing']['addrformat'], $arg,isset($args[0]) ? $args[0] : 0,isset($args[1]) ? $args[1] : 0, isset($args[2]) ? $args[2] : 0, $this->currentoffset>>16, ($this->currentoffset+uint($arg+$size+1,$size*8))&0xFFFF);
 			
 			$output[] = array('opcode' => $opcode,

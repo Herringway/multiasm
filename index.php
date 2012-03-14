@@ -1,5 +1,6 @@
 <?php
 require_once 'chromephp.php';
+ob_start();
 class Backend {
 	public $settings;
 	public $platform;
@@ -22,7 +23,6 @@ class Backend {
 	public $gamelist = array();
 	
 	public function execute() {
-		ob_start();
 		$time_start = microtime(true);
 		require_once 'commonfunctions.php';
 		$this->settings = load_settings();
@@ -37,7 +37,8 @@ class Backend {
 		
 		$display = new display($this);
 		$argv = $display->getArgv();
-		$this->debugvar($this->settings, 'settings');
+		
+		//Some debug output
 		$this->debugvar($_SERVER, 'Server');
 		$this->debugvar($argv, 'args');
 		
