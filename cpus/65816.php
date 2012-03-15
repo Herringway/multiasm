@@ -79,6 +79,7 @@ class core extends core_base {
 			$index = 8;
 		$output = array();
 		while (true) {
+			unset($comment);
 			if (isset($deflength) && ($deflength+$this->initialoffset <= $this->currentoffset))
 				break;
 			if (($farthestbranch < $this->currentoffset) && !isset($deflength) && isset($this->opcodes[$opcode]['addressing']['special']) && ($this->opcodes[$opcode]['addressing']['special'] == 'return'))
@@ -105,6 +106,7 @@ class core extends core_base {
 				$arg += $t<<($j*8);
 			}
 			if (($opcode == 0xC2) | ($opcode == 0xE2)) {
+				$comment = ($opcode == 0xC2 ? 'Unset: ' : 'Set: ').$this->get_processor_bits($args[0]);
 				if ($args[0]&0x10)
 					$index = ($opcode == 0xC2) ? 16 : 8;
 				if ($args[0]&0x20)
@@ -119,12 +121,12 @@ class core extends core_base {
 				$farthestbranch = $fulladdr + ($this->currentoffset&0xFF0000);
 				
 			if ((($this->opcodes[$opcode]['addressing']['type'] == 'absolutejmp') || ($this->opcodes[$opcode]['addressing']['type'] == 'absolutelongjmp'))) {
-				if ((isset($this->main->addresses[$fulladdr]['name']) && !empty($this->main->addresses[$fulladdr]['name'])))
+				if (isset($this->main->addresses[$fulladdr]['name'])) {
 					try {
 						$this->main->platform->map_rom($fulladdr);
 						$uri = $this->main->addresses[$fulladdr]['name'];
 					} catch (Exception $e) { }
-				else {
+				} else {
 					try {
 						$this->main->platform->map_rom($fulladdr);
 						$uri = sprintf('%06X', $fulladdr);
@@ -163,7 +165,7 @@ class core extends core_base {
 				switch ($this->main->game['localvars']) {
 					case 'directpage':
 						if ((($this->opcodes[$opcode]['addressing']['type'] === 'directpage') || ($this->opcodes[$opcode]['addressing']['type'] === 'dpindirectlong') || ($this->opcodes[$opcode]['addressing']['type'] === 'dpindirectlongindexedy')) && isset($this->main->addresses[$this->initialoffset]['localvars'][$arg]))
-							$name = '.'.$this->main->addresses[$this->initialoffset]['localvars'][$arg];
+							$name = sprintf($this->main->settings['localvar format'], $this->main->addresses[$this->initialoffset]['localvars'][$arg]);
 						break;
 				}
 			}
@@ -173,7 +175,7 @@ class core extends core_base {
 							'instruction' => $this->opcodes[$opcode]['mnemonic'],
 							'offset' => $this->currentoffset,
 							'args' => $args,
-							'comment' => isset($this->main->addresses[$fulladdr]['description']) ? $this->main->addresses[$fulladdr]['description'] : '',
+							'comment' => isset($comment) ? $comment : (isset($this->main->addresses[$fulladdr]['description']) ? $this->main->addresses[$fulladdr]['description'] : ''),
 							'commentarguments' => isset($this->main->addresses[$fulladdr]['arguments']) ? $this->main->addresses[$fulladdr]['arguments'] : '',
 							'name' => $name,
 							'uri' => $uri,

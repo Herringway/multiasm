@@ -8,7 +8,7 @@ if (isset($_GET['begin'])) {
 			else if ($val != null)
 				$options[] = sprintf('%s=%s', $key, $val);
 		}
-	header(sprintf('Location: http://%s/%s/%s/%s',$_SERVER['SERVER_NAME'],$_GET['game'], $_GET['begin'], implode('/', $options)));
+	header(sprintf('Location: http://%s/%s/%s/%s',$_SERVER['HTTP_HOST'],$_GET['game'], $_GET['begin'], implode('/', $options)));
 	die();
 }
 class display {
@@ -76,7 +76,7 @@ class display {
 		} else if (isset($this->main->opts['login']) && (hash('sha256', $this->main->opts['login']) === $this->main->settings['password'])) {
 			setcookie('pass', $this->main->settings['password'], pow(2,31)-1, '/', $_SERVER['SERVER_NAME']);
 			return true;
-		} else if ($_COOKIE['pass'] === $this->main->settings['password'])
+		} else if (isset($_COOKIE['pass']) && ($_COOKIE['pass'] === $this->main->settings['password']))
 			return true;
 		return false;
 	}
