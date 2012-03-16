@@ -85,8 +85,10 @@ title: "Mother 3 (JPN + translation)"
     size: 0x26
   - name: Horizontal drift
     size: 2
+    signed: y
   - name: Vertical drift
     size: 2
+    signed: y
   - name: UnknownC
     size: 4
     type: bytearray
@@ -96,12 +98,16 @@ title: "Mother 3 (JPN + translation)"
     size: 2
   - name: Horizontal wave count
     size: 2
+    signed: y
   - name: Vertical wave count
     size: 2
+    signed: y
   - name: Horizontal frequency
     size: 2
+    signed: y
   - name: Vertical frequency
     size: 2
+    signed: y
   - name: UnknownD
     type: bytearray
     size: 8
