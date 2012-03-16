@@ -6,6 +6,7 @@ class core extends core_base {
 	private $opcodes;
 	private $addrs;
 	const opcodeformat = '%08X';
+	const addressformat = '%08X';
 	function __construct(&$main) {
 		$this->opcodes = yaml_parse_file('./cpus/ARM_opcodes.yml');
 		$this->handle = $main->gamehandle;

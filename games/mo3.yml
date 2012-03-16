@@ -4,7 +4,7 @@ platform: gba
 title: "Mother 3 (JPN + translation)"
 ...
 ---
-0x800ED940:
+0x080ED940:
   type: data
   size: 0x1F3F
   name: WEIRDTEXT
@@ -12,28 +12,28 @@ title: "Mother 3 (JPN + translation)"
   - name: Text
     type: asciitext
     terminator: 0
-0x800F0080:
+0x080F0080:
   type: data
   size: 0x800
   entries:
   - name: Unknown
     type: bytearray
     size: 8
-0x800F0880:
+0x080F0880:
   type: data
   size: 0x400
   entries:
   - name: Unknown
     type: bytearray
     size: 4
-0x800F0C80:
+0x080F0C80:
   type: data
   size: 0xBB8
   entries:
   - name: Unknown
     type: bytearray
     size: 5
-0x800ED940:
+0x080ED940:
   type: data
   size: 0x1F3F
   name: MOREWEIRDTEXT
@@ -41,7 +41,7 @@ title: "Mother 3 (JPN + translation)"
   - name: Text
     type: asciitext
     terminator: 0
-0x80CF9A8A:
+0x08CF9A8A:
   type: data
   size: 0x17B0
   name: ABILDESCTEXT
@@ -49,7 +49,7 @@ title: "Mother 3 (JPN + translation)"
   - name: Text
     type: UTF-16
     size: 0x17B0
-0x81D0BC9C:
+0x09D0BC9C:
   type: data
   size: 0x13324
   name: BG_TABLE
@@ -113,7 +113,7 @@ title: "Mother 3 (JPN + translation)"
   - name: UnknownD
     type: bytearray
     size: 8
-0x81D1EFC0:
+0x09D1EFC0:
   type: data
   size: 2916
   name: MASTER_BG_TABLE
@@ -131,7 +131,7 @@ title: "Mother 3 (JPN + translation)"
     size: 2
   - name: Unknown B
     size: 2
-0x81D1FB30:
+0x09D1FB30:
   type: data
   size: 3272
   name: UNKNOWN_BG2
