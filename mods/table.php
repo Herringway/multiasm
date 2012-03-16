@@ -21,7 +21,7 @@ class table {
 		$header = array();
 		$headerend = $this->main->offset;
 		if (isset($table['header']))
-			list($header, $headerend) = $this->process_entries($offset, $initialoffset+1, $table['header']);
+			list($header, $headeroffs, $headerend) = $this->process_entries($this->main->offset, $initialoffset+1, $table['header']);
 		list($entries,$offsets,$offset) = $this->process_entries($headerend, $initialoffset+$table['size'], $table['entries']);
 		$this->main->nextoffset = $this->main->decimal_to_function($offset);
 		$this->main->yamldata[] = $table['entries'];
@@ -42,10 +42,13 @@ class table {
 	private function process_entries($offset, $end, $entries) {
 		$output = array();
 		$offsets = array();
+		$i = 0;
 		while ($offset < $end) {
 			$tmpoffset = $offset;
 			$tmparray = array();
 			foreach ($entries as $entry) {
+				if ($i++ > 0x10000)
+					break 2;
 				$bytesread = isset($entry['size']) ? $entry['size'] : 0;
 				if (!isset($entry['type']) || ($entry['type'] == 'int')) {
 					$num = read_int($this->main->gamehandle, $entry['size']);
@@ -53,13 +56,15 @@ class table {
 						$tmparray[$entry['name']] = $entry['values'][$num];
 					else if (isset($entry['bitvalues']))
 						$tmparray[$entry['name']] = get_bit_flags2($num,$entry['bitvalues']);
+					else if (isset($entry['signed']) && ($entry['signed'] == true))
+						$tmparray[$entry['name']] = uint($num, $entry['size']*8);
 					else
 						$tmparray[$entry['name']] = $num;
 				}
 				else if ($entry['type'] == 'hexint')
 					$tmparray[$entry['name']] = str_pad(strtoupper(dechex(read_int($this->main->gamehandle, $entry['size']))),$entry['size']*2, '0', STR_PAD_LEFT);
 				else if ($entry['type'] == 'pointer')
-					$tmparray[$entry['name']] = $this->main->decimal_to_function(read_int($this->main->gamehandle, $entry['size']));
+					$tmparray[$entry['name']] = $this->read_pointer($entry['size']);
 				else if ($entry['type'] == 'palette')
 					$tmparray[$entry['name']] = asprintf('<span class="palette" style="background-color: #%06X;">%1$06X</span>', read_palette($this->main->gamehandle, $entry['size']));
 				else if ($entry['type'] == 'binary')
@@ -82,6 +87,9 @@ class table {
 			$offsets[] = $tmpoffset;
 		}
 		return array($output, $offsets, $offset);
+	}
+	private function read_pointer($size) {
+		return $this->main->decimal_to_function(read_int($this->main->gamehandle, $size));
 	}
 }
 ?>

@@ -15,6 +15,7 @@ class rommap {
 					$output[] = array('address' => isset($this->opts['real_address']) ? $realaddr : $addr, 'type' => isset($data['type']) ? $data['type'] : 'unknown', 'name' => !empty($data['name']) ? $data['name'] : '', 'description' => isset($data['description']) ? $data['description'] : '', 'size' => isset($data['size']) ? $data['size'] : 0);
 			} catch (Exception $e) { }
 		}
+		$this->main->dataname = 'Rom Map';
 		$this->main->yamldata[] = $output;
 		return $output;
 	}

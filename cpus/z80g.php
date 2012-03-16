@@ -23,7 +23,7 @@ class core extends core_base {
 			$val = 0;
 			if (isset($this->main->addresses[$this->initialoffset]['labels']) && isset($this->main->addresses[$this->initialoffset]['labels'][$this->currentoffset&0xFFFF]))
 				$output[] = array('label' => $this->main->addresses[$this->initialoffset]['labels'][$this->currentoffset&0xFFFF]);
-			if (!isset($this->opcodes[$opcode]))
+			if (!$this->main->settings['debug'] && !isset($this->opcodes[$opcode]))
 				throw new Exception(sprintf('Undefined opcode: 0x%02X', $opcode));
 			for ($i = 0; $i < $this->opcodes[$opcode]['Size']; $i++) {
 				$args[$i] = ord(fgetc($this->main->gamehandle));

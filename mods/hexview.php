@@ -18,6 +18,8 @@ class hexview {
 			$charset = $game['texttables'][$game['defaulttext']]['replacements'];
 		else
 			$charset = null;
+		if (isset($this->main->addresses[$this->main->offset]['description']))
+			$this->main->dataname = $this->main->addresses[$this->main->offset]['description'];
 		return hexview($data, isset($this->main->addresses[$this->main->offset]['width']) ? $this->main->addresses[$this->main->offset]['width'] : 16, $this->main->offset, $charset);
 	}
 	public static function shouldhandle($main) {

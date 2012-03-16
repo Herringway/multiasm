@@ -803,10 +803,12 @@
   Address: BC
   Size: 0
 0xc6:
-  Address: 'ADD A, #'
+  Instruction: ADD
+  Address: 'A, #'
   Size: 0
 0xc7:
-  Address: RST 00
+  Instruction: RST
+  Address: '00'
   Size: 0
 0xc8:
   Instruction: RET

@@ -79,6 +79,7 @@ class core extends core_base {
 			$index = 8;
 		$output = array();
 		while (true) {
+			unset($comment);
 			if (isset($deflength) && ($deflength+$this->initialoffset <= $this->currentoffset))
 				break;
 			if (($farthestbranch < $this->currentoffset) && !isset($deflength) && isset($this->opcodes[$opcode]['addressing']['special']) && ($this->opcodes[$opcode]['addressing']['special'] == 'return'))
@@ -105,6 +106,7 @@ class core extends core_base {
 				$arg += $t<<($j*8);
 			}
 			if (($opcode == 0xC2) | ($opcode == 0xE2)) {
+				$comment = ($opcode == 0xC2 ? 'Unset: ' : 'Set: ').$this->get_processor_bits($args[0]);
 				if ($args[0]&0x10)
 					$index = ($opcode == 0xC2) ? 16 : 8;
 				if ($args[0]&0x20)
@@ -119,10 +121,17 @@ class core extends core_base {
 				$farthestbranch = $fulladdr + ($this->currentoffset&0xFF0000);
 				
 			if ((($this->opcodes[$opcode]['addressing']['type'] == 'absolutejmp') || ($this->opcodes[$opcode]['addressing']['type'] == 'absolutelongjmp'))) {
-				if ((isset($this->main->addresses[$fulladdr]['name']) && !empty($this->main->addresses[$fulladdr]['name'])))
-					$uri = $this->main->addresses[$fulladdr]['name'];
-				else
-					$uri = sprintf('%06X', $fulladdr);
+				if (isset($this->main->addresses[$fulladdr]['name'])) {
+					try {
+						$this->main->platform->map_rom($fulladdr);
+						$uri = $this->main->addresses[$fulladdr]['name'];
+					} catch (Exception $e) { }
+				} else {
+					try {
+						$this->main->platform->map_rom($fulladdr);
+						$uri = sprintf('%06X', $fulladdr);
+					} catch (Exception $e) { }
+				}
 			}
 			if ($this->opcodes[$opcode]['addressing']['type'] == 'relativelong')
 				$uri = sprintf('%06X', $fulladdr+($this->currentoffset&0xFF0000));
@@ -133,6 +142,10 @@ class core extends core_base {
 			
 			if (isset($this->main->addresses[$fulladdr]['name'])) {
 				$name = $this->main->addresses[$fulladdr]['name'];
+				try {
+					$this->main->platform->map_rom($fulladdr);
+					$uri = $name;
+				} catch (Exception $e) { }
 			} else if ((($this->opcodes[$opcode]['addressing']['type'] == 'relative') || ($this->opcodes[$opcode]['addressing']['type'] == 'absolutejmp')) && isset($this->main->addresses[$this->initialoffset]['labels'][$fulladdr&0xFFFF])) {
 				$uri = sprintf('%s#%s', $this->main->getOffsetName($this->initialoffset), $this->main->addresses[$this->initialoffset]['labels'][$fulladdr&0xFFFF]);
 				$name = ($this->placeholdernames ? isset($this->main->addresses[$this->initialoffset]['name']) ? $this->main->addresses[$this->initialoffset]['name'].'_' : sprintf('UNKNOWN_%06X_', $this->initialoffset) : '').$this->main->addresses[$this->initialoffset]['labels'][$fulladdr&0xFFFF];
@@ -148,14 +161,21 @@ class core extends core_base {
 				}
 			} else
 				$name = '';
-				
+			if (isset($this->main->game['localvars'])) {
+				switch ($this->main->game['localvars']) {
+					case 'directpage':
+						if ((($this->opcodes[$opcode]['addressing']['type'] === 'directpage') || ($this->opcodes[$opcode]['addressing']['type'] === 'dpindirectlong') || ($this->opcodes[$opcode]['addressing']['type'] === 'dpindirectlongindexedy')) && isset($this->main->addresses[$this->initialoffset]['localvars'][$arg]))
+							$name = sprintf($this->main->settings['localvar format'], $this->main->addresses[$this->initialoffset]['localvars'][$arg]);
+						break;
+				}
+			}
 			$arg = sprintf($this->opcodes[$opcode]['addressing']['addrformat'], $arg,isset($args[0]) ? $args[0] : 0,isset($args[1]) ? $args[1] : 0, isset($args[2]) ? $args[2] : 0, $this->currentoffset>>16, ($this->currentoffset+uint($arg+$size+1,$size*8))&0xFFFF);
 			
 			$output[] = array('opcode' => $opcode,
 							'instruction' => $this->opcodes[$opcode]['mnemonic'],
 							'offset' => $this->currentoffset,
 							'args' => $args,
-							'comment' => isset($this->main->addresses[$fulladdr]['description']) ? $this->main->addresses[$fulladdr]['description'] : '',
+							'comment' => isset($comment) ? $comment : (isset($this->main->addresses[$fulladdr]['description']) ? $this->main->addresses[$fulladdr]['description'] : ''),
 							'commentarguments' => isset($this->main->addresses[$fulladdr]['arguments']) ? $this->main->addresses[$fulladdr]['arguments'] : '',
 							'name' => $name,
 							'uri' => $uri,
