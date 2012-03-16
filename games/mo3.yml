@@ -66,10 +66,10 @@ title: "Mother 3 (JPN + translation)"
     size: 2
   - name: Palette 1
     type: palette
-    size: 16
+    size: 32
   - name: Palette 2
     type: palette
-    size: 16
+    size: 32
   - name: Palette direction
     size: 2
   - name: UnknownA
@@ -94,12 +94,14 @@ title: "Mother 3 (JPN + translation)"
     type: bytearray
   - name: Horizontal amplitude
     size: 2
+    signed: y
   - name: Vertical amplitude
     size: 2
-  - name: Horizontal wave count
+    signed: y
+  - name: Horizontal wavenumber
     size: 2
     signed: y
-  - name: Vertical wave count
+  - name: Vertical wavenumber
     size: 2
     signed: y
   - name: Horizontal frequency
