@@ -82,7 +82,7 @@ function read_int($handle, $size) {
 }
 function read_palette($handle, $size) {
 	$palettes = array();
-	$snespal = unpack('v*', fread($handle,2*$size));
+	$snespal = unpack('v*', fread($handle,$size));
 	for ($i = 1; $i <= $size/2; $i++)
 		$palettes[] = (($snespal[$i]&31)<<19)+(($snespal[$i]&0x3E0)<<6)+(($snespal[$i]&0x7C00)>>7);
 	return $palettes;

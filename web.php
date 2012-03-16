@@ -64,10 +64,20 @@ class display {
 		$dwoo->output('./templates/error.tpl', array('routinename' => '', 'hideright' => true, 'title' => 'FLAGRANT SYSTEM ERROR', 'nextoffset' => '', 'game' => '', 'data' => $error, 'thisoffset' => '', 'options' => '', 'offsetname' => '', 'addrformat' => '', 'menuitems' => '', 'opcodeformat' => '', 'gamelist' => '', 'error' => 1));
 	}
 	public static function debugvar($var, $label) {
-		ChromePhp::log($label, $var);
+		static $limit = 50;
+		if ($limit-- > 0)
+			ChromePhp::log($label, $var);
 	}
-	public static function debugmessage($message) {
-		ChromePhp::error($message);
+	public static function debugmessage($message, $level = 'error') {
+		static $limit = 50;
+		if ($limit-- > 0) {
+			if ($level === 'error')
+				ChromePhp::error($message);
+			else if ($level === 'warn')
+				ChromePhp::warn($message);
+			else
+				ChromePhp::log($message);
+		}
 	}
 	public function canWrite() {
 		if (isset($this->main->opts['logout'])) {

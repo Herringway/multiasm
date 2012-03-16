@@ -162,6 +162,10 @@ class Backend {
 		if (isset($this->settings['debug']) && $this->settings['debug'])
 			display::debugvar($var, $label);
 	}
+	function debugmessage($msg, $level = 'error') {
+		if (isset($this->settings['debug']) && $this->settings['debug'])
+			display::debugmessage($msg,$level);
+	}
 }
 
 $backend = new Backend();

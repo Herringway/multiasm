@@ -10,38 +10,42 @@ class table {
 		fseek($this->main->gamehandle, $realoffset);
 		$table = $this->main->addresses[$this->main->offset];
 
-		$initialoffset = $this->main->offset;
-
-		$tmparray = array();
-		$output = array();
-		$i = 0;
 		$this->main->dataname = sprintf(core::addressformat, $this->main->offset);
 		if (isset($table['description']))
 			$this->main->dataname = $table['description'];
+			
 		$header = array();
-		$headerend = $this->main->offset;
-		if (isset($table['header']))
-			list($header, $headeroffs, $headerend) = $this->process_entries($this->main->offset, $initialoffset+1, $table['header']);
-		list($entries,$offsets,$offset) = $this->process_entries($headerend, $initialoffset+$table['size'], $table['entries']);
-		$this->main->nextoffset = $this->main->decimal_to_function($offset);
+		
+		if (isset($table['header'])) {
+			$header = $this->process_entries($this->main->offset, $this->main->offset+1, $table['header']);
+			$this->main->yamldata[] = $table['header'];
+			$this->main->yamldata[] = $header;
+			$this->main->menuitems['header'] = 'Header';
+		}
+		
+		$entries = $this->process_entries($this->main->offset, $this->main->offset+$table['size'], $table['entries']);
+		
+		$this->main->nextoffset = $this->main->decimal_to_function($this->main->offset);
 		$this->main->yamldata[] = $table['entries'];
 		$this->main->yamldata[] = $entries;
 		$i = 0;
 		foreach ($entries as $k => $item)
 			if (isset($item['Name']) && (trim($item['Name']) !== ''))
-				$this->main->menuitems[sprintf(core::addressformat, $offsets[$k])] = trim($item['Name']);
+				$this->main->menuitems[sprintf(core::addressformat, $k)] = trim($item['Name']);
 			else
-				$this->main->menuitems[sprintf(core::addressformat, $offsets[$k])] = sprintf(core::addressformat.' (%04X)', $offsets[$k], $i++);
-		return array('header' => $header,'entries' => $entries, 'offsets' => $offsets);
+				$this->main->menuitems[sprintf(core::addressformat, $k)] = sprintf(core::addressformat.' (%04X)', $k, $i++);
+		return array('header' => $header,'entries' => $entries);
 	}
 	public static function shouldhandle($main) {
 		if (isset($main->addresses[$main->offset]['type']) && ($main->addresses[$main->offset]['type'] === 'data') && isset($main->addresses[$main->offset]['entries']))
 			return true;
 		return false;
 	}
-	private function process_entries($offset, $end, $entries) {
+	private function process_entries(&$offset, $end, $entries) {
 		$output = array();
 		$offsets = array();
+		if (ftell($this->main->gamehandle) != $this->main->platform->map_rom($offset))
+			throw new Exception(sprintf('Offset mismatch! %X != %X', ftell($this->main->gamehandle),$this->main->platform->map_rom($offset)));
 		$i = 0;
 		while ($offset < $end) {
 			$tmpoffset = $offset;
@@ -49,6 +53,7 @@ class table {
 			foreach ($entries as $entry) {
 				if ($i++ > 0x10000)
 					break 2;
+				$this->main->debugmessage(sprintf('Found %s at offset %X', isset($entry['type']) ? $entry['type'] : 'int', ftell($this->main->gamehandle)), 'info');
 				$bytesread = isset($entry['size']) ? $entry['size'] : 0;
 				if (!isset($entry['type']) || ($entry['type'] == 'int')) {
 					$num = read_int($this->main->gamehandle, $entry['size']);
@@ -83,10 +88,9 @@ class table {
 					$tmparray[$entry['name']] = read_bytes($this->main->gamehandle, $entry['size']);
 				$offset += $bytesread;
 			}
-			$output[] = $tmparray;
-			$offsets[] = $tmpoffset;
+			$output[$tmpoffset] = $tmparray;
 		}
-		return array($output, $offsets, $offset);
+		return $output;
 	}
 	private function read_pointer($size) {
 		return $this->main->decimal_to_function(read_int($this->main->gamehandle, $size));
