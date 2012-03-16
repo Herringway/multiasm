@@ -141,7 +141,7 @@ function read_string($handle, &$size, $table, $terminator = null) {
 	}
 	return $output;
 }
-function read_tile($handle, $bpp, $palette = 0) {
+function read_tile($handle, $bpp, $palette = 0, $outputbase64 = true) {
 	$data = fread($handle, 8*$bpp);
 	$curpos = ftell($handle);
 	if ($palette != 0) {
@@ -151,7 +151,7 @@ function read_tile($handle, $bpp, $palette = 0) {
 	} else
 		$colours = array(array(0, 0, 0),   array(0, 0, 0),    array(57, 51, 255), array(220, 255, 255), array(51, 0, 134),  array(191, 115, 0),  array(0, 207, 255), array(51, 0, 134),  array(239, 235, 180), 
 								array(147, 0, 0), array(81, 255, 0), array(255, 172, 0), array(188, 17, 164),  array(99, 207, 99), array(89, 140, 242), array(182, 0, 159), array(131, 220, 0), array(184, 222, 58));
-	if (!isset($_GET['YAML'])) {
+	if ($outputbase64) {
 		$img = imagecreate(8,8);
 		for ($i = 0; $i < pow(2,$bpp); $i++)
 			$colour[] = imagecolorallocate($img, $colours[$i][0], $colours[$i][1], $colours[$i][2]);

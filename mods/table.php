@@ -15,6 +15,7 @@ class table {
 			$this->main->dataname = $table['description'];
 			
 		$header = array();
+		$beginning = $this->main->offset;
 		
 		if (isset($table['header'])) {
 			$header = $this->process_entries($this->main->offset, $this->main->offset+1, $table['header']);
@@ -23,7 +24,7 @@ class table {
 			$this->main->menuitems['header'] = 'Header';
 		}
 		
-		$entries = $this->process_entries($this->main->offset, $this->main->offset+$table['size'], $table['entries']);
+		$entries = $this->process_entries($this->main->offset, $this->main->offset+$table['size'] - ($this->main->offset - $beginning), $table['entries']);
 		
 		$this->main->nextoffset = $this->main->decimal_to_function($this->main->offset);
 		$this->main->yamldata[] = $table['entries'];
@@ -71,13 +72,16 @@ class table {
 				else if ($entry['type'] == 'pointer')
 					$tmparray[$entry['name']] = $this->read_pointer($entry['size']);
 				else if ($entry['type'] == 'palette')
-					$tmparray[$entry['name']] = asprintf('<span class="palette" style="background-color: #%06X;">%1$06X</span>', read_palette($this->main->gamehandle, $entry['size']));
+					if (isset($this->main->opts['yaml']))
+						$tmparray[$entry['name']] = read_palette($this->main->gamehandle, $entry['size']);
+					else
+						$tmparray[$entry['name']] = asprintf('<span class="palette" style="background-color: #%06X;">%1$06X</span>', read_palette($this->main->gamehandle, $entry['size']));
 				else if ($entry['type'] == 'binary')
 					$tmparray[$entry['name']] = decbin(read_int($this->main->gamehandle, $entry['size']));
 				else if ($entry['type'] == 'boolean')
 					$tmparray[$entry['name']] = read_int($this->main->gamehandle, $entry['size']) ? true : false;
 				else if ($entry['type'] == 'tile')
-					$tmparray[$entry['name']] = read_tile($this->main->gamehandle, $entry['bpp']);
+					$tmparray[$entry['name']] = read_tile($this->main->gamehandle, $entry['bpp'],0, !isset($this->main->opts['yaml']));
 				else if (isset($this->main->game['texttables'][$entry['type']]))
 					$tmparray[$entry['name']] = read_string($this->main->gamehandle, $bytesread, $this->main->game['texttables'][$entry['type']], isset($entry['terminator']) ? $entry['terminator'] : null);
 				else if ($entry['type'] == 'asciitext')
