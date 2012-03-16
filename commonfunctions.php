@@ -9,7 +9,7 @@ function print_exception($exception) {
 }
 function error_handling($errno, $message, $file, $line) {
 	static $errors = 0;
-	ini_set('display_errors', 'Off');
+	//ini_set('display_errors', 'Off');
 	if ($errors++ < 100)
 		display::debugmessage(sprintf("%s on %s:%d", $message, $file, $line));
 	return true;

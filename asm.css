@@ -1,7 +1,7 @@
 body	{ text-align: center; max-height: 100%; }
 a		{ text-decoration: none; }
 small a		{ text-decoration: underline; }
-.palette { text-shadow: 0 0 0.5em white; width: 100px; height: 100px; text-align: center; display: table-cell; vertical-align:middle;}
+.palette { text-shadow: 0 0 0.5em white; text-align: center; }
 a[title] { text-decoration: underline; }
 div.right	{ text-align: left; position: fixed; background: white; border: none; right: 0px; width: 14%; }
 div.right > select	{ width: 100%; }

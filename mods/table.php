@@ -21,7 +21,7 @@ class table {
 		$header = array();
 		$headerend = $this->main->offset;
 		if (isset($table['header']))
-			list($header, $headerend) = $this->process_entries($offset, $initialoffset+1, $table['header']);
+			list($header, $headeroffs, $headerend) = $this->process_entries($this->main->offset, $initialoffset+1, $table['header']);
 		list($entries,$offsets,$offset) = $this->process_entries($headerend, $initialoffset+$table['size'], $table['entries']);
 		$this->main->nextoffset = $this->main->decimal_to_function($offset);
 		$this->main->yamldata[] = $table['entries'];
@@ -42,10 +42,13 @@ class table {
 	private function process_entries($offset, $end, $entries) {
 		$output = array();
 		$offsets = array();
+		$i = 0;
 		while ($offset < $end) {
 			$tmpoffset = $offset;
 			$tmparray = array();
 			foreach ($entries as $entry) {
+				if ($i++ > 0x10000)
+					break 2;
 				$bytesread = isset($entry['size']) ? $entry['size'] : 0;
 				if (!isset($entry['type']) || ($entry['type'] == 'int')) {
 					$num = read_int($this->main->gamehandle, $entry['size']);

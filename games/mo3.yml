@@ -49,14 +49,80 @@ title: "Mother 3 (JPN + translation)"
   - name: Text
     type: UTF-16
     size: 0x17B0
-0x81D0BC9F:
+0x81D0BC9C:
   type: data
-  size: 0x10000
-  name: UNKNOWN_BG
+  size: 0x13324
+  name: BG_TABLE
+  description: Background Layer table
+  header:
+  - name: entries
+    size: 2
+  - name: master entries
+    size: 2
   entries:
-  - name: Unknown
+  - name: Graphics ID
+    size: 2
+  - name: Arrangement ID
+    size: 2
+  - name: Palette 1
+    type: palette
+    size: 16
+  - name: Palette 2
+    type: palette
+    size: 16
+  - name: Palette direction
+    size: 2
+  - name: UnknownA
+    size: 2
+  - name: Palette start
+    size: 2
+  - name: Palette end
+    size: 2
+  - name: Palette delay
+    size: 2
+  - name: UnknownB
     type: bytearray
-    size: 0x90
+    size: 0x26
+  - name: Horizontal drift
+    size: 2
+  - name: Vertical drift
+    size: 2
+  - name: UnknownC
+    size: 4
+    type: bytearray
+  - name: Horizontal amplitude
+    size: 2
+  - name: Vertical amplitude
+    size: 2
+  - name: Horizontal wave count
+    size: 2
+  - name: Vertical wave count
+    size: 2
+  - name: Horizontal frequency
+    size: 2
+  - name: Vertical frequency
+    size: 2
+  - name: UnknownD
+    type: bytearray
+    size: 8
+0x81D1EFC0:
+  type: data
+  size: 2916
+  name: MASTER_BG_TABLE
+  description: Master Background table
+  entries:
+  - name: Layer 1
+    size: 2
+  - name: Layer 2
+    size: 2
+  - name: Alpha 1
+    size: 2
+  - name: Alpha 2
+    size: 2
+  - name: Unknown A
+    size: 2
+  - name: Unknown B
+    size: 2
 0x81D1FB30:
   type: data
   size: 3272
