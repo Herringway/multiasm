@@ -4,9 +4,9 @@ class platform extends platform_base {
 	
 	const extension = 'sfc';
 	
-	function __construct(&$main) {
-		$this->main = $main;
-		$main->addresses += $this->getRegisters();
+	function __construct() {
+		$this->main = Main::get();
+		$this->main->addresses += $this->getRegisters();
 		$this->detectHiROM();
 	}
 	public function base() {
@@ -43,9 +43,9 @@ class platform extends platform_base {
 		throw new Exception('Unknown Area');
 	}
 	private function detectHiROM() {
-		fseek($this->main->gamehandle, 0x7FDC);
-		$checksum = ord(fgetc($this->main->gamehandle)) + (ord(fgetc($this->main->gamehandle))<<8);
-		$checksumcomplement = ord(fgetc($this->main->gamehandle)) + (ord(fgetc($this->main->gamehandle))<<8);
+		$this->main->rom->seekTo(0x7FDC);
+		$checksum = $this->main->rom->getShort();
+		$checksumcomplement = $this->main->rom->getShort();
 		$this->isHiROM = (($checksum^$checksumcomplement) != 0xFFFF);
 	}
 }

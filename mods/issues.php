@@ -4,8 +4,8 @@ class issues {
 	
 	const magic = 'issues';
 	
-	function __construct(&$main) {
-		$this->main = $main;
+	function __construct() {
+		$this->main = Main::get();
 	}
 	public function execute() {
 		$allproblems = array();
@@ -22,9 +22,9 @@ class issues {
 				$problems[] = 'No size defined';
 			if (($offset >= $this->main->platform->base()) && !isset($entry['type']))
 				$problems[] = 'No type defined';
-			if (!isset($entry['name']) && (!isset($entry['type']) || ($entry['type'] != 'nullspace')))
+			if (!isset($entry['name']) && (!isset($entry['type']) || ($entry['type'] != 'empty')))
 				$problems[] = 'No name defined';
-			if (!isset($entry['description']) && (!isset($entry['type']) || ($entry['type'] != 'nullspace')))
+			if (!isset($entry['description']) && (!isset($entry['type']) || ($entry['type'] != 'empty')))
 				$problems[] = 'No description defined';
 			if (isset($entry['size']) && !isset($this->main->addresses[$offset+$entry['size']]) && ($offset+$entry['size'] < $this->main->opts['rombase']+$this->main->game['size']))
 				$allproblems[$this->main->decimal_to_function($offset+$entry['size'])] = array('Undefined area!');

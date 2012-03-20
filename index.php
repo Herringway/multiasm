@@ -1,13 +1,14 @@
 <?php
 require_once 'chromephp.php';
 ob_start();
-class Backend {
+class Main {
+	private static $instance;
 	public $settings;
 	public $platform;
 	public $core;
 	public $game;
 	public $gameid;
-	public $gamehandle;
+	public $rom;
 	public $addresses;
 	public $offset;
 	public $offsetname;
@@ -25,17 +26,18 @@ class Backend {
 	public function execute() {
 		$time_start = microtime(true);
 		require_once 'commonfunctions.php';
+		require_once 'rom.php';
 		$this->settings = load_settings();
 		
 		if (PHP_SAPI === 'cli')
-			require 'cli.php';
+			require_once 'cli.php';
 		else
-			require 'web.php';
-		require 'cache.php';
+			require_once 'web.php';
+		require_once 'cache.php';
 		
 		$this->cache = new cache();
 		
-		$display = new display($this);
+		$display = new display();
 		$argv = $display->getArgv();
 		
 		//Some debug output
@@ -67,8 +69,8 @@ class Backend {
 			die ('Could not locate source data!');
 		$this->game['size'] = filesize($this->settings['rompath'].$this->gameid.'.'.platform::extension);
 		
-		$this->gamehandle = fopen($this->settings['rompath'].$this->gameid.'.'.platform::extension, 'r');
-		$this->platform = new platform($this);
+		$this->rom = new rom($this->settings['rompath'].$this->gameid.'.'.platform::extension);
+		$this->platform = new platform();
 		
 		$this->opts['rombase'] = $this->platform->base();
 		
@@ -79,7 +81,7 @@ class Backend {
 		if (isset($known_addresses[$this->offset]['cpu'])) 
 			$cpu = $this->addresses[$this->offset]['cpu']; //Override if game data sez so
 		require_once sprintf('cpus/%s.php', $cpu);
-		$this->core = new core($this);
+		$this->core = new core();
 		
 		$magicvalues = array();
 		
@@ -125,9 +127,9 @@ class Backend {
 			$modname = $this->offset;
 		else
 			foreach ($othermods as $mod)
-				if ($mod::shouldhandle($this))
+				if ($mod::shouldhandle())
 					$modname = $mod;
-		$module = new $modname($this);
+		$module = new $modname();
 		$output = $module->execute();
 		$display->mode = $modname;
 		if (method_exists($module, 'getTemplate'))
@@ -145,6 +147,13 @@ class Backend {
 	}
 	public function getOffsetName($offset) {
 		return isset($this->addresses[$offset]['name']) ? $this->addresses[$offset]['name'] : '';
+	}
+	public function getPreviousOffset($ioffset) {
+		$offset = $ioffset;
+		for (;!isset($this->addresses[$offset]) && ($offset > 0); $offset--);
+		if (!isset($this->addresses[$offset]) || ($ioffset - $offset > $this->addresses[$offset]['size']))
+			return -1;
+		return $offset;
 	}
 	public function loadYAML($id) {
 		if (isset($this->cache[sprintf('MPASM.ymlmodified.%s', $id)]) && ($this->cache[sprintf('MPASM.ymlmodified.%s', $id)] === filemtime(sprintf('games/%s.yml', $id))))
@@ -166,8 +175,14 @@ class Backend {
 		if (isset($this->settings['debug']) && $this->settings['debug'])
 			display::debugmessage($msg,$level);
 	}
+	public static function get() {
+		if (!isset(self::$instance)) {
+			$classname =  __CLASS__;
+			self::$instance = new $classname;
+		}
+		return self::$instance;
+	}
 }
 
-$backend = new Backend();
-$backend->execute();
+Main::get()->execute();
 ?>

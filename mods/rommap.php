@@ -3,8 +3,8 @@ class rommap {
 	private $main;
 	
 	const magic = 'rommap';
-	function __construct(&$main) {
-		$this->main = $main;
+	function __construct() {
+		$this->main = Main::get();
 	}
 	public function execute() {
 		$output = array();

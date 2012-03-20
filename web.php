@@ -16,8 +16,8 @@ class display {
 	private $dwoo;
 	public $mode;
 	
-	function __construct(&$main) {
-		$this->main = $main;
+	function __construct() {
+		$this->main = Main::get();
 		require_once 'Dwoo/dwooAutoload.php';
 		$this->dwoo = new Dwoo();
 	}
@@ -64,12 +64,12 @@ class display {
 		$dwoo->output('./templates/error.tpl', array('routinename' => '', 'hideright' => true, 'title' => 'FLAGRANT SYSTEM ERROR', 'nextoffset' => '', 'game' => '', 'data' => $error, 'thisoffset' => '', 'options' => '', 'offsetname' => '', 'addrformat' => '', 'menuitems' => '', 'opcodeformat' => '', 'gamelist' => '', 'error' => 1));
 	}
 	public static function debugvar($var, $label) {
-		static $limit = 50;
+		static $limit = 10;
 		if ($limit-- > 0)
 			ChromePhp::log($label, $var);
 	}
 	public static function debugmessage($message, $level = 'error') {
-		static $limit = 50;
+		static $limit = 10;
 		if ($limit-- > 0) {
 			if ($level === 'error')
 				ChromePhp::error($message);

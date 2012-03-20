@@ -6,14 +6,12 @@ class core extends core_base {
 	private $accum = 16;
 	private $index = 16;
 	private $platform;
-	function __construct(&$main) {
-		$this->main = $main;
+	function __construct() {
+		$this->main = Main::get();
 		$this->opcodes = yaml_parse_file('./cpus/65816_opcodes.yml');
 	}
 	public function getDefault() {
-		$realoffset = $this->main->platform->map_rom(0x00FFFC);
-		fseek($this->main->gamehandle, $realoffset);
-		return ord(fgetc($this->main->gamehandle)) + (ord(fgetc($this->main->gamehandle))<<8);
+		return $this->main->rom->getShort($this->main->rom->seekTo($this->main->platform->map_rom(0x00FFFC)));
 	}
 	public function getMisc() {
 		$output = array();
@@ -68,7 +66,7 @@ class core extends core_base {
 			$deflength = $this->main->addresses[$this->initialoffset]['size'];
 		if (($realoffset < 0) || ($realoffset > $this->main->game['size']))
 			throw new Exception (sprintf('Bad offset (%X)!', $realoffset));
-		fseek($this->main->gamehandle, $realoffset);
+		$this->main->rom->seekTo($realoffset);
 		$unknownbranches = 0;
 		$opcode = 0;
 		$index = isset($this->main->addresses[$this->initialoffset]['indexsize']) ? $this->main->addresses[$this->initialoffset]['indexsize'] : $this->index;
@@ -88,7 +86,7 @@ class core extends core_base {
 				break;
 			if (isset($this->main->addresses[$this->initialoffset]['labels']) && isset($this->main->addresses[$this->initialoffset]['labels'][$this->currentoffset&0xFFFF]))
 				$output[] = array('label' => $this->main->addresses[$this->initialoffset]['labels'][$this->currentoffset&0xFFFF]);
-			$opcode = ord(fgetc($this->main->gamehandle));
+			$opcode = $this->main->rom->getByte();
 			$uri = null;
 			$name = '';
 			$args = array();
@@ -101,7 +99,7 @@ class core extends core_base {
 				$size = $this->opcodes[$opcode]['addressing']['size'];
 			$arg = 0;
 			for($j = 0; $j < $size; $j++) {
-				$t = ord(fgetc($this->main->gamehandle));
+				$t = $this->main->rom->getByte();
 				$args[] = $t;
 				$arg += $t<<($j*8);
 			}

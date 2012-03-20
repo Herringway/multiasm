@@ -2,8 +2,8 @@
 class asm {
 	private $main;
 	
-	function __construct(&$main) {
-		$this->main = $main;
+	function __construct() {
+		$this->main = Main::get();
 	}
 	public function execute() {
 		$output = $this->main->core->execute($this->main->offset);
@@ -54,8 +54,8 @@ class asm {
 		$output = preg_replace_callback('/ ?(\d+):/', 'hexafixer', yaml_emit($gameorig).yaml_emit($addresses));
 		file_put_contents('games/'.$this->main->gameid.'.yml', $output);
 	}
-	public static function shouldhandle($main) {
-		if (!isset($main->addresses[$main->offset]['type']) || ($main->addresses[$main->offset]['type'] !== 'data'))
+	public static function shouldhandle() {
+		if (!isset(Main::get()->addresses[Main::get()->offset]['type']) || (Main::get()->addresses[Main::get()->offset]['type'] !== 'data'))
 			return true;
 		return false;
 	}

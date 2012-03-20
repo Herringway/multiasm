@@ -4,8 +4,8 @@ class stats {
 	
 	const magic = 'stats';
 	
-	function __construct(&$main) {
-		$this->main = $main;
+	function __construct() {
+		$this->main = Main::get();
 	}
 	public function execute() {
 		$stats = array();
