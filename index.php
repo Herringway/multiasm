@@ -148,7 +148,7 @@ class Main {
 	public function getOffsetName($offset) {
 		return isset($this->addresses[$offset]['name']) ? $this->addresses[$offset]['name'] : '';
 	}
-	public function getPreviousOffset($ioffset) {
+	public function getDataBlock($ioffset) {
 		$offset = $ioffset;
 		for (;!isset($this->addresses[$offset]) && ($offset > 0); $offset--);
 		if (!isset($this->addresses[$offset]) || ($ioffset - $offset > $this->addresses[$offset]['size']))

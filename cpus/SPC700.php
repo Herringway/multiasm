@@ -2,9 +2,9 @@
 class core extends core_base {
 	private $opcodes;
 	
-	function __construct(&$main) {
+	function __construct() {
 		$this->opcodes = yaml_parse_file('./cpus/SPC700_opcodes.yml');
-		$this->main = $main;
+		$this->main = Main::get();
 	}
 	public function getDefault() {
 		return $this->main->platform->map_rom(0x200);
@@ -16,18 +16,18 @@ class core extends core_base {
 		try {
 			$realoffset = $this->main->platform->map_rom($offset);
 		} catch (Exception $e) {
-			die (sprintf('Cannot disassemble %s!', $e->getMessage()));
+			throw new Exception(sprintf('Cannot disassemble %s!', $e->getMessage()));
 		}
-		fseek($this->main->gamehandle, $realoffset);
+		$this->main->rom->seekTo($realoffset);
 		$output = array();
 		$this->initialoffset = $this->currentoffset = $offset;
-		while (($opcode = ord(fgetc($this->main->gamehandle))) !== null) {
+		while (($opcode = $this->main->rom->getByte()) !== null) {
 			$val = 0;
 			$tmp = array('opcode' => $opcode, 'instruction' => isset($this->opcodes[$opcode]['instruction']) ? $this->opcodes[$opcode]['instruction'] : dechex($opcode), 'offset' => $this->currentoffset, 'args' => array());
 			$size = isset($this->opcodes[$opcode]['size']) ? $this->opcodes[$opcode]['size'] : 1;
 			
 			for ($i = 1; $i < $size; $i++)
-				$val += ($tmp['args'][] = ord(fgetc($this->main->gamehandle)))<<(($i-1)*8);
+				$val += ($tmp['args'][] = $this->main->rom->getByte())<<(($i-1)*8);
 				
 			if ((isset($this->opcodes[$opcode]['branch']) && !isset($this->branches[$this->fixBranch($tmp['args'])])) && ($this->fixBranch($tmp['args']) >= $this->initialoffset)) {
 				$tmp['uri'] = sprintf('%04X', $this->initialoffset).'#'.sprintf('%04X', $this->fixBranch($tmp['args']));
@@ -38,7 +38,7 @@ class core extends core_base {
 			$tmp['value'] = vsprintf($this->opcodes[$opcode]['addrformat'], array_merge(array($val),$tmp['args']));
 			$tmp['printformat'] = isset($this->opcodes[$opcode]['printformat']) ? $this->opcodes[$opcode]['printformat'] : '%s';
 			$output[] = $tmp;
-			if (($opcode == 0x6F) || ($opcode == 0x7F))
+			if (($opcode == 0x6F) || ($opcode == 0x7F) || ($this->currentoffset > 0xFFFF))
 				break;
 		}
 		$i = 0;

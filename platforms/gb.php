@@ -3,8 +3,8 @@ class platform extends platform_base {
 	private $details;
 	const extension = 'gb';
 	
-	function __construct($main) {
-		$this->main = $main;
+	function __construct() {
+		$this->main = Main::get();
 		fseek($main->gamehandle, $this->map_rom(0x102));
 		$this->details['InitVector'] = sprintf('%04X', ord(fgetc($main->gamehandle)) + (ord(fgetc($main->gamehandle))<<8));
 		fseek($main->gamehandle, $this->map_rom(0x134));

@@ -95,7 +95,7 @@ class table {
 	}
 	private function read_pointer($size) {
 		$offset = $this->main->rom->read_varint($size);
-		$datablock = Main::get()->getPreviousOffset($offset);
+		$datablock = Main::get()->getDataBlock($offset);
 		if ($datablock == -1)
 			return sprintf(core::addressformat, $offset);
 		if ($datablock != $offset)
