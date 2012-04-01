@@ -8,7 +8,7 @@ class platform extends platform_base {
 		if ($offset < 0x10000)
 			return $offset+0x200;
 		else
-			throw new Exception("this, address is only 16-bit");
+			throw new Exception("Supplied offset too large!");
 	}
 }
 ?>

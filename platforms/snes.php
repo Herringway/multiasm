@@ -5,17 +5,8 @@ class platform extends platform_base {
 	const extension = 'sfc';
 	
 	function __construct() {
-		$this->main = Main::get();
-		$this->main->addresses += $this->getRegisters();
+		Main::get()->addresses += yaml_parse_file('platforms/snes_registers.yml');
 		$this->detectHiROM();
-	}
-	public function base() {
-		if ($this->isHiROM)
-			return 0xC00000;
-		return 0x800000;
-	}
-	public function getRegisters() {
-		return yaml_parse_file('platforms/snes_registers.yml');
 	}
 	public function map_rom($offset) {
 		if (($offset > 0xFFFFFF) || ($offset < 0))
@@ -43,9 +34,9 @@ class platform extends platform_base {
 		throw new Exception('Unknown Area');
 	}
 	private function detectHiROM() {
-		$this->main->rom->seekTo(0x7FDC);
-		$checksum = $this->main->rom->getShort();
-		$checksumcomplement = $this->main->rom->getShort();
+		rom::get()->seekTo(0x7FDC);
+		$checksum = rom::get()->getShort();
+		$checksumcomplement = rom::get()->getShort();
 		$this->isHiROM = (($checksum^$checksumcomplement) != 0xFFFF);
 	}
 }

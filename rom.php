@@ -1,6 +1,7 @@
 <?php
 class rom {
 	private $handle;
+	private static $instance;
 	
 	function __construct($filename) {
 		$this->handle = fopen($filename, 'r');
@@ -19,7 +20,7 @@ class rom {
 	public function getByte($offset = -1) {
 		return $this->read_varint(1, $offset);
 	}
-	public function read_varint($size, $offset) {
+	public function read_varint($size, $offset = -1) {
 		if ($offset > 0)
 			$this->seekTo($offset);
 		$output = 0;
@@ -138,6 +139,14 @@ class rom {
 		for ($i = 0; $i < count($values); $i++)
 			$output[$values[$i]] = ($val&pow(2,$i)) != 0;
 		return $output;
+	}
+	public static function get($filename = '') {
+		if (!isset(self::$instance)) {
+			if ($filename == '')
+				throw new Exception("File not open!");
+			self::$instance = new self($filename);
+		}
+		return self::$instance;
 	}
 }
 ?>

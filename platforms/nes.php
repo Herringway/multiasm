@@ -4,21 +4,21 @@ class platform extends platform_base {
 	
 	const extension = 'nes';
 	
-	function __construct(&$main) {
+	function __construct() {
 		$flagarray = array();
-		fseek($main->gamehandle, 0);
-		$this->details['Valid'] = (fread($main->gamehandle, 4) == 'NES');
-		$this->details['PRGROMSize'] = ord(fgetc($main->gamehandle))*0x4000;
-		$this->details['CHRROMSize'] = ord(fgetc($main->gamehandle))*0x2000;
-		$b1 = ord(fgetc($main->gamehandle));
-		$b2 = ord(fgetc($main->gamehandle));
+		rom::get()->seekTo(0);
+		$this->details['Valid'] = (rom::get()->read(4) == 'NES');
+		$this->details['PRGROMSize'] = rom::get()->getByte()*0x4000;
+		$this->details['CHRROMSize'] = rom::get()->getByte()*0x2000;
+		$b1 = rom::get()->getByte();
+		$b2 = rom::get()->getByte();
 		$this->details['Mapper'] = (($b1&0xF0)>>4) + ($b2&0xF0);
 		$flags = (($b1&0xF)<<20) + (($b2&0xF)<<16);
-		$this->details['PRGRAMSize'] = ord(fgetc($main->gamehandle))*0x2000;
-		$flags += (ord(fgetc($main->gamehandle))<<8) + ord(fgetc($main->gamehandle));
+		$this->details['PRGRAMSize'] = rom::get()->getByte()*0x2000;
+		$flags += rom::get()->getShort();
 		for ($i = 0; $i < 24; $i++)
 			$this->details['Flags'][(isset($flagarray[$i]) ? $flagarray[$i] : $i)] = (($flags & (1<<$i)) != 0);
-		$main->addresses += $this->getRegisters();
+		Main::get()->addresses += $this->getRegisters();
 	}
 	public function getRegisters() {
 		return yaml_parse_file('platforms/nes_registers.yml') + (file_exists(sprintf('platforms/nes-mapper%d.yml', $this->details['Mapper'])) ? yaml_parse_file(sprintf('platforms/nes-mapper%d.yml', $this->details['Mapper'])) : array());

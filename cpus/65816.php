@@ -5,13 +5,15 @@ class core extends core_base {
 	private $opcodes;
 	private $accum = 16;
 	private $index = 16;
-	private $platform;
+	private $DBR;
+	private $PBR;
 	function __construct() {
 		$this->main = Main::get();
 		$this->opcodes = yaml_parse_file('./cpus/65816_opcodes.yml');
+		$this->DBR = 0x007E;
 	}
 	public function getDefault() {
-		return $this->main->rom->getShort($this->main->rom->seekTo($this->main->platform->map_rom(0x00FFFC)));
+		return $this->main->rom->getShort($this->main->platform->map_rom(0x00FFFC));
 	}
 	public function getMisc() {
 		$output = array();
@@ -30,35 +32,19 @@ class core extends core_base {
 		return $output;
 	}
 	private function fix_addr($instruction, $val) {
-		switch($this->opcodes[$instruction]['addressing']['type']) {
-			case 'absolute':
-				if (isset($this->main->addresses[0x7E0000+$val]))
-					return 0x7E0000+$val;
-			case 'absolutelong':
-			case 'absolutelongjmp':
-			case 'absolutelongindexed':
-			case 'absolutelongindexedx':
-				return $val;
-			case 'absolutejmp':
-				return ($this->currentoffset&0xFF0000)+$val;
-			case 'absoluteindexedx':
-			case 'absoluteindexedy':
-				if (isset($this->main->addresses[0x7E0000+$val]))
-					return 0x7E0000+$val;
-				break;
-			case 'relative':
-				return ($this->currentoffset+uint($val+2,8))&0xFFFF;
-			case 'relativelong':
-				return ($this->currentoffset+uint($val+3,16))&0xFFFF;
-		}
+		if (isset($this->opcodes[$instruction]['addressing']['UseDBR']))
+			return ($this->DBR << 16) + $val;
+		if ($this->opcodes[$instruction]['addressing']['type'] == 'relative')
+			return ($this->currentoffset+uint($val+2,8))&0xFFFF;
+		if ($this->opcodes[$instruction]['addressing']['type'] == 'relativelong')
+			return ($this->currentoffset+uint($val+3,16))&0xFFFF;
+		if (isset($this->opcodes[$instruction]['addressing']['UsePBR']))
+			return ($this->PBR << 16) + $val;
 		return $val;
 	}
 	public function execute($offset) {
-		try {
-			$realoffset = $this->main->platform->map_rom($offset);
-		} catch (Exception $e) {
-			throw new Exception (sprintf('Cannot disassemble %s!', $e->getMessage()));
-		}
+		$realoffset = $this->main->platform->map_rom($offset);
+		$this->PBR = $offset>>16;
 		$farthestbranch = $this->initialoffset = $this->currentoffset = $offset;
 		if (isset($this->main->opts['size']))
 			$deflength = $this->main->opts['size'];
@@ -110,8 +96,8 @@ class core extends core_base {
 				if ($args[0]&0x20)
 					$accum = ($opcode == 0xC2) ? 16 : 8;
 			}
-			if ($opcode == 0x42)
-				trigger_error("WDM encountered. You sure this is assembly?");
+			if (isset($this->opcodes[$opcode]['undefined']))
+				throw new Exception("Undefined opcode encountered. You sure this is assembly?");
 				
 			$fulladdr = $this->fix_addr($opcode, $arg);
 			
@@ -120,15 +106,11 @@ class core extends core_base {
 				
 			if ((($this->opcodes[$opcode]['addressing']['type'] == 'absolutejmp') || ($this->opcodes[$opcode]['addressing']['type'] == 'absolutelongjmp'))) {
 				if (isset($this->main->addresses[$fulladdr]['name'])) {
-					try {
-						$this->main->platform->map_rom($fulladdr);
+					if ($this->main->platform->isROM($fulladdr))
 						$uri = $this->main->addresses[$fulladdr]['name'];
-					} catch (Exception $e) { }
 				} else {
-					try {
-						$this->main->platform->map_rom($fulladdr);
+					if ($this->main->platform->isROM($fulladdr))
 						$uri = sprintf('%06X', $fulladdr);
-					} catch (Exception $e) { }
 				}
 			}
 			if ($this->opcodes[$opcode]['addressing']['type'] == 'relativelong')
@@ -140,10 +122,8 @@ class core extends core_base {
 			
 			if (isset($this->main->addresses[$fulladdr]['name'])) {
 				$name = $this->main->addresses[$fulladdr]['name'];
-				try {
-					$this->main->platform->map_rom($fulladdr);
+				if ($this->main->platform->isROM($fulladdr))
 					$uri = $name;
-				} catch (Exception $e) { }
 			} else if ((($this->opcodes[$opcode]['addressing']['type'] == 'relative') || ($this->opcodes[$opcode]['addressing']['type'] == 'absolutejmp')) && isset($this->main->addresses[$this->initialoffset]['labels'][$fulladdr&0xFFFF])) {
 				$uri = sprintf('%s#%s', $this->main->getOffsetName($this->initialoffset), $this->main->addresses[$this->initialoffset]['labels'][$fulladdr&0xFFFF]);
 				$name = ($this->placeholdernames ? isset($this->main->addresses[$this->initialoffset]['name']) ? $this->main->addresses[$this->initialoffset]['name'].'_' : sprintf('UNKNOWN_%06X_', $this->initialoffset) : '').$this->main->addresses[$this->initialoffset]['labels'][$fulladdr&0xFFFF];
@@ -162,7 +142,7 @@ class core extends core_base {
 			if (isset($this->main->game['localvars'])) {
 				switch ($this->main->game['localvars']) {
 					case 'directpage':
-						if ((($this->opcodes[$opcode]['addressing']['type'] === 'directpage') || ($this->opcodes[$opcode]['addressing']['type'] === 'dpindirectlong') || ($this->opcodes[$opcode]['addressing']['type'] === 'dpindirectlongindexedy')) && isset($this->main->addresses[$this->initialoffset]['localvars'][$arg]))
+						if (isset($this->opcodes[$opcode]['addressing']['directpage']) && isset($this->main->addresses[$this->initialoffset]['localvars'][$arg]))
 							$name = sprintf($this->main->settings['localvar format'], $this->main->addresses[$this->initialoffset]['localvars'][$arg]);
 						break;
 				}

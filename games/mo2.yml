@@ -447,12 +447,15 @@ texttables:
     0x8F09: UNKNOWN0
     0x8F10: UNKNOWN1
 0xC08FDB:
-  description: ""
-  name: ""
+  description: Multiply low byte of Y by A
+  name: EIGHT_BIT_MULT_YxA
+  final processor state:
+    accum: 16
+    index: 16
+  size: 59
   type: assembly
-  size: 57
   labels:
-    0x9004: UNKNOWN0
+    0x9022: UNKNOWN0
 0xC09014:
   description: Multiply Y by A
   name: MULT_YxA

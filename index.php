@@ -1,8 +1,9 @@
 <?php
 require_once 'chromephp.php';
+require_once 'commonfunctions.php';
 ob_start();
 class Main {
-	private static $instance;
+	public static $instance;
 	public $settings;
 	public $platform;
 	public $core;
@@ -17,7 +18,6 @@ class Main {
 	public $yamldata;
 	public $dataname;
 	public $comments;
-	public $realname = '';
 	public $realdesc = '';
 	public $godpowers = false;
 	public $menuitems = array();
@@ -25,9 +25,10 @@ class Main {
 	
 	public function execute() {
 		$time_start = microtime(true);
-		require_once 'commonfunctions.php';
 		require_once 'rom.php';
-		$this->settings = load_settings();
+		if (!file_exists('settings.yml'))
+			file_put_contents('settings.yml', yaml_emit(array('gameid' => 'eb', 'rompath' => '.', 'debug' => false, 'password' => 'changeme')));
+		$this->settings = yaml_parse_file('settings.yml');
 		
 		if (PHP_SAPI === 'cli')
 			require_once 'cli.php';
@@ -69,10 +70,9 @@ class Main {
 			die ('Could not locate source data!');
 		$this->game['size'] = filesize($this->settings['rompath'].$this->gameid.'.'.platform::extension);
 		
-		$this->rom = new rom($this->settings['rompath'].$this->gameid.'.'.platform::extension);
-		$this->platform = new platform();
+		$this->rom = rom::get($this->settings['rompath'].$this->gameid.'.'.platform::extension);
+		$this->platform = platform::get();
 		
-		$this->opts['rombase'] = $this->platform->base();
 		
 		
 		//Load CPU Class
@@ -99,7 +99,6 @@ class Main {
 		
 		//Where are we?
 		$this->offset = $this->core->getDefault();
-		$this->offsetname = isset($this->addresses[$this->offset]['name']) ? $this->addresses[$this->offset]['name'] : '';
 		if (isset($argv[1]) && ($argv[1] != null)) {
 			if (in_array($argv[1], $magicvalues))
 				$this->offset = $argv[1];
@@ -108,20 +107,18 @@ class Main {
 					foreach ($this->addresses as $k => $addr)
 						if (isset($addr['name']) && ($addr['name'] == $argv[1])) {
 							$this->offset = $k;
-							$this->realname = $this->offsetname = $argv[1];
 							if (isset($addr['description']))
 								$this->realdesc = $addr['description'];
 							break;
 						}
 				} else {
-					$this->offsetname = $argv[1];
 					$this->offset = hexdec($argv[1]);
 				}
 			}
 		}
 		$this->debugvar($this->offset, 'Location');
-		$this->debugvar($this->offsetname, 'Location_Fancy');
 		
+		$this->debugvar(sprintf('%f seconds', microtime(true) - $time_start), 'Pre-module time');
 		//What are we doing?
 		if (in_array($this->offset, $magicvalues, true))
 			$modname = $this->offset;
@@ -140,10 +137,11 @@ class Main {
 			if ($this->yamldata !== null)
 				foreach ($this->yamldata as $yamldoc)
 					echo yaml_emit($yamldoc);
-		} else {
+		} else
 			$display->display($output);
-		}
-		$this->debugvar(sprintf('%f seconds', microtime(true) - $time_start), 'Execution time');
+			
+		$this->debugvar(sprintf('%f MB', memory_get_usage()/1024/1024), 'Total Memory usage');
+		$this->debugvar(sprintf('%f seconds', microtime(true) - $time_start), 'Total Execution time');
 	}
 	public function getOffsetName($offset) {
 		return isset($this->addresses[$offset]['name']) ? $this->addresses[$offset]['name'] : '';
@@ -156,9 +154,10 @@ class Main {
 		return $offset;
 	}
 	public function loadYAML($id) {
-		if (isset($this->cache[sprintf('MPASM.ymlmodified.%s', $id)]) && ($this->cache[sprintf('MPASM.ymlmodified.%s', $id)] === filemtime(sprintf('games/%s.yml', $id))))
+		if (isset($this->cache[sprintf('MPASM.ymlmodified.%s', $id)]) && ($this->cache[sprintf('MPASM.ymlmodified.%s', $id)] === filemtime(sprintf('games/%s.yml', $id)))) {
+			$this->debugmessage(sprintf("Game data (%s) loaded from cache", $id), 'info');
 			list($game,$addresses) = $this->cache[sprintf('MPASM.ymlcache.%s', $id)];
-		else { //Load game data & platform class from yml
+		} else { //Load game data & platform class from yml
 			list($game,$addresses) = $this->cache[sprintf('MPASM.ymlcache.%s', $id)] = yaml_parse_file(sprintf('games/%s.yml', $id), -1);
 			$this->cache[sprintf('MPASM.ymlmodified.%s', $id)] = filemtime(sprintf('games/%s.yml', $id));
 		}
@@ -175,11 +174,10 @@ class Main {
 		if (isset($this->settings['debug']) && $this->settings['debug'])
 			display::debugmessage($msg,$level);
 	}
+	
 	public static function get() {
-		if (!isset(self::$instance)) {
-			$classname =  __CLASS__;
-			self::$instance = new $classname;
-		}
+		if (!isset(self::$instance))
+			self::$instance = new self();
 		return self::$instance;
 	}
 }

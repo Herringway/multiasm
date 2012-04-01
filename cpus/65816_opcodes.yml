@@ -12,6 +12,7 @@
     type: dpindexedindirectx
     printformat: (%s,X)
     addrformat: $%02X
+    directpage: y
     size: 1
 0x02: 
   mnemonic: COP
@@ -29,6 +30,7 @@
     type: directpage
     printformat: "%s"
     addrformat: $%02X
+    directpage: y
     size: 1
 0x05: 
   mnemonic: ORA
@@ -42,6 +44,7 @@
     type: dpindirectlong
     printformat: "[%s]"
     addrformat: "$%02X"
+    directpage: y
     size: 1
 0x08: 
   mnemonic: PHP
@@ -63,6 +66,7 @@
   mnemonic: TSB
   addressing: &absolute
     type: absolute
+    UseDBR: y
     printformat: "%s"
     addrformat: $%04X
     size: 2
@@ -93,6 +97,7 @@
     type: dpindirectindexedy
     printformat: (%s),Y
     addrformat: $%02X
+    directpage: y
     size: 1
 0x12: 
   mnemonic: ORA
@@ -100,6 +105,7 @@
     type: dpindirect
     printformat: (%s)
     addrformat: $%02X
+    directpage: y
     size: 1
 0x13: 
   mnemonic: ORA
@@ -117,6 +123,7 @@
     type: dpindexedx
     printformat: "%s,X"
     addrformat: $%02X
+    directpage: y
     size: 1
 0x16: 
   mnemonic: ASL
@@ -127,6 +134,7 @@
     type: dpindirectlongindexedy
     printformat: '[%s],Y'
     addrformat: $%02X
+    directpage: y
     size: 1
 0x18: 
   mnemonic: CLC
@@ -136,6 +144,7 @@
   addressing: &absoluteindexedy
     type: absoluteindexedy
     printformat: "%s,Y"
+    UseDBR: y
     addrformat: $%04X
     size: 2
 0x1A: 
@@ -152,6 +161,7 @@
   addressing: &absoluteindexedx
     type: absoluteindexedx
     printformat: "%s,X"
+    UseDBR: y
     addrformat: $%04X
     size: 2
 0x1E: 
@@ -169,6 +179,7 @@
   addressing: &absolutejmp
     type: absolutejmp
     printformat: "%s"
+    UsePBR: y
     addrformat: $%04X
     size: 2
     anchorformat: '%s#%s'
@@ -283,6 +294,7 @@
 0x42: 
   mnemonic: WDM
   addressing: *none
+  undefined: y
 0x43: 
   mnemonic: EOR
   addressing: *stackrelative
@@ -425,6 +437,7 @@
   addressing: &absoluteindirect
     type: absoluteindirect
     printformat: (%s)
+    UseDBR: y
     addrformat: $%04X
     size: 2
 0x6D: 
@@ -477,6 +490,7 @@
   addressing: &absoluteindexedindirect
     type: absoluteindexedindirect
     printformat: (%s,X)
+    UseDBR: y
     addrformat: $%04X
     size: 2
 0x7D: 
@@ -564,6 +578,7 @@
     type: dpindexedy
     printformat: "%s,Y"
     addrformat: $%02X
+    directpage: y
     size: 1
 0x97: 
   mnemonic: STA
@@ -789,6 +804,7 @@
   addressing: &absoluteindirectlong
     type: absoluteindirectlong
     printformat: (%s)
+    UseDBR: y
     addrformat: $%04X
     size: 2
 0xDD: 

@@ -49,8 +49,8 @@ class display {
 		'thisoffset' => $this->main->offset, 
 		'options' => $this->main->opts, 
 		'writemode' => $this->main->godpowers,
-		'offsetname' => $this->main->offsetname, 
-		'realname' => $this->main->realname,
+		'offsetname' => $this->main->decimal_to_function($this->main->offset), 
+		'realname' => $this->main->getOffsetName($this->main->offset),
 		'realdesc' => $this->main->realdesc,
 		'addrformat' => core::addressformat, 
 		'menuitems' => $this->main->menuitems, 
@@ -64,12 +64,12 @@ class display {
 		$dwoo->output('./templates/error.tpl', array('routinename' => '', 'hideright' => true, 'title' => 'FLAGRANT SYSTEM ERROR', 'nextoffset' => '', 'game' => '', 'data' => $error, 'thisoffset' => '', 'options' => '', 'offsetname' => '', 'addrformat' => '', 'menuitems' => '', 'opcodeformat' => '', 'gamelist' => '', 'error' => 1));
 	}
 	public static function debugvar($var, $label) {
-		static $limit = 10;
+		static $limit = 100;
 		if ($limit-- > 0)
 			ChromePhp::log($label, $var);
 	}
 	public static function debugmessage($message, $level = 'error') {
-		static $limit = 10;
+		static $limit = 100;
 		if ($limit-- > 0) {
 			if ($level === 'error')
 				ChromePhp::error($message);

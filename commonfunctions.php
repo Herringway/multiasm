@@ -10,8 +10,12 @@ function print_exception($exception) {
 function error_handling($errno, $message, $file, $line) {
 	static $errors = 0;
 	//ini_set('display_errors', 'Off');
-	if ($errors++ < 100)
-		display::debugmessage(sprintf("%s on %s:%d", $message, $file, $line));
+	if ($errors++ < 100) {
+		if (!class_exists('display'))
+			printf("%s on %s:%d", $message, $file, $line);
+		else
+			display::debugmessage(sprintf("%s on %s:%d", $message, $file, $line));
+	}
 	return true;
 }
 function flagrant_system_error() {
@@ -31,46 +35,40 @@ function hexafixer($matches) {
 		return sprintf(' 0x%04X:', $matches[1]);
 	return sprintf('0x%06X:', $matches[1]);
 }
-function relative_to_absolute($offset, $val, $size) {
-	return ($offset & 0xFF0000) + (($offset+uint($val+$size+1,$size*8))&0xFFFF);
+function hexafixer_human($matches) {
+	static $i = 0;
+	return sprintf('<a href="#'.core::addressformat.'" name="'.core::addressformat.'">%d ('.core::addressformat.'</a>)', $matches[1], $matches[1], $i++, $matches[1]);
+}
+function print_magical_yaml($file) {
+	$output = yaml_emit($file);
+	$output = preg_replace_callback('/^(\d+):/m', 'hexafixer_human', $output);
+	return $output;
 }
 function uint($i, $bits) {
 	return $i < pow(2,$bits-1) ? $i : 0-(pow(2,$bits)-$i);
 }
-// function get_bit_flags($arg, $values) {
-	// $output = array();
-	// for ($i = 0; $i < 8; $i++)
-		// if ($arg&pow(2,$i))
-			// $output[] = $values[$i];
-	// return implode(', ', $output);
-// }
-// function get_bit_flags2($arg, $values) {
-	// $output = array();
-	// for ($i = 0; $i < count($values); $i++)
-		// if ($arg&pow(2,$i))
-			// $output[] = $values[$i];
-	// return $output;
-// }
 function asprintf($string, $haystack) {
 	$output = array();
 	foreach ($haystack as $needle)
 		$output[] = vsprintf($string, $needle);
 	return $output;
 }
-function load_settings() {
-	if (!file_exists('settings.yml'))
-		file_put_contents('settings.yml', yaml_emit(array('gameid' => 'eb', 'rompath' => '.', 'debug' => false, 'password' => 'changeme')));
-	return yaml_parse_file('settings.yml');
-}
-abstract class platform_base {
+abstract class platform_base extends singleton {
 	protected $main;
 	public function getRegisters() {
 		return array();
 	}
-	public function base() {
-	}
 	public function getMiscInfo() {
 		return array();
+	}
+	public function map_rom($offset) {
+	}
+	public function isROM($offset) {
+		try {
+			$this->map_rom($offset);
+			return true;
+		} catch (Exception $e) { }
+		return false;
 	}
 }
 
@@ -93,6 +91,16 @@ abstract class core_base {
 	}
 	public function getMisc() {
 		return array();
+	}
+}
+abstract class singleton {
+	private static $instance;
+	
+	public static function get() {
+		$class = get_called_class();
+		if (!isset(self::$instance))
+			self::$instance = new $class();
+		return self::$instance;
 	}
 }
 ?>

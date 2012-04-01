@@ -14,8 +14,9 @@ class stats {
 		$biggestroutine = array('size' => 0, 'offset' => 0);
 		$divisions = array();
 		$routines = array();
+		$biggest = $biggestroutine = array('size' => 0, 'name' => 'undefined');
 		foreach ($this->main->addresses as $k => $entry) {
-			if ($k < $this->main->opts['rombase'])
+			if (!$this->main->platform->isRom($k))
 				continue;
 			if (isset($entry['ignore']) && ($entry['ignore']))
 				continue;
@@ -32,7 +33,7 @@ class stats {
 				if (($entry['size'] > $biggestroutine['size']) && isset($entry['type']) && ($entry['type'] == 'assembly'))
 					$biggestroutine = array('size' => $entry['size'], 'name' => !empty($entry['name']) ? $entry['name'] : sprintf('%06X', $k));
 			}
-			if (($k >= $this->main->opts['rombase']) && (isset($entry['size'])))
+			if (isset($entry['size']))
 				$counteddata += $entry['size'];
 		}
 		$stats['Known_Data'] = $counteddata;

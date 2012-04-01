@@ -3,5 +3,13 @@ processor: SPC700
 title: Earthbound (USA) (SPC)
 platform: SPC700
 ...
---- ~
+---
+0x2D4A:
+  name: SEQUENCE_POINTER_TABLE
+  size: 0x17E
+  type: data
+  entries:
+  - name: Pointer
+    size: 2
+    type: pointer
 ...

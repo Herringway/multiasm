@@ -13,12 +13,7 @@ class core extends core_base {
 		return $this->currentoffset + uint($val[0]+2,8);
 	}
 	public function execute($offset) {
-		try {
-			$realoffset = $this->main->platform->map_rom($offset);
-		} catch (Exception $e) {
-			throw new Exception(sprintf('Cannot disassemble %s!', $e->getMessage()));
-		}
-		$this->main->rom->seekTo($realoffset);
+		$this->main->rom->seekTo($this->main->platform->map_rom($offset));
 		$output = array();
 		$this->initialoffset = $this->currentoffset = $offset;
 		while (($opcode = $this->main->rom->getByte()) !== null) {

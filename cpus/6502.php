@@ -7,14 +7,12 @@ class core extends core_base {
 	private $index = 16;
 	public $placeholdernames = false;
 	private $platform;
-	function __construct(&$main) {
-		$this->main = $main;
+	function __construct() {
+		$this->main = Main::get();
 		$this->opcodes = yaml_parse_file('./cpus/6502_opcodes.yml');
 	}
 	public function getDefault() {
-		$realoffset = $this->main->platform->map_rom(0xFFFC);
-		fseek($this->main->gamehandle, $realoffset);
-		return ord(fgetc($this->main->gamehandle)) + (ord(fgetc($this->main->gamehandle))<<8);
+		return rom::get()->getShort($this->main->platform->map_rom(0xFFFC));
 	}
 	private function fix_addr($opcode, $offset) {
 		if ($opcode['addressing']['type'] == 'relative')
@@ -34,11 +32,7 @@ class core extends core_base {
 		return $output;
 	}
 	public function execute($offset,$offsetname) {
-		try {
-			$realoffset = $this->main->platform->map_rom($offset);
-		} catch (Exception $e) {
-			die (sprintf('Cannot disassemble: %s!', $e->getMessage()));
-		}
+		$realoffset = $this->main->platform->map_rom($offset);
 		$farthestbranch = $this->initialoffset = $this->currentoffset = $offset;
 		if (isset($this->main->opts['size']))
 			$deflength = $this->main->opts['size'];
@@ -46,7 +40,7 @@ class core extends core_base {
 			$deflength = $this->main->addresses[$this->initialoffset]['size'];
 		if (($realoffset < 0) || ($realoffset > $this->main->game['size']))
 			die (sprintf('Bad offset (%X)!', $realoffset));
-		fseek($this->main->gamehandle, $realoffset);
+		rom::get()->seekTo($realoffset);
 		$unknownbranches = 0;
 		$opcode = 0;
 		$output = array();
@@ -59,7 +53,7 @@ class core extends core_base {
 				break;
 			if (isset($this->main->addresses[$this->initialoffset]['labels']) && isset($this->main->addresses[$this->initialoffset]['labels'][$this->currentoffset&0xFFFF]))
 				$output[] = array('label' => $this->main->addresses[$this->initialoffset]['labels'][$this->currentoffset&0xFFFF]);
-			$opcode = ord(fgetc($this->main->gamehandle));
+			$opcode = rom::get()->getByte();
 			$opcodeinfo = isset($this->opcodes[$opcode]) ? $this->opcodes[$opcode] : $this->opcodes['Undefined'];
 			$uri = null;
 			$name = '';
@@ -68,7 +62,7 @@ class core extends core_base {
 			$size = $opcodeinfo['addressing']['size'];
 			$arg = 0;
 			for($j = 0; $j < $size; $j++) {
-				$t = ord(fgetc($this->main->gamehandle));
+				$t = rom::get()->getByte();
 				$args[] = $t;
 				$arg += $t<<($j*8);
 			}

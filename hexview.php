@@ -6,7 +6,7 @@ function hexview($data,$wrap = 16, $baseaddress = 0, $charset = null) {
 	$output .= sprintf('<hr>%06X: ', $baseaddress);
 	$ascii = '';
 	for ($i = 0; isset($data[$i]); $i++) {
-		$output .= sprintf('%02X ', ord($data[$i]));
+		$output .= sprintf('<a name="'.core::addressformat.'">%02X</a> ', $baseaddress+$i, ord($data[$i]));
 		$ascii .= replacechar($data[$i], $charset);
 		if ($i%$wrap == $wrap-1) {
 			$output .= sprintf("%s\r\n",$ascii);
