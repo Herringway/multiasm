@@ -4,11 +4,8 @@ class platform extends platform_base {
 	const extension = 'gb';
 	
 	function __construct() {
-		$this->main = Main::get();
-		fseek($main->gamehandle, $this->map_rom(0x102));
-		$this->details['InitVector'] = sprintf('%04X', ord(fgetc($main->gamehandle)) + (ord(fgetc($main->gamehandle))<<8));
-		fseek($main->gamehandle, $this->map_rom(0x134));
-		$this->details['InternalTitle'] = fread($main->gamehandle, 15);
+		$this->details['InitVector'] = sprintf('%04X', rom::get()->getShort(0x102));
+		$this->details['InternalTitle'] = rom::get()->read(15,$this->map_rom(0x134));
 	}
 	public function map_rom($offset) {
 		if (($offset&0xFFFF) >= 0x8000)

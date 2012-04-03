@@ -16,7 +16,7 @@ class stats {
 		$routines = array();
 		$biggest = $biggestroutine = array('size' => 0, 'name' => 'undefined');
 		foreach ($this->main->addresses as $k => $entry) {
-			if (!$this->main->platform->isRom($k))
+			if (!platform::get()->isRom($k))
 				continue;
 			if (isset($entry['ignore']) && ($entry['ignore']))
 				continue;
@@ -42,9 +42,9 @@ class stats {
 		if ($counteddata < $this->main->game['size'])
 			$divisions['Unknown'] = $this->main->game['size'] - $counteddata;
 		$stats['Size'] = $divisions;
-		$this->main->yamldata[] = $stats;
+		//$this->main->yamldata[] = $stats;
 		$this->main->dataname = 'ROM Stats';
-		return $stats;
+		return array($stats);
 	}
 }
 ?>

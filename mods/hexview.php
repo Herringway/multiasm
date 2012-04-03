@@ -9,7 +9,7 @@ class hexview {
 		if (!isset($this->main->addresses[$this->main->offset]['size']))
 			die('Data has no size defined!');
 		require_once 'hexview.php';
-		$data = $this->main->rom->read($this->main->addresses[$this->main->offset]['size'], $this->main->platform->map_rom($this->main->offset));
+		$data = rom::get()->read($this->main->addresses[$this->main->offset]['size'], platform::get()->map_rom($this->main->offset));
 		$this->main->nextoffset = $this->main->decimal_to_function($this->main->offset+$this->main->addresses[$this->main->offset]['size']);
 		if (isset($this->main->addresses[$this->main->offset]['charset']))
 			$charset = $game['texttables'][$this->addresses[$this->offset]['charset']]['replacements'];

@@ -11,7 +11,7 @@ class issues {
 		$allproblems = array();
 		$prev = 0;
 		foreach ($this->main->addresses as $offset => $entry) {
-			if (!$this->main->platform->isRom($offset))
+			if (!platform::get()->isRom($offset))
 				continue;
 			if (isset($entry['ignore']) && ($entry['ignore'] == true))
 				continue;
@@ -20,13 +20,13 @@ class issues {
 				$problems[] = 'Overlap detected';
 			if (!isset($entry['size']))
 				$problems[] = 'No size defined';
-			if (($offset >= $this->main->platform->base()) && !isset($entry['type']))
+			if (!isset($entry['type']))
 				$problems[] = 'No type defined';
 			if (!isset($entry['name']) && (!isset($entry['type']) || ($entry['type'] != 'empty')))
 				$problems[] = 'No name defined';
 			if (!isset($entry['description']) && (!isset($entry['type']) || ($entry['type'] != 'empty')))
 				$problems[] = 'No description defined';
-			if (isset($entry['size']) && !isset($this->main->addresses[$offset+$entry['size']]) && ($this->main->platform->map_rom($offset+$entry['size']) < $this->main->game['size']))
+			if (isset($entry['size']) && !isset($this->main->addresses[$offset+$entry['size']]) && (platform::get()->map_rom($offset+$entry['size']) < $this->main->game['size']))
 				$allproblems[$this->main->decimal_to_function($offset+$entry['size'])] = array('Undefined area!');
 			if ($problems != array())
 				$allproblems[$this->main->decimal_to_function($offset)] = $problems;
@@ -34,7 +34,7 @@ class issues {
 		}
 		
 		$this->main->dataname = 'Issues';
-		return $allproblems;
+		return array($allproblems);
 	}
 }
 ?>

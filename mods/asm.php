@@ -25,8 +25,7 @@ class asm {
 				$this->main->menuitems[$branch] = $branch;
 		if (isset($this->main->opts['write']) && ($this->main->godpowers))
 			$this->saveData();
-		$this->main->yamldata[] = $output;
-		return $output;
+		return array($output);
 	}
 	//Saves a stub to the relevant YAML file.
 	private function saveData() {
@@ -51,7 +50,7 @@ class asm {
 		if ($branches != null)
 			$addresses[$this->main->core->initialoffset]['labels'] = $branches;
 		ksort($addresses);
-		$output = preg_replace_callback('/ ?(\d+):/', 'hexafixer', yaml_emit($gameorig).yaml_emit($addresses));
+		$output = preg_replace_callback('/^(\d+):/m', 'hexafixer', yaml_emit($gameorig,YAML_UTF8_ENCODING).yaml_emit($addresses,YAML_UTF8_ENCODING));
 		file_put_contents('games/'.$this->main->gameid.'.yml', $output);
 	}
 	public static function shouldhandle() {

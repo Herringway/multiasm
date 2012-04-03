@@ -15,13 +15,15 @@ class Main {
 	public $offsetname;
 	public $opts;
 	public $nextoffset;
-	public $yamldata;
+	//public $yamldata;
 	public $dataname;
 	public $comments;
 	public $realdesc = '';
 	public $godpowers = false;
 	public $menuitems = array();
 	public $gamelist = array();
+	
+	private function __construct() { }
 	
 	public function execute() {
 		$time_start = microtime(true);
@@ -70,8 +72,8 @@ class Main {
 			die ('Could not locate source data!');
 		$this->game['size'] = filesize($this->settings['rompath'].$this->gameid.'.'.platform::extension);
 		
-		$this->rom = rom::get($this->settings['rompath'].$this->gameid.'.'.platform::extension);
-		$this->platform = platform::get();
+		rom::get($this->settings['rompath'].$this->gameid.'.'.platform::extension);
+		//$this->platform = platform::get();
 		
 		
 		
@@ -134,8 +136,8 @@ class Main {
 		//Display stuff
 		if (isset($this->opts['yaml'])) {
 			header('Content-Type: text/plain; charset=UTF-8');
-			if ($this->yamldata !== null)
-				foreach ($this->yamldata as $yamldoc)
+			if ($output !== null)
+				foreach ($output as $yamldoc)
 					echo yaml_emit($yamldoc);
 		} else
 			$display->display($output);

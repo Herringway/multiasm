@@ -3,9 +3,12 @@ register_shutdown_function('flagrant_system_error');
 date_default_timezone_set('America/Halifax');
 set_exception_handler('print_exception');
 set_error_handler('error_handling');
+ini_set('yaml.output_width', -1);
 define('BRANCH_LIMIT', 5000);
 function print_exception($exception) {
-	display::display_error(array('trace' => $exception->getTrace(), 'message' => $exception->getMessage()));
+	display::get()->mode = 'error';
+	display::get()->seterror();
+	display::get()->display(array('trace' => $exception->getTrace(), 'message' => $exception->getMessage()));
 }
 function error_handling($errno, $message, $file, $line) {
 	static $errors = 0;
@@ -31,8 +34,8 @@ function flagrant_system_error() {
 	}
 }
 function hexafixer($matches) {
-	if ($matches[0][0] === ' ')
-		return sprintf(' 0x%04X:', $matches[1]);
+	//if ($matches[0][0] === ' ')
+	//	return sprintf(' 0x%04X:', $matches[1]);
 	return sprintf('0x%06X:', $matches[1]);
 }
 function hexafixer_human($matches) {
@@ -40,7 +43,7 @@ function hexafixer_human($matches) {
 	return sprintf('<a href="#'.core::addressformat.'" name="'.core::addressformat.'">%d ('.core::addressformat.'</a>)', $matches[1], $matches[1], $i++, $matches[1]);
 }
 function print_magical_yaml($file) {
-	$output = yaml_emit($file);
+	$output = yaml_emit($file, YAML_UTF8_ENCODING);
 	$output = preg_replace_callback('/^(\d+):/m', 'hexafixer_human', $output);
 	return $output;
 }
@@ -54,6 +57,7 @@ function asprintf($string, $haystack) {
 	return $output;
 }
 abstract class platform_base extends singleton {
+	static $instance;
 	protected $main;
 	public function getRegisters() {
 		return array();
@@ -94,13 +98,12 @@ abstract class core_base {
 	}
 }
 abstract class singleton {
-	private static $instance;
 	
 	public static function get() {
 		$class = get_called_class();
-		if (!isset(self::$instance))
-			self::$instance = new $class();
-		return self::$instance;
+		if (!isset($class::$instance))
+			$class::$instance = new $class();
+		return $class::$instance;
 	}
 }
 ?>

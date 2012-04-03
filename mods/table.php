@@ -1,9 +1,7 @@
 <?php
 class table {
-	private $main;
-	
 	public function execute() {
-		$realoffset = Main::get()->platform->map_rom(Main::get()->offset);
+		$realoffset = platform::get()->map_rom(Main::get()->offset);
 		rom::get()->seekTo($realoffset);
 		$table = Main::get()->addresses[Main::get()->offset];
 
@@ -15,15 +13,15 @@ class table {
 		$entries = $this->process_entries(Main::get()->offset, Main::get()->offset+$table['size'], $table['entries']);
 		
 		Main::get()->nextoffset = Main::get()->decimal_to_function(Main::get()->offset);
-		Main::get()->yamldata[] = $table['entries'];
-		Main::get()->yamldata[] = $entries;
 		$i = 0;
 		foreach ($entries as $k => $item)
 			if (isset($item['Name']) && (trim($item['Name']) !== ''))
 				Main::get()->menuitems[sprintf(core::addressformat, $k)] = trim($item['Name']);
 			else
 				Main::get()->menuitems[sprintf(core::addressformat, $k)] = sprintf(core::addressformat.' (%04X)', $k, $i++);
-		return array('entries' => $entries);
+		return array($table['entries'], $entries);
+		//return Main::get()->yamldata;
+		//return array('entries' => $entries);
 	}
 	public static function shouldhandle() {
 		if (isset(Main::get()->addresses[Main::get()->offset]['type']) && (Main::get()->addresses[Main::get()->offset]['type'] === 'data') && isset(Main::get()->addresses[Main::get()->offset]['entries']))
@@ -33,23 +31,21 @@ class table {
 	private function process_entries(&$offset, $end, $entries, $offsetkeys = true) {
 		$output = array();
 		$offsets = array();
-		if (rom::get()->currentoffset() != Main::get()->platform->map_rom($offset))
-			throw new Exception(sprintf('Offset mismatch! %X != %X', rom::get()->currentoffset(), Main::get()->platform->map_rom($offset)));
+		if (rom::get()->currentoffset() != platform::get()->map_rom($offset))
+			throw new Exception(sprintf('Offset mismatch! %X != %X', rom::get()->currentoffset(), platform::get()->map_rom($offset)));
 		$i = 0;
 		while ($offset < $end) {
 			$tmpoffset = $offset;
 			$tmparray = array();
+			$ints = array();
 			foreach ($entries as $entry) {
 				if ($i++ > 0x10000)
 					break 2;
-					
-				//Main::get()->debugvar($entry['size'], 'Size of entry (initial)');
-				Main::get()->debugmessage(implode(',', array_keys($tmparray)));
-				$entry['size'] = eval('return '.str_replace(array_keys($tmparray), $tmparray, $entry['size']).';');
+				$entry['size'] = eval('return '.str_replace(array_keys($ints), $ints, $entry['size']).';');
 				$bytesread = isset($entry['size']) ? $entry['size'] : 0;
-				//Main::get()->debugvar($entry['size'], 'Size of entry (calculated)');
 				if (!isset($entry['type']) || ($entry['type'] == 'int')) {
 					$num = rom::get()->read_varint($entry['size']);
+					$ints[$entry['name']] = $num;
 					if (isset($entry['values'][$num]))
 						$tmparray[$entry['name']] = $entry['values'][$num];
 					else if (isset($entry['signed']) && ($entry['signed'] == true))

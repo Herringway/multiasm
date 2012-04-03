@@ -3,7 +3,7 @@ class rom {
 	private $handle;
 	private static $instance;
 	
-	function __construct($filename) {
+	private function __construct($filename) {
 		$this->handle = fopen($filename, 'r');
 	}
 	

@@ -1,59 +1,51 @@
 ---
 processor: 65816
-rombase: 0xC00000
 platform: snes
 title: Chrono Trigger (USA)
 ...
 ---
-12582926:
+0x00FF00:
+  name: RESET
+  description: Execution entry point
+  type: assembly
+  size: 7
+  accumsize: 8
+  indexsize: 8
+  labels:
+    65304: UNKNOWN0
+    65319: UNKNOWN1
+    65350: UNKNOWN2
+0xC0000E:
   labels:
     114: UNKNOWN0
     125: UNKNOWN1
     151: UNKNOWN2
   size: 221
   type: assembly
-  name: ""
-  description: ""
-12585259:
-  name: ""
-  description: ""
+0xC0092B:
   type: assembly
   size: 53
   accumsize: 8
   labels:
     2373: UNKNOWN0
     2395: UNKNOWN1
-12585806:
-  name: ""
-  description: ""
+0xC00B4E:
   type: assembly
   size: 22
   accumsize: 8
-  labels: ~
-12585828:
-  name: ""
-  description: ""
+0xC00B64:
   type: assembly
   size: 17
   accumsize: 8
-  labels: ~
-12585845:
-  name: ""
-  description: ""
+0xC00B75:
   type: assembly
   size: 17
   accumsize: 8
-  labels: ~
-12585862:
-  name: ""
-  description: ""
+0xC00B86:
   type: assembly
   size: 240
   accumsize: 8
-  labels: ~
-12589907:
-  name: ""
-  description: ""
+0xC01B53:
   type: assembly
   size: 61
   accumsize: 8
@@ -61,64 +53,46 @@ title: Chrono Trigger (USA)
     7007: UNKNOWN0
     7043: UNKNOWN1
     7055: UNKNOWN2
-12593224:
-  name: ""
-  description: ""
+0xC02848:
   type: assembly
   size: 36
   accumsize: 8
   labels:
     10317: UNKNOWN0
     10342: UNKNOWN1
-12593260:
-  name: ""
-  description: ""
+0xC0286C:
   type: assembly
   size: 62
-  labels: ~
-12593322:
-  name: ""
-  description: ""
+0xC028AA:
   type: assembly
   size: 22
   labels:
     10418: UNKNOWN0
-12594673:
-  name: ""
-  description: ""
+0xC02DF1:
   type: assembly
   size: 45
   accumsize: 8
-  labels: ~
-12628370:
-  name: ""
-  description: ""
+0xC0B192:
   type: assembly
   size: 114
   labels:
     45477: UNKNOWN0
     45521: UNKNOWN1
     45569: UNKNOWN2
-12648192:
+0xC0FF00:
   size: 7
   description: RESET Routine
   name: RESET
   type: assembly
-12746756:
-  name: ""
-  description: ""
+0xC28004:
   type: assembly
   size: 10
   labels:
     32778: UNKNOWN0
-13041664:
-  name: ""
-  description: ""
+0xC70000:
   type: assembly
   size: 3
-13041720:
-  name: ""
-  description: ""
+0xC70038:
   type: assembly
   size: 264
   labels:
@@ -133,7 +107,7 @@ title: Chrono Trigger (USA)
     246: UNKNOWN8
     258: UNKNOWN9
     283: UNKNOWN10
-13369954:
+0xCC0262:
   name: WEAPON_STATS
   description: Weapon Stats Table
   type: data
@@ -150,7 +124,7 @@ title: Chrono Trigger (USA)
   - name: Inflict Status?
     size: 1
     type: boolean
-13387520:
+0xCC4700:
   name: ENEMY_STATS
   description: Enemy Statistics Table
   type: data
@@ -203,26 +177,20 @@ title: Chrono Trigger (USA)
     - Unknown 12
     - Unknown 13
     - Unknown 14
-16629760:
+0xFDC000:
   size: 215
   type: assembly
-16639031:
-  name: ""
-  description: ""
+0xFDE437:
   type: assembly
   size: 78
   labels:
     58479: UNKNOWN0
-16639208:
-  name: ""
-  description: ""
+0xFDE4E8:
   type: assembly
   size: 74
   labels:
     58637: UNKNOWN0
-16639282:
-  name: ""
-  description: ""
+0xFDE532:
   type: assembly
   size: 74
   labels:

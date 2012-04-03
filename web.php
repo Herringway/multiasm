@@ -11,13 +11,13 @@ if (isset($_GET['begin'])) {
 	header(sprintf('Location: http://%s/%s/%s/%s',$_SERVER['HTTP_HOST'],$_GET['game'], $_GET['begin'], implode('/', $options)));
 	die();
 }
-class display {
-	private $main;
+class display extends singleton {
+	static $instance;
 	private $dwoo;
 	public $mode;
+	private $error = false;
 	
 	function __construct() {
-		$this->main = Main::get();
 		require_once 'Dwoo/dwooAutoload.php';
 		$this->dwoo = new Dwoo();
 	}
@@ -35,29 +35,33 @@ class display {
 		}
 		return $opts;
 	}
+	public function setError() {
+		$this->error = true;
+	}
 	public function display($data) {
 		global $miscoutput;
-		$this->main->debugvar($this->mode, 'displaymode');
+		Main::get()->debugvar($this->mode, 'displaymode');
 		header('Content-Type: text/html; charset=UTF-8');
 		$this->dwoo->output('templates/'.$this->mode.'.tpl',
 		array(
-		'routinename' => $this->main->dataname, 
-		'title' => $this->main->game['title'], 
-		'nextoffset' => $this->main->nextoffset, 
-		'game' => $this->main->gameid, 
+		'routinename' => Main::get()->dataname, 
+		'title' => Main::get()->game['title'], 
+		'nextoffset' => Main::get()->nextoffset, 
+		'game' => Main::get()->gameid, 
 		'data' => $data, 
-		'thisoffset' => $this->main->offset, 
-		'options' => $this->main->opts, 
-		'writemode' => $this->main->godpowers,
-		'offsetname' => $this->main->decimal_to_function($this->main->offset), 
-		'realname' => $this->main->getOffsetName($this->main->offset),
-		'realdesc' => $this->main->realdesc,
+		'thisoffset' => Main::get()->offset, 
+		'options' => Main::get()->opts, 
+		'writemode' => Main::get()->godpowers,
+		'offsetname' => Main::get()->decimal_to_function(Main::get()->offset), 
+		'realname' => Main::get()->getOffsetName(Main::get()->offset),
+		'realdesc' => Main::get()->realdesc,
 		'addrformat' => core::addressformat, 
-		'menuitems' => $this->main->menuitems, 
+		'menuitems' => Main::get()->menuitems, 
 		'opcodeformat' => core::opcodeformat,
-		'comments' => $this->main->comments,
-		'miscdata' => $this->main->platform->getMiscInfo(),
-		'gamelist' => $this->main->gamelist));
+		'comments' => Main::get()->comments,
+		'miscdata' => platform::get()->getMiscInfo(),
+		'error' => $this->error,
+		'gamelist' => Main::get()->gamelist));
 	}
 	public static function display_error($error) {
 		$dwoo = new Dwoo();
@@ -80,13 +84,13 @@ class display {
 		}
 	}
 	public function canWrite() {
-		if (isset($this->main->opts['logout'])) {
+		if (isset(Main::get()->opts['logout'])) {
 			setcookie('pass', null, -1, '/', $_SERVER['SERVER_NAME']);
 			return false;
-		} else if (isset($this->main->opts['login']) && (hash('sha256', $this->main->opts['login']) === $this->main->settings['password'])) {
-			setcookie('pass', $this->main->settings['password'], pow(2,31)-1, '/', $_SERVER['SERVER_NAME']);
+		} else if (isset(Main::get()->opts['login']) && (hash('sha256', Main::get()->opts['login']) === Main::get()->settings['password'])) {
+			setcookie('pass', Main::get()->settings['password'], pow(2,31)-1, '/', $_SERVER['SERVER_NAME']);
 			return true;
-		} else if (isset($_COOKIE['pass']) && ($_COOKIE['pass'] === $this->main->settings['password']))
+		} else if (isset($_COOKIE['pass']) && ($_COOKIE['pass'] === Main::get()->settings['password']))
 			return true;
 		return false;
 	}
