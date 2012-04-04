@@ -7,22 +7,22 @@ class core extends core_base {
 		$this->main = Main::get();
 	}
 	public function getDefault() {
-		return $this->main->platform->map_rom(0x200);
+		return platform::get()->map_rom(0x200);
 	}
 	public function fixBranch($val) {
 		return $this->currentoffset + uint($val[0]+2,8);
 	}
 	public function execute($offset) {
-		$this->main->rom->seekTo($this->main->platform->map_rom($offset));
+		rom::get()->seekTo(platform::get()->map_rom($offset));
 		$output = array();
 		$this->initialoffset = $this->currentoffset = $offset;
-		while (($opcode = $this->main->rom->getByte()) !== null) {
+		while (($opcode = rom::get()->getByte()) !== null) {
 			$val = 0;
 			$tmp = array('opcode' => $opcode, 'instruction' => isset($this->opcodes[$opcode]['instruction']) ? $this->opcodes[$opcode]['instruction'] : dechex($opcode), 'offset' => $this->currentoffset, 'args' => array());
 			$size = isset($this->opcodes[$opcode]['size']) ? $this->opcodes[$opcode]['size'] : 1;
 			
 			for ($i = 1; $i < $size; $i++)
-				$val += ($tmp['args'][] = $this->main->rom->getByte())<<(($i-1)*8);
+				$val += ($tmp['args'][] = rom::get()->getByte())<<(($i-1)*8);
 				
 			if ((isset($this->opcodes[$opcode]['branch']) && !isset($this->branches[$this->fixBranch($tmp['args'])])) && ($this->fixBranch($tmp['args']) >= $this->initialoffset)) {
 				$tmp['uri'] = sprintf('%04X', $this->initialoffset).'#'.sprintf('%04X', $this->fixBranch($tmp['args']));

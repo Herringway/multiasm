@@ -11,5 +11,5 @@ platform: SPC700
   entries:
   - name: Pointer
     size: 2
-    type: pointer
+    type: hexint
 ...

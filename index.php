@@ -1,6 +1,8 @@
 <?php
-require_once 'chromephp.php';
-require_once 'commonfunctions.php';
+require_once 'libs/chromephp.php';
+require_once 'libs/commonfunctions.php';
+require_once 'libs/rom.php';
+require_once 'libs/cache.php';
 ob_start();
 class Main {
 	public static $instance;
@@ -15,7 +17,6 @@ class Main {
 	public $offsetname;
 	public $opts;
 	public $nextoffset;
-	//public $yamldata;
 	public $dataname;
 	public $comments;
 	public $realdesc = '';
@@ -27,7 +28,6 @@ class Main {
 	
 	public function execute() {
 		$time_start = microtime(true);
-		require_once 'rom.php';
 		if (!file_exists('settings.yml'))
 			file_put_contents('settings.yml', yaml_emit(array('gameid' => 'eb', 'rompath' => '.', 'debug' => false, 'password' => 'changeme')));
 		$this->settings = yaml_parse_file('settings.yml');
@@ -36,7 +36,6 @@ class Main {
 			require_once 'cli.php';
 		else
 			require_once 'web.php';
-		require_once 'cache.php';
 		
 		$this->cache = new cache();
 		
@@ -83,7 +82,6 @@ class Main {
 		if (isset($known_addresses[$this->offset]['cpu'])) 
 			$cpu = $this->addresses[$this->offset]['cpu']; //Override if game data sez so
 		require_once sprintf('cpus/%s.php', $cpu);
-		$this->core = new core();
 		
 		$magicvalues = array();
 		
@@ -100,7 +98,7 @@ class Main {
 		}
 		
 		//Where are we?
-		$this->offset = $this->core->getDefault();
+		$this->offset = core::get()->getDefault();
 		if (isset($argv[1]) && ($argv[1] != null)) {
 			if (in_array($argv[1], $magicvalues))
 				$this->offset = $argv[1];

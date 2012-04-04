@@ -76,7 +76,8 @@ abstract class platform_base extends singleton {
 	}
 }
 
-abstract class core_base {
+abstract class core_base extends singleton {
+	static $instance;
 	public $initialoffset;
 	public $currentoffset;
 	public $branches;

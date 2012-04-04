@@ -10,7 +10,7 @@ class table {
 			Main::get()->dataname = $table['description'];
 			
 		
-		$entries = $this->process_entries(Main::get()->offset, Main::get()->offset+$table['size'], $table['entries']);
+		$entries = $this->process_entries(Main::get()->offset, Main::get()->offset+$table['size'], $table['entries'], true, isset($table['terminator']) ? $table['terminator'] : null);
 		
 		Main::get()->nextoffset = Main::get()->decimal_to_function(Main::get()->offset);
 		$i = 0;
@@ -20,15 +20,15 @@ class table {
 			else
 				Main::get()->menuitems[sprintf(core::addressformat, $k)] = sprintf(core::addressformat.' (%04X)', $k, $i++);
 		return array($table['entries'], $entries);
-		//return Main::get()->yamldata;
-		//return array('entries' => $entries);
 	}
 	public static function shouldhandle() {
 		if (isset(Main::get()->addresses[Main::get()->offset]['type']) && (Main::get()->addresses[Main::get()->offset]['type'] === 'data') && isset(Main::get()->addresses[Main::get()->offset]['entries']))
 			return true;
 		return false;
 	}
-	private function process_entries(&$offset, $end, $entries, $offsetkeys = true) {
+	private function process_entries(&$offset, $end, $entries, $offsetkeys = true, $terminator = null) {
+		if ($terminator != null)
+			$end = $offset + 0x10000;
 		$output = array();
 		$offsets = array();
 		if (rom::get()->currentoffset() != platform::get()->map_rom($offset))
@@ -41,7 +41,8 @@ class table {
 			foreach ($entries as $entry) {
 				if ($i++ > 0x10000)
 					break 2;
-				$entry['size'] = eval('return '.str_replace(array_keys($ints), $ints, $entry['size']).';');
+				if (isset($entry['size']))
+					$entry['size'] = eval('return '.str_replace(array_keys($ints), $ints, $entry['size']).';');
 				$bytesread = isset($entry['size']) ? $entry['size'] : 0;
 				if (!isset($entry['type']) || ($entry['type'] == 'int')) {
 					$num = rom::get()->read_varint($entry['size']);
@@ -59,9 +60,9 @@ class table {
 					$tmparray[$entry['name']] = str_pad(strtoupper(dechex(rom::get()->read_varint($entry['size']))),$entry['size']*2, '0', STR_PAD_LEFT);
 				else if ($entry['type'] == 'pointer')
 					if (isset(Main::get()->opts['yaml']))
-						$tmparray[$entry['name']] = $this->read_pointer($entry['size']);
+						$tmparray[$entry['name']] = $this->read_pointer($entry['size'], false, isset($entry['reverseendian']));
 					else
-						$tmparray[$entry['name']] = $this->read_pointer($entry['size'], true);
+						$tmparray[$entry['name']] = $this->read_pointer($entry['size'], true, isset($entry['reverseendian']));
 				else if ($entry['type'] == 'palette')
 					if (isset(Main::get()->opts['yaml']))
 						$tmparray[$entry['name']] = rom::get()->read_palette($entry['size']);
@@ -80,11 +81,16 @@ class table {
 				else if ($entry['type'] == 'UTF-16')
 					$tmparray[$entry['name']] = rom::get()->read_string($bytesread, 'utf16', isset($entry['terminator']) ? $entry['terminator'] : null);
 				else if ($entry['type'] == 'table') {
-					$tmparray[$entry['name']] = $this->process_entries($offset, $offset+$entry['size'], $entry['entries'], false);
+					$tmparray[$entry['name']] = $this->process_entries($offset, $offset+(isset($entry['size']) ? $entry['size'] : 0), $entry['entries'], false, isset($entry['terminator']) ? $entry['terminator'] : null);
 					$bytesread = 0;
 				} else
 					$tmparray[$entry['name']] = rom::get()->read_bytes($entry['size']);
 				$offset += $bytesread;
+				if ($tmparray[$entry['name']] === $terminator) {
+					Main::get()->debugvar($tmparray[$entry['name']], 'val');
+					Main::get()->debugvar($terminator, 'terminator');
+					break 2;
+				}
 			}
 			if ($offsetkeys)
 				$output[$tmpoffset] = $tmparray;
@@ -93,8 +99,10 @@ class table {
 		}
 		return $output;
 	}
-	private function read_pointer($size, $html = false) {
-		$offset = rom::get()->read_varint($size);
+	private function read_pointer($size, $html = false, $revorder = false) {
+		$offset = rom::get()->read_varint($size, -1, $revorder);
+		if (!platform::get()->isROM($offset))
+			return sprintf(core::addressformat, $offset);
 		$datablock = Main::get()->getDataBlock($offset);
 		if ($datablock == -1)
 			return sprintf(core::addressformat, $offset);

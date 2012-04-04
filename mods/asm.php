@@ -6,22 +6,22 @@ class asm {
 		$this->main = Main::get();
 	}
 	public function execute() {
-		$output = $this->main->core->execute($this->main->offset);
-		$this->main->nextoffset = $this->main->decimal_to_function($this->main->core->currentoffset);
+		$output = core::get()->execute($this->main->offset);
+		$this->main->nextoffset = $this->main->decimal_to_function(core::get()->currentoffset);
 
-		if (isset($this->main->addresses[$this->main->core->initialoffset]['description']))
-			$this->main->dataname = $this->main->addresses[$this->main->core->initialoffset]['description'];
+		if (isset($this->main->addresses[core::get()->initialoffset]['description']))
+			$this->main->dataname = $this->main->addresses[core::get()->initialoffset]['description'];
 		else
-			$this->main->dataname = sprintf('%X', $this->main->core->initialoffset);
+			$this->main->dataname = sprintf('%X', core::get()->initialoffset);
 			
-		if (isset($this->main->addresses[$this->main->core->initialoffset]['arguments']))
-			$this->main->comments = $this->main->addresses[$this->main->core->initialoffset]['arguments'];
+		if (isset($this->main->addresses[core::get()->initialoffset]['arguments']))
+			$this->main->comments = $this->main->addresses[core::get()->initialoffset]['arguments'];
 			
-		if (isset($this->main->addresses[$this->main->core->initialoffset]['labels']))
-			foreach ($this->main->addresses[$this->main->core->initialoffset]['labels'] as $branch)
+		if (isset($this->main->addresses[core::get()->initialoffset]['labels']))
+			foreach ($this->main->addresses[core::get()->initialoffset]['labels'] as $branch)
 				$this->main->menuitems[$branch] = $branch;
-		else if (isset($this->main->core->branches))
-			foreach ($this->main->core->branches as $branch)
+		else if (isset(core::get()->branches))
+			foreach (core::get()->branches as $branch)
 				$this->main->menuitems[$branch] = $branch;
 		if (isset($this->main->opts['write']) && ($this->main->godpowers))
 			$this->saveData();
@@ -31,24 +31,24 @@ class asm {
 	private function saveData() {
 		$branches = null;
 		list($gameorig,$addresses) = $this->main->loadYAML($this->main->gameid);
-		if (isset($addresses[$this->main->core->initialoffset]['labels']))
-			$branches = $addresses[$this->main->core->initialoffset]['labels'];
-		if ($this->main->core->branches !== null) {
-			ksort($this->main->core->branches);
+		if (isset($addresses[core::get()->initialoffset]['labels']))
+			$branches = $addresses[core::get()->initialoffset]['labels'];
+		if (core::get()->branches !== null) {
+			ksort(core::get()->branches);
 			$unknownbranches = 0;
-			foreach ($this->main->core->branches as $k=>$branch)
+			foreach (core::get()->branches as $k=>$branch)
 				$branches[$k] = 'UNKNOWN'.$unknownbranches++;
 		}
-		if (!isset($addresses[$this->main->core->initialoffset]['name']) && (isset($this->main->opts['name'])))
-			$addresses[$this->main->core->initialoffset]['name'] = $this->main->opts['name'];
-		if (!isset($addresses[$this->main->core->initialoffset]['description']) && (isset($this->main->opts['desc'])))
-			$addresses[$this->main->core->initialoffset]['description'] = $this->main->opts['desc'];
-		$addresses[$this->main->core->initialoffset]['type'] = 'assembly';
-		$addresses[$this->main->core->initialoffset]['size'] = $this->main->core->currentoffset-$this->main->core->initialoffset;
-		foreach ($this->main->core->getMisc() as $k=>$val)
-			$addresses[$this->main->core->initialoffset][$k] = $val;
+		if (!isset($addresses[core::get()->initialoffset]['name']) && (isset($this->main->opts['name'])))
+			$addresses[core::get()->initialoffset]['name'] = $this->main->opts['name'];
+		if (!isset($addresses[core::get()->initialoffset]['description']) && (isset($this->main->opts['desc'])))
+			$addresses[core::get()->initialoffset]['description'] = $this->main->opts['desc'];
+		$addresses[core::get()->initialoffset]['type'] = 'assembly';
+		$addresses[core::get()->initialoffset]['size'] = core::get()->currentoffset-core::get()->initialoffset;
+		foreach (core::get()->getMisc() as $k=>$val)
+			$addresses[core::get()->initialoffset][$k] = $val;
 		if ($branches != null)
-			$addresses[$this->main->core->initialoffset]['labels'] = $branches;
+			$addresses[core::get()->initialoffset]['labels'] = $branches;
 		ksort($addresses);
 		$output = preg_replace_callback('/^(\d+):/m', 'hexafixer', yaml_emit($gameorig,YAML_UTF8_ENCODING).yaml_emit($addresses,YAML_UTF8_ENCODING));
 		file_put_contents('games/'.$this->main->gameid.'.yml', $output);

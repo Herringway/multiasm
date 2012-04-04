@@ -20,12 +20,23 @@ class rom {
 	public function getByte($offset = -1) {
 		return $this->read_varint(1, $offset);
 	}
-	public function read_varint($size, $offset = -1) {
+	public function read_strange() {
+		$output = 0;
+		$output += ord(fgetc($this->handle))<<(2*8);
+		$output += ord(fgetc($this->handle))<<(0*8);
+		$output += ord(fgetc($this->handle))<<(1*8);
+		return $output;
+	}
+	public function read_varint($size, $offset = -1, $reverseorder = false) {
 		if ($offset > 0)
 			$this->seekTo($offset);
 		$output = 0;
-		for ($i = 0; $i < $size; $i++)
-			$output += ord(fgetc($this->handle))<<($i*8);
+		if (!$reverseorder)
+			for ($i = 0; $i < $size; $i++)
+				$output += ord(fgetc($this->handle))<<($i*8);
+		else
+			for ($i = 0; $i < $size; $i++)
+				$output += ord(fgetc($this->handle))<<(($size-$i-1)*8);
 		return $output;
 	}
 	public function read($size, $offset = -1) {
