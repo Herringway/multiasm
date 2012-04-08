@@ -26,10 +26,10 @@ class issues {
 				$problems[] = 'No name defined';
 			if (!isset($entry['description']) && (!isset($entry['type']) || ($entry['type'] != 'empty')))
 				$problems[] = 'No description defined';
-			if (isset($entry['size']) && !isset($this->main->addresses[$offset+$entry['size']]) && (platform::get()->map_rom($offset+$entry['size']) < $this->main->game['size']))
-				$allproblems[$this->main->decimal_to_function($offset+$entry['size'])] = array('Undefined area!');
 			if ($problems != array())
 				$allproblems[$this->main->decimal_to_function($offset)] = $problems;
+			if (isset($entry['size']) && !isset($this->main->addresses[$offset+$entry['size']]) && (platform::get()->map_rom($offset+$entry['size']) < $this->main->game['size']))
+				$allproblems[$this->main->decimal_to_function($offset+$entry['size'])] = array('Undefined area!');
 			$prev = $offset+(isset($entry['size']) ? $entry['size'] : 0);
 		}
 		

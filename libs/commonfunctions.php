@@ -82,7 +82,9 @@ abstract class core_base extends singleton {
 	public $currentoffset;
 	public $branches;
 	public $placeholdernames = false;
+	public $dump = false;
 	protected $main;
+	
 	const addressformat = '%X';
 	const template = 'assembly';
 	const opcodeformat = '%02X';

@@ -55,6 +55,7 @@ class display extends singleton {
 		'offsetname' => Main::get()->decimal_to_function(Main::get()->offset), 
 		'realname' => Main::get()->getOffsetName(Main::get()->offset),
 		'realdesc' => Main::get()->realdesc,
+		'size' => isset(Main::get()->opts['size']) ? Main::get()->opts['size'] : 0,
 		'addrformat' => core::addressformat, 
 		'menuitems' => Main::get()->menuitems, 
 		'opcodeformat' => core::opcodeformat,

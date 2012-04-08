@@ -4,7 +4,6 @@ class core extends core_base {
 	
 	function __construct() {
 		$this->opcodes = yaml_parse_file('./cpus/SPC700_opcodes.yml');
-		$this->main = Main::get();
 	}
 	public function getDefault() {
 		return platform::get()->map_rom(0x200);
@@ -38,14 +37,7 @@ class core extends core_base {
 		}
 		$i = 0;
 		ksort($this->branches);
-		foreach ($this->branches as $offset=>&$branch) {
-			$branch = 'UNKNOWN'.$i++;
-			for ($o = 0; $o < count($output); $o++)
-				if (isset($output[$o]['offset']) && ($output[$o]['offset'] >= $offset))
-					break;
-			if (($o < count($output)) && (isset($output[$o]['offset'])))
-				array_splice($output, $o, 0, array(array('label' => 'UNKNOWN'.($i-1))));
-		}
+		
 		return $output;
 	}
 }

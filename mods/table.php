@@ -10,7 +10,7 @@ class table {
 			Main::get()->dataname = $table['description'];
 			
 		
-		$entries = $this->process_entries(Main::get()->offset, Main::get()->offset+$table['size'], $table['entries'], true, isset($table['terminator']) ? $table['terminator'] : null);
+		$entries = $this->read_table(Main::get()->offset, Main::get()->offset+$table['size'], $table['entries'], true, isset($table['terminator']) ? $table['terminator'] : null);
 		
 		Main::get()->nextoffset = Main::get()->decimal_to_function(Main::get()->offset);
 		$i = 0;
@@ -26,7 +26,64 @@ class table {
 			return true;
 		return false;
 	}
-	private function process_entries(&$offset, $end, $entries, $offsetkeys = true, $terminator = null) {
+	private function getValue($type, $entry, &$offset, &$bytesread) {
+		switch ($type) {
+			case 'int':
+				$num = rom::get()->read_varint($entry['size']);
+				if (isset($entry['values'][$num]))
+					return $entry['values'][$num];
+				else if (isset($entry['signed']) && ($entry['signed'] == true))
+					return uint($num, $entry['size']*8);
+				else
+					return $num;
+			break;
+			case 'bitfield':
+				return rom::get()->read_bit_field($entry['size'],$entry['bitvalues']);
+			break;
+			case 'hexint':
+				return str_pad(strtoupper(dechex(rom::get()->read_varint($entry['size']))),$entry['size']*2, '0', STR_PAD_LEFT);
+			case 'pointer':
+				if (isset(Main::get()->opts['yaml']))
+					return $this->read_pointer($entry['size'], false, isset($entry['reverseendian']));
+				else
+					return $this->read_pointer($entry['size'], true, isset($entry['reverseendian']));
+			break;
+			case 'palette':
+				if (isset(Main::get()->opts['yaml']))
+					return rom::get()->read_palette($entry['size']);
+				else
+					return asprintf('<span class="palette" style="background-color: #%06X;">%1$06X</span>', rom::get()->read_palette($entry['size']));
+			break;
+			case 'binary':
+				return decbin(rom::get()->read_varint($entry['size']));
+			break;
+			case 'boolean':
+				return rom::get()->read_varint($entry['size']) ? true : false;
+			break;
+			case 'tile':
+				return rom::get()->read_tile($entry['bpp'], isset($entry['palette']) ? $entry['palette'] : -1, !isset(Main::get()->opts['yaml']));
+			break;
+			case 'asciitext':
+				return rom::get()->read_string($bytesread, 'ascii', isset($entry['terminator']) ? $entry['terminator'] : null);
+			break;
+			case 'UTF-16':
+				return rom::get()->read_string($bytesread, 'utf16', isset($entry['terminator']) ? $entry['terminator'] : null);
+			break;
+			case 'table':
+				$bytesread = 0;
+				return $this->read_table($offset, $offset+(isset($entry['size']) ? $entry['size'] : 0), $entry['entries'], false, isset($entry['terminator']) ? $entry['terminator'] : null);
+			break;
+			case 'bytearray':
+				return rom::get()->read_bytes($entry['size']);
+			break;
+			default:
+				if (isset(Main::get()->game['texttables'][$entry['type']]))
+				return trim(rom::get()->read_string($bytesread, Main::get()->game['texttables'][$entry['type']], isset($entry['terminator']) ? $entry['terminator'] : null));
+			break;
+		}
+		return $value;
+	}
+	private function read_table(&$offset, $end, $entries, $offsetkeys = true, $terminator = null) {
 		if ($terminator != null)
 			$end = $offset + 0x10000;
 		$output = array();
@@ -44,49 +101,19 @@ class table {
 				if (isset($entry['size']))
 					$entry['size'] = eval('return '.str_replace(array_keys($ints), $ints, $entry['size']).';');
 				$bytesread = isset($entry['size']) ? $entry['size'] : 0;
-				if (!isset($entry['type']) || ($entry['type'] == 'int')) {
-					$num = rom::get()->read_varint($entry['size']);
-					$ints[$entry['name']] = $num;
-					if (isset($entry['values'][$num]))
-						$tmparray[$entry['name']] = $entry['values'][$num];
-					else if (isset($entry['signed']) && ($entry['signed'] == true))
-						$tmparray[$entry['name']] = uint($num, $entry['size']*8);
-					else
-						$tmparray[$entry['name']] = $num;
-				}
-				else if ($entry['type'] == 'bitfield')
-					$tmparray[$entry['name']] = rom::get()->read_bit_field($entry['size'],$entry['bitvalues']);
-				else if ($entry['type'] == 'hexint')
-					$tmparray[$entry['name']] = str_pad(strtoupper(dechex(rom::get()->read_varint($entry['size']))),$entry['size']*2, '0', STR_PAD_LEFT);
-				else if ($entry['type'] == 'pointer')
-					if (isset(Main::get()->opts['yaml']))
-						$tmparray[$entry['name']] = $this->read_pointer($entry['size'], false, isset($entry['reverseendian']));
-					else
-						$tmparray[$entry['name']] = $this->read_pointer($entry['size'], true, isset($entry['reverseendian']));
-				else if ($entry['type'] == 'palette')
-					if (isset(Main::get()->opts['yaml']))
-						$tmparray[$entry['name']] = rom::get()->read_palette($entry['size']);
-					else
-						$tmparray[$entry['name']] = asprintf('<span class="palette" style="background-color: #%06X;">%1$06X</span>', rom::get()->read_palette($entry['size']));
-				else if ($entry['type'] == 'binary')
-					$tmparray[$entry['name']] = decbin(rom::get()->read_varint($entry['size']));
-				else if ($entry['type'] == 'boolean')
-					$tmparray[$entry['name']] = rom::get()->read_varint($entry['size']) ? true : false;
-				else if ($entry['type'] == 'tile')
-					$tmparray[$entry['name']] = rom::get()->read_tile($entry['bpp'], isset($entry['palette']) ? $entry['palette'] : -1, !isset(Main::get()->opts['yaml']));
-				else if (isset(Main::get()->game['texttables'][$entry['type']]))
-					$tmparray[$entry['name']] = trim(rom::get()->read_string($bytesread, Main::get()->game['texttables'][$entry['type']], isset($entry['terminator']) ? $entry['terminator'] : null));
-				else if ($entry['type'] == 'asciitext')
-					$tmparray[$entry['name']] = rom::get()->read_string($bytesread, 'ascii', isset($entry['terminator']) ? $entry['terminator'] : null);
-				else if ($entry['type'] == 'UTF-16')
-					$tmparray[$entry['name']] = rom::get()->read_string($bytesread, 'utf16', isset($entry['terminator']) ? $entry['terminator'] : null);
-				else if ($entry['type'] == 'table') {
-					$tmparray[$entry['name']] = $this->process_entries($offset, $offset+(isset($entry['size']) ? $entry['size'] : 0), $entry['entries'], false, isset($entry['terminator']) ? $entry['terminator'] : null);
-					$bytesread = 0;
-				} else
-					$tmparray[$entry['name']] = rom::get()->read_bytes($entry['size']);
+				
+				$value = $this->getValue(isset($entry['type']) ? $entry['type'] : 'int', $entry, $offset, $bytesread);
+				
 				$offset += $bytesread;
-				if ($tmparray[$entry['name']] === $terminator) {
+				if (isset($entry['name'])) {
+					if (!isset($entry['type']) || ($entry['type'] == 'int'))
+						$ints[$entry['name']] = $value;
+					$tmparray[$entry['name']] = $value;
+					
+				} else {
+					$tmparray[] = $value;
+				}
+				if ($value === $terminator) {
 					Main::get()->debugvar($tmparray[$entry['name']], 'val');
 					Main::get()->debugvar($terminator, 'terminator');
 					break 2;

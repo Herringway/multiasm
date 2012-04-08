@@ -62,7 +62,9 @@ class core extends core_base {
 			$index = 8;
 		$output = array();
 		while (true) {
-			unset($comment);
+			$comments = array();
+			$tmpoutput = array();
+			$tmpoutput['offset'] = $this->currentoffset;
 			if (isset($deflength) && ($deflength+$this->initialoffset <= $this->currentoffset))
 				break;
 			if (($farthestbranch < $this->currentoffset) && !isset($deflength) && isset($this->opcodes[$opcode]['addressing']['special']) && ($this->opcodes[$opcode]['addressing']['special'] == 'return'))
@@ -72,8 +74,6 @@ class core extends core_base {
 			if (isset(Main::get()->addresses[$this->initialoffset]['labels']) && isset(Main::get()->addresses[$this->initialoffset]['labels'][$this->currentoffset&0xFFFF]))
 				$output[] = array('label' => Main::get()->addresses[$this->initialoffset]['labels'][$this->currentoffset&0xFFFF]);
 			$opcode = rom::get()->getByte();
-			$uri = null;
-			$name = '';
 			$args = array();
 			
 			if ($this->opcodes[$opcode]['addressing']['size'] === 'index')
@@ -89,7 +89,7 @@ class core extends core_base {
 				$arg += $t<<($j*8);
 			}
 			if (($opcode == 0xC2) | ($opcode == 0xE2)) {
-				$comment = ($opcode == 0xC2 ? 'Unset: ' : 'Set: ').$this->get_processor_bits($args[0]);
+				$comments['Description'] = ($opcode == 0xC2 ? 'Unset: ' : 'Set: ').$this->get_processor_bits($args[0]);
 				if ($args[0]&0x10)
 					$index = ($opcode == 0xC2) ? 16 : 8;
 				if ($args[0]&0x20)
@@ -106,58 +106,57 @@ class core extends core_base {
 			if ((($this->opcodes[$opcode]['addressing']['type'] == 'absolutejmp') || ($this->opcodes[$opcode]['addressing']['type'] == 'absolutelongjmp'))) {
 				if (isset(Main::get()->addresses[$fulladdr]['name'])) {
 					if (platform::get()->isROM($fulladdr))
-						$uri = Main::get()->addresses[$fulladdr]['name'];
+						$tmpoutput['uri'] = Main::get()->addresses[$fulladdr]['name'];
 				} else {
 					if (platform::get()->isROM($fulladdr))
-						$uri = sprintf('%06X', $fulladdr);
+						$tmpoutput['uri'] = sprintf('%06X', $fulladdr);
 				}
 			}
 			if ($this->opcodes[$opcode]['addressing']['type'] == 'relativelong')
-				$uri = sprintf('%06X', $fulladdr+($this->currentoffset&0xFF0000));
+				$tmpoutput['uri'] = sprintf('%06X', $fulladdr+($this->currentoffset&0xFF0000));
 			if (isset(Main::get()->addresses[$fulladdr]['final processor state']['accum']))
 				$accum = Main::get()->addresses[$fulladdr]['final processor state']['accum'];
 			if (isset(Main::get()->addresses[$fulladdr]['final processor state']['index']))
 				$index = Main::get()->addresses[$fulladdr]['final processor state']['index'];
 			
 			if (isset(Main::get()->addresses[$fulladdr]['name'])) {
-				$name = Main::get()->addresses[$fulladdr]['name'];
+				$tmpoutput['name'] = Main::get()->addresses[$fulladdr]['name'];
 				if (platform::get()->isROM($fulladdr))
-					$uri = $name;
+					$tmpoutput['uri'] = $tmpoutput['name'];
 			} else if ((($this->opcodes[$opcode]['addressing']['type'] == 'relative') || ($this->opcodes[$opcode]['addressing']['type'] == 'absolutejmp')) && isset(Main::get()->addresses[$this->initialoffset]['labels'][$fulladdr&0xFFFF])) {
-				$uri = sprintf('%s#%s', Main::get()->getOffsetName($this->initialoffset), Main::get()->addresses[$this->initialoffset]['labels'][$fulladdr&0xFFFF]);
-				$name = ($this->placeholdernames ? isset(Main::get()->addresses[$this->initialoffset]['name']) ? Main::get()->addresses[$this->initialoffset]['name'].'_' : sprintf('UNKNOWN_%06X_', $this->initialoffset) : '').Main::get()->addresses[$this->initialoffset]['labels'][$fulladdr&0xFFFF];
+				$tmpoutput['uri'] = sprintf('%s#%s', Main::get()->getOffsetName($this->initialoffset), Main::get()->addresses[$this->initialoffset]['labels'][$fulladdr&0xFFFF]);
+				$tmpoutput['name'] = ($this->dump ? isset(Main::get()->addresses[$this->initialoffset]['name']) ? Main::get()->addresses[$this->initialoffset]['name'].'_' : sprintf('UNKNOWN_%06X_', $this->initialoffset) : '').Main::get()->addresses[$this->initialoffset]['labels'][$fulladdr&0xFFFF];
 			} else if (($this->opcodes[$opcode]['addressing']['type'] == 'relative') || (($this->opcodes[$opcode]['addressing']['type'] == 'absolutejmp') && (isset($this->opcodes[$opcode]['addressing']['jump'])))) {
 				if (!isset($this->branches[$fulladdr]) && (count($this->branches) < BRANCH_LIMIT))
 					$this->branches[$fulladdr] = '';
-			} else if ($this->placeholdernames) {
+			} else if ($this->dump) {
 				switch ($this->opcodes[$opcode]['addressing']['type']) {
-					case 'absolute': $name = sprintf('UNKNOWN_%04X', $arg); break;
-					case 'absolutejmp': $name = sprintf('UNKNOWN_%04X', $arg); break;
-					case 'absolutelongjmp': $name = sprintf('UNKNOWN_%06X', $arg); break;
-					default: $name = ''; break;
+					case 'absolute': $tmpoutput['name'] = sprintf('UNKNOWN_%04X', $arg); break;
+					case 'absolutejmp': $tmpoutput['name'] = sprintf('UNKNOWN_%04X', $arg); break;
+					case 'absolutelongjmp': $tmpoutput['name'] = sprintf('UNKNOWN_%06X', $arg); break;
+					default: $tmpoutput['name'] = ''; break;
 				}
-			} else
-				$name = '';
+			}
 			if (isset(Main::get()->game['localvars'])) {
 				switch (Main::get()->game['localvars']) {
 					case 'directpage':
 						if (isset($this->opcodes[$opcode]['addressing']['directpage']) && isset(Main::get()->addresses[$this->initialoffset]['localvars'][$arg]))
-							$name = sprintf(Main::get()->settings['localvar format'], Main::get()->addresses[$this->initialoffset]['localvars'][$arg]);
+							$tmpoutput['name'] = sprintf(Main::get()->settings['localvar format'], Main::get()->addresses[$this->initialoffset]['localvars'][$arg]);
 						break;
 				}
 			}
 			$arg = sprintf($this->opcodes[$opcode]['addressing']['addrformat'], $arg,isset($args[0]) ? $args[0] : 0,isset($args[1]) ? $args[1] : 0, isset($args[2]) ? $args[2] : 0, $this->currentoffset>>16, ($this->currentoffset+uint($arg+$size+1,$size*8))&0xFFFF);
-			
-			$output[] = array('opcode' => $opcode,
+			if (isset(Main::get()->addresses[$fulladdr]['description']))
+				$comments['Description'] = Main::get()->addresses[$fulladdr]['description'];
+			if (isset(Main::get()->addresses[$fulladdr]['arguments']))
+				$comments = array_merge($comments, Main::get()->addresses[$fulladdr]['arguments']);
+			$tmpoutput += array('opcode' => $opcode,
 							'instruction' => $this->opcodes[$opcode]['mnemonic'],
-							'offset' => $this->currentoffset,
 							'args' => $args,
-							'comment' => isset($comment) ? $comment : (isset(Main::get()->addresses[$fulladdr]['description']) ? Main::get()->addresses[$fulladdr]['description'] : ''),
-							'commentarguments' => isset(Main::get()->addresses[$fulladdr]['arguments']) ? Main::get()->addresses[$fulladdr]['arguments'] : '',
-							'name' => $name,
-							'uri' => $uri,
+							'comments' => $comments,
 							'value' => $arg,
 							'printformat' => $this->opcodes[$opcode]['addressing']['printformat']);
+			$output[] = $tmpoutput;
 			$this->currentoffset += $size+1;
 			
 		}
