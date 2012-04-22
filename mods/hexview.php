@@ -20,8 +20,7 @@ class hexview {
 		if (isset($this->main->addresses[$this->main->offset]['description']))
 			$this->main->dataname = $this->main->addresses[$this->main->offset]['description'];
 		rom::get()->seekTo(platform::get()->map_rom($this->main->offset));
-		$data = rom::get()->read($this->main->addresses[$this->main->offset]['size']);
-		return hexview($data, isset($this->main->addresses[$this->main->offset]['width']) ? $this->main->addresses[$this->main->offset]['width'] : 16, $this->main->offset, $charset);
+		return hexview(rom::get()->read($this->main->addresses[$this->main->offset]['size']), isset($this->main->addresses[$this->main->offset]['width']) ? $this->main->addresses[$this->main->offset]['width'] : 16, $this->main->offset, $charset);
 	}
 	public static function shouldhandle() {
 		if (isset(Main::get()->addresses[Main::get()->offset]['type']) && ((Main::get()->addresses[Main::get()->offset]['type'] === 'data') || (Main::get()->addresses[Main::get()->offset]['type'] === 'empty')) && !isset(Main::get()->addresses[Main::get()->offset]['entries']))

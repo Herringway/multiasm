@@ -5,6 +5,8 @@ class allasm {
 	const magic = 'allasm';
 	
 	public function execute() {
+		if (!Main::get()->settings['debug'])
+			return null;
 		$limit = 600;
 		//ini_set('memory_limit', '1024M');
 		core::get()->dump = true;
