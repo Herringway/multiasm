@@ -74,6 +74,9 @@ abstract class platform_base extends singleton {
 		} catch (Exception $e) { }
 		return false;
 	}
+	public function isRAM($offset) {
+		return false;
+	}
 }
 
 abstract class core_base extends singleton {

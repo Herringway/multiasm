@@ -33,6 +33,9 @@ class platform extends platform_base {
 		}
 		throw new Exception('Unknown Area');
 	}
+	public function isRAM($offset) {
+		return (($offset > 0x7E0000) && ($offset < 0x800000));
+	}
 	private function detectHiROM() {
 		rom::get()->seekTo(0x7FDC);
 		$checksum = rom::get()->getShort();
