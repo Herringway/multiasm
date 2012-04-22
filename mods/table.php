@@ -44,9 +44,9 @@ class table {
 				return str_pad(strtoupper(dechex(rom::get()->read_varint($entry['size']))),$entry['size']*2, '0', STR_PAD_LEFT);
 			case 'pointer':
 				if (isset(Main::get()->opts['yaml']))
-					return $this->read_pointer($entry['size'], false, isset($entry['reverseendian']));
+					return $this->read_pointer($entry['size'], false, isset($entry['reverseendian']), isset($entry['base']) ? $entry['base'] : null);
 				else
-					return $this->read_pointer($entry['size'], true, isset($entry['reverseendian']));
+					return $this->read_pointer($entry['size'], true, isset($entry['reverseendian']), isset($entry['base']) ? $entry['base'] : null);
 			break;
 			case 'palette':
 				if (isset(Main::get()->opts['yaml']))
@@ -126,8 +126,9 @@ class table {
 		}
 		return $output;
 	}
-	private function read_pointer($size, $html = false, $revorder = false) {
-		$offset = rom::get()->read_varint($size, -1, $revorder);
+	private function read_pointer($size, $html = false, $revorder = false, $base = null) {
+		$offset = rom::get()->read_varint($size, -1, $revorder) + (($base != null) ? $base : 0);
+		Main::get()->debugvar($offset, 'PTR');
 		if (!platform::get()->isROM($offset))
 			return sprintf(core::addressformat, $offset);
 		$datablock = Main::get()->getDataBlock($offset);

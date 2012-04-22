@@ -67,6 +67,8 @@ abstract class platform_base extends singleton {
 	}
 	public function map_rom($offset) {
 	}
+	public function map_ram($offset) {
+	}
 	public function isROM($offset) {
 		try {
 			$this->map_rom($offset);
@@ -75,6 +77,10 @@ abstract class platform_base extends singleton {
 		return false;
 	}
 	public function isRAM($offset) {
+		try {
+			$this->map_ram($offset);
+			return true;
+		} catch (Exception $e) { }
 		return false;
 	}
 }

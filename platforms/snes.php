@@ -33,8 +33,15 @@ class platform extends platform_base {
 		}
 		throw new Exception('Unknown Area');
 	}
-	public function isRAM($offset) {
-		return (($offset > 0x7E0000) && ($offset < 0x800000));
+	public function map_ram($offset) {
+		if (($offset > 0x7E0000) && ($offset < 0x800000))
+			return $offset - 0x7E0000;
+		else if (!$this->isHiROM) {
+			if (($offset < 0x400000) && ($offset&0xFFFF < 0x2000))
+				return $offset & 0xFFFF;
+		}
+		else
+			throw new Exception('Not RAM');
 	}
 	private function detectHiROM() {
 		rom::get()->seekTo(0x7FDC);
