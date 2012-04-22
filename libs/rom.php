@@ -27,16 +27,21 @@ class rom {
 		$output += ord(fgetc($this->handle))<<(1*8);
 		return $output;
 	}
-	public function read_varint($size, $offset = -1, $reverseorder = false) {
+	public function read_varint($size, $offset = -1, $endianness = null) {
 		if ($offset > 0)
 			$this->seekTo($offset);
 		$output = 0;
-		if (!$reverseorder)
-			for ($i = 0; $i < $size; $i++)
-				$output += ord(fgetc($this->handle))<<($i*8);
-		else
+		if ($endianness == 'l')
 			for ($i = 0; $i < $size; $i++)
 				$output += ord(fgetc($this->handle))<<(($size-$i-1)*8);
+		else if ($endianness == 'm') {
+			$output += ord(fgetc($this->handle))<<(2*8);
+			$output += ord(fgetc($this->handle))<<(0*8);
+			$output += ord(fgetc($this->handle))<<(1*8);
+		}
+		else
+			for ($i = 0; $i < $size; $i++)
+				$output += ord(fgetc($this->handle))<<($i*8);
 		return $output;
 	}
 	public function read($size, $offset = -1) {

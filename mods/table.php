@@ -1,5 +1,6 @@
 <?php
 class table {
+	private $pointerblocks = array();
 	public function execute() {
 		$realoffset = platform::get()->map_rom(Main::get()->offset);
 		rom::get()->seekTo($realoffset);
@@ -44,9 +45,9 @@ class table {
 				return str_pad(strtoupper(dechex(rom::get()->read_varint($entry['size']))),$entry['size']*2, '0', STR_PAD_LEFT);
 			case 'pointer':
 				if (isset(Main::get()->opts['yaml']))
-					return $this->read_pointer($entry['size'], false, isset($entry['reverseendian']), isset($entry['base']) ? $entry['base'] : null);
+					return $this->read_pointer($entry['size'], false, isset($entry['endianness']) ? $entry['endianness'] : null,  isset($entry['base']) ? $entry['base'] : null);
 				else
-					return $this->read_pointer($entry['size'], true, isset($entry['reverseendian']), isset($entry['base']) ? $entry['base'] : null);
+					return $this->read_pointer($entry['size'], true, isset($entry['endianness']) ? $entry['endianness'] : null, isset($entry['base']) ? $entry['base'] : null);
 			break;
 			case 'palette':
 				if (isset(Main::get()->opts['yaml']))
@@ -126,22 +127,23 @@ class table {
 		}
 		return $output;
 	}
-	private function read_pointer($size, $html = false, $revorder = false, $base = null) {
-		$offset = rom::get()->read_varint($size, -1, $revorder) + (($base != null) ? $base : 0);
-		Main::get()->debugvar($offset, 'PTR');
+	private function read_pointer($size, $html = false, $endianness = null, $base = null) {
+		$offset = rom::get()->read_varint($size, -1, $endianness) + (($base != null) ? $base : 0);
+		if (isset($this->pointerblocks[$offset]))
+			return $this->pointerblocks[$offset];
 		if (!platform::get()->isROM($offset))
-			return sprintf(core::addressformat, $offset);
+			return $this->pointerblocks[$offset] = sprintf(core::addressformat, $offset);
 		$datablock = Main::get()->getDataBlock($offset);
 		if ($datablock == -1)
-			return sprintf(core::addressformat, $offset);
+			return $this->pointerblocks[$offset] = sprintf(core::addressformat, $offset);
 		if (!$html) {
 			if ($datablock != $offset)
-				return sprintf('%s+%d ('.core::addressformat.')', Main::get()->decimal_to_function($datablock), $offset-$datablock, $offset);
-			return Main::get()->decimal_to_function($datablock);
+				return $this->pointerblocks[$offset] = sprintf('%s+%d ('.core::addressformat.')', Main::get()->decimal_to_function($datablock), $offset-$datablock, $offset);
+			return $this->pointerblocks[$offset] = Main::get()->decimal_to_function($datablock);
 		} else {
 			if ($datablock != $offset)
-				return sprintf('<a href="%s#%3$X">%1$s+%2$d (%3$X)</a>', Main::get()->decimal_to_function($datablock), $offset-$datablock, $offset);
-			return sprintf('<a href="%s">%1$s</a>', Main::get()->decimal_to_function($datablock));
+				return $this->pointerblocks[$offset] = sprintf('<a href="%s#%3$X">%1$s+%2$d (%3$X)</a>', Main::get()->decimal_to_function($datablock), $offset-$datablock, $offset);
+			return $this->pointerblocks[$offset] = sprintf('<a href="%s">%1$s</a>', Main::get()->decimal_to_function($datablock));
 		}
 	}
 }
