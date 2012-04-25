@@ -144,7 +144,7 @@ class Main {
 		$this->debugvar(sprintf('%f seconds', microtime(true) - $time_start), 'Total Execution time');
 	}
 	public function getOffsetName($offset) {
-		return isset($this->addresses[$offset]['name']) ? $this->addresses[$offset]['name'] : '';
+		return isset($this->addresses[$offset]['name']) ? $this->addresses[$offset]['name'] : sprintf(core::addressformat, $offset);
 	}
 	public function getDataBlock($ioffset) {
 		$offset = $ioffset;

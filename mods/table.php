@@ -79,7 +79,7 @@ class table {
 			break;
 			default:
 				if (isset(Main::get()->game['texttables'][$entry['type']]))
-				return trim(rom::get()->read_string($bytesread, Main::get()->game['texttables'][$entry['type']], isset($entry['terminator']) ? $entry['terminator'] : null));
+					return trim(rom::get()->read_string($bytesread, Main::get()->game['texttables'][$entry['type']], isset($entry['terminator']) ? $entry['terminator'] : null, isset(Main::get()->opts['hideccs'])));
 			break;
 		}
 		return $value;

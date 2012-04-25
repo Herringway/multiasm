@@ -50,11 +50,12 @@ class rom {
 		return fread($this->handle, $size);
 	}
 	
-	public function read_string(&$size, $table, $terminator = null) {
+	public function read_string(&$size, $table, $terminator = null, $hideccs = false) {
 		$initialsize = ($size == 0) ? 0x100000 : $size;
 		static $chars = 0;
 		$output = '';
 		for ($i = 0; $i < $initialsize; $i++) {
+			$length = 1;
 			if ($terminator !== null)
 				$size++;
 			$val = $this->getByte();
@@ -75,7 +76,7 @@ class rom {
 						
 					for ($j = 1; $j < $length; $j++) {
 						$cval = $this->getByte();
-						$val = ($val<<($j*8)) + $cval;
+						$val = ($val<<8) + $cval;
 						if (isset($entry[$cval])) {
 							$length = $entry = $entry[$cval];
 							if (is_array($entry))
@@ -90,7 +91,10 @@ class rom {
 							$size++;
 					}
 				}
-				$output .= !isset($replacement) ? sprintf('[%02X]',$val) : $replacement;
+				if (isset($replacement))
+					$output .= $replacement;
+				else if (!$hideccs)
+					$output .= sprintf('[%0'.(max($length,1)*2).'X]',$val);
 			}
 			if ($val === $terminator) {
 				break;
