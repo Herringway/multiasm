@@ -1,0 +1,6 @@
+[submodule "games/eb"]
+	path = games/eb
+	url = git@github.com:PKHackers/EBYAML.git
+[submodule "games/mo2"]
+	path = games/mo2
+	url = git@github.com:PKHackers/MO2YAML.git

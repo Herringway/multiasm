@@ -51,13 +51,13 @@ class Main {
 		$this->godpowers = $display->canWrite();
 		if ($this->settings['gamemenu'])
 			for ($dir = opendir('./games/'); $file = readdir($dir); ) {
-				if (substr($file, -4) == ".yml") {
-					$game = yaml_parse_file('./games/'.$file, 0);
-					$this->gamelist[substr($file, 0, -4)] = $game['title'];
+				if (($file[0] != '.') && is_dir('./games/'.$file)) {
+					$game = yaml_parse_file('./games/'.$file.'/'.$file.'.yml', 0);
+					$this->gamelist[$file] = $game['title'];
 				}
 			}
 		//Determine which game to work with
-		if (isset($argv[0]) && ($argv[0] != null) && file_exists(sprintf('games/%s.yml', $argv[0])))
+		if (isset($argv[0]) && ($argv[0] != null) && file_exists(sprintf('games/%1$s/%1$s.yml', $argv[0])))
 			$this->gameid = $argv[0];
 		else
 			$this->gameid = $this->settings['gameid'];
@@ -153,12 +153,12 @@ class Main {
 		return $offset;
 	}
 	public function loadYAML($id) {
-		if (isset($this->cache[sprintf('MPASM.ymlmodified.%s', $id)]) && ($this->cache[sprintf('MPASM.ymlmodified.%s', $id)] === filemtime(sprintf('games/%s.yml', $id)))) {
+		if (isset($this->cache[sprintf('MPASM.ymlmodified.%s', $id)]) && ($this->cache[sprintf('MPASM.ymlmodified.%s', $id)] === filemtime(sprintf('games/%1$s/%1$s.yml', $id)))) {
 			$this->debugmessage(sprintf("Game data (%s) loaded from cache", $id), 'info');
 			list($game,$addresses) = $this->cache[sprintf('MPASM.ymlcache.%s', $id)];
 		} else { //Load game data & platform class from yml
-			list($game,$addresses) = $this->cache[sprintf('MPASM.ymlcache.%s', $id)] = yaml_parse_file(sprintf('games/%s.yml', $id), -1);
-			$this->cache[sprintf('MPASM.ymlmodified.%s', $id)] = filemtime(sprintf('games/%s.yml', $id));
+			list($game,$addresses) = $this->cache[sprintf('MPASM.ymlcache.%s', $id)] = yaml_parse_file(sprintf('games/%1$s/%1$s.yml', $id), -1);
+			$this->cache[sprintf('MPASM.ymlmodified.%s', $id)] = filemtime(sprintf('games/%1$s/%1$s.yml', $id));
 		}
 		return array($game,$addresses);
 	}

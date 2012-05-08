@@ -16,6 +16,8 @@ class settings implements arrayaccess {
 		$this->settings = yaml_parse_file($filename);
 	}
 	public function offsetSet($key, $value) {
+		if (!isset($this->defaults[$key]))
+			throw new Exception(sprintf('Unknown setting: %s!', $key));
 		return $this->settings[$key] = $value;
     }
     public function offsetExists($key) {
