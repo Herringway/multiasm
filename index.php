@@ -3,6 +3,7 @@ require_once 'libs/chromephp.php';
 require_once 'libs/commonfunctions.php';
 require_once 'libs/rom.php';
 require_once 'libs/cache.php';
+require_once 'libs/settings.php';
 ob_start();
 class Main {
 	public static $instance;
@@ -28,9 +29,7 @@ class Main {
 	
 	public function execute() {
 		$time_start = microtime(true);
-		if (!file_exists('settings.yml'))
-			file_put_contents('settings.yml', yaml_emit(array('gameid' => 'eb', 'rompath' => '.', 'debug' => false, 'password' => 'changeme')));
-		$this->settings = yaml_parse_file('settings.yml');
+		$this->settings = new settings('settings.yml');
 		
 		if (PHP_SAPI === 'cli')
 			require_once 'cli.php';
@@ -50,7 +49,7 @@ class Main {
 		$this->opts = $display->getOpts($argv);
 		$this->debugvar($this->opts, 'options');
 		$this->godpowers = $display->canWrite();
-		if (!isset($this->settings['gamemenu']) || ($this->settings['gamemenu']))
+		if ($this->settings['gamemenu'])
 			for ($dir = opendir('./games/'); $file = readdir($dir); ) {
 				if (substr($file, -4) == ".yml") {
 					$game = yaml_parse_file('./games/'.$file, 0);
@@ -67,11 +66,11 @@ class Main {
 		list($this->game, $this->addresses) = $this->loadYAML($this->gameid);
 		
 		require_once sprintf('platforms/%s.php', $this->game['platform']);
-		if (!file_exists($this->settings['rompath'].$this->gameid.'.'.platform::extension))
+		if (!file_exists($this->settings['rompath'].'/'.$this->gameid.'.'.platform::extension))
 			die ('Could not locate source data!');
-		$this->game['size'] = filesize($this->settings['rompath'].$this->gameid.'.'.platform::extension);
+		$this->game['size'] = filesize($this->settings['rompath'].'/'.$this->gameid.'.'.platform::extension);
 		
-		rom::get($this->settings['rompath'].$this->gameid.'.'.platform::extension);
+		rom::get($this->settings['rompath'].'/'.$this->gameid.'.'.platform::extension);
 		//$this->platform = platform::get();
 		
 		
@@ -167,11 +166,11 @@ class Main {
 		return (isset($this->addresses[$input]['name']) && ($this->addresses[$input]['name'] != "")) ? $this->addresses[$input]['name'] : sprintf(core::addressformat, $input);
 	}
 	function debugvar($var, $label) {
-		if (isset($this->settings['debug']) && $this->settings['debug'])
+		if ($this->settings['debug'])
 			display::debugvar($var, $label);
 	}
 	function debugmessage($msg, $level = 'error') {
-		if (isset($this->settings['debug']) && $this->settings['debug'])
+		if ($this->settings['debug'])
 			display::debugmessage($msg,$level);
 	}
 	

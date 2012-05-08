@@ -264,8 +264,6 @@ texttables:
   size: 3
   type: assembly
 0x00FAA4:
-  name: ""
-  description: ""
   type: assembly
   size: 92
   labels:
@@ -415,7 +413,6 @@ texttables:
   name: ENABLE_NMI_JOYPAD
   type: assembly
   size: 17
-  labels: ~
 0xC0874C:
   description: Reads gamepad state into memory
   name: READ_JOYPAD
@@ -461,7 +458,6 @@ texttables:
   name: MULT_YxA
   type: assembly
   size: 84
-  labels: ~
 0xC0A0FB:
   description: Check if the game is running on an NTSC SNES
   name: CHECK_HARDWARE
@@ -495,11 +491,8 @@ texttables:
   labels:
     0xB550: UNKNOWN0
 0xC0B652:
-  name: ""
-  description: ""
   type: assembly
   size: 197
-  labels: ~
 0xC0B717:
   description: Battle Initialization
   name: BATTLE_INIT
@@ -550,7 +543,6 @@ texttables:
   name: GAME_INIT
   type: assembly
   size: 34
-  labels: ~
 0xC0DD1B:
   final processor state:
     accum: 16
@@ -572,10 +564,7 @@ texttables:
   name: GAS_STATION
   type: assembly
   size: 260
-  labels: ~
 0xC0F5BF:
-  name: ""
-  description: ""
   type: assembly
   size: 31
   labels:
@@ -1066,7 +1055,6 @@ texttables:
   name: PSI_SHIELD_NULLIFY
   description: PSI Shield Handler
   type: assembly
-  labels: ~
   size: 177
 0xC29A29:
   name: PSI_STARSTORM_COMMON
@@ -1096,11 +1084,8 @@ texttables:
     0xABBE: TELEPORT_BOX_FAILURE
     0xABDC: RETURN
 0xC2ABDE:
-  name: ""
-  description: ""
   type: assembly
   size: 20
-  labels: ~
 0xC419EA:
   description: Decompress ($0E+10) to ($12+14)
   name: DECOMP
@@ -1162,7 +1147,6 @@ texttables:
   name: INITIALIZE_SPC700
   type: assembly
   size: 101
-  labels: ~
 0xC4CF5C:
   description: Change music to A
   name: CHANGE_MUSIC
@@ -1425,8 +1409,6 @@ texttables:
   - name: Mirror Success Rate
     size: 1
 0xEFD02B:
-  name: ""
-  description: ""
   type: assembly
   size: 62
   labels:

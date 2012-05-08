@@ -3,8 +3,7 @@
   mnemonic: BRK
   addressing: &none
     type: none
-    printformat: 
-    addrformat: 
+    printformat: ''
     size: 0
 0x01: 
   mnemonic: ORA
@@ -28,7 +27,6 @@
   mnemonic: TSB
   addressing: &directpage
     type: directpage
-    printformat: "%s"
     addrformat: $%02X
     directpage: y
     size: 1
@@ -67,7 +65,6 @@
   addressing: &absolute
     type: absolute
     UseDBR: y
-    printformat: "%s"
     addrformat: $%04X
     size: 2
 0x0D: 
@@ -80,14 +77,12 @@
   mnemonic: ORA
   addressing: &absolutelong
     type: absolutelong
-    printformat: "%s"
     addrformat: $%06X
     size: 3
 0x10: 
   mnemonic: BPL
   addressing: &relative
     type: relative
-    printformat: "%s"
     addrformat: $%6$04X
     size: 1
     anchorformat: '%s#%s'
@@ -178,7 +173,6 @@
   mnemonic: JSR
   addressing: &absolutejmp
     type: absolutejmp
-    printformat: "%s"
     UsePBR: y
     addrformat: $%04X
     size: 2
@@ -190,7 +184,6 @@
   mnemonic: JSL
   addressing: &absolutelongjmp
     type: absolutelongjmp
-    printformat: "%s"
     addrformat: $%06X
     size: 3
 0x23: 
@@ -284,9 +277,8 @@
   mnemonic: RTI
   addressing: &return
     type: return
-    printformat: 
-    addrformat: 
     size: 0
+    printformat: ''
     special: return
 0x41: 
   mnemonic: EOR
@@ -302,7 +294,6 @@
   mnemonic: MVP
   addressing: &blockmove
     type: blockmove
-    printformat: "%s"
     addrformat: $%2$02X,$%3$02X
     size: 2
 0x45: 
@@ -330,7 +321,6 @@
   mnemonic: JMP
   addressing: 
     type: absolutejmp
-    printformat: "%s"
     addrformat: $%04X
     size: 2
     anchorformat: '%s#%s'
@@ -402,7 +392,6 @@
   mnemonic: PER
   addressing: &const
     type: const
-    printformat: "%s"
     addrformat: '#$%04X'
     size: 2
 0x63: 
@@ -512,7 +501,6 @@
   mnemonic: BRL
   addressing: &relativelong
     type: relativelong
-    printformat: "%s"
     addrformat: $%6$04X
     size: 2
 0x83: 
@@ -611,7 +599,6 @@
   mnemonic: LDY
   addressing: &indexconst
     type: indexconst
-    printformat: "%s"
     addrformat: '#$%04X'
     size: index
 0xA1: 
@@ -717,7 +704,6 @@
   mnemonic: REP
   addressing: &procconst
     type: procconst
-    printformat: "%s"
     addrformat: '#%%%08b'
     size: 1
 0xC3: 
@@ -775,7 +761,6 @@
   mnemonic: PEI
   addressing: &smallconst
     type: smallconst
-    printformat: "%s"
     addrformat: '#%%%08b'
     size: 1
 0xD5: 
@@ -880,7 +865,6 @@
   mnemonic: PEA
   addressing: &stackabsolute
     type: stackabsolute
-    printformat: "%s"
     addrformat: '#$%04X'
     size: 2
 0xF5: 

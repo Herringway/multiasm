@@ -13,7 +13,7 @@ function print_exception($exception) {
 function error_handling($errno, $message, $file, $line) {
 	static $errors = 0;
 	//ini_set('display_errors', 'Off');
-	if ($errors++ < 100) {
+	if ($errors++ < Main::get()->settings['errorlimit']) {
 		if (!class_exists('display'))
 			printf("%s on %s:%d", $message, $file, $line);
 		else
@@ -84,7 +84,11 @@ abstract class platform_base extends singleton {
 		return false;
 	}
 }
-
+function defaultv($format) {
+	if (isset($format))
+		return $format;
+	return '%s';
+}
 abstract class core_base extends singleton {
 	static $instance;
 	public $initialoffset;
