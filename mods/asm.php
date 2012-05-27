@@ -29,6 +29,7 @@ class asm {
 	}
 	//Saves a stub to the relevant YAML file.
 	private function saveData() {
+		Main::get()->debugmessage('Saving YAML', 'log');
 		$branches = null;
 		list($gameorig,$addresses) = $this->main->loadYAML($this->main->gameid);
 		if (isset($addresses[core::get()->initialoffset]['labels']))
@@ -51,7 +52,7 @@ class asm {
 			$addresses[core::get()->initialoffset]['labels'] = $branches;
 		ksort($addresses);
 		$output = preg_replace_callback('/^(\d+):/m', 'hexafixer', yaml_emit($gameorig,YAML_UTF8_ENCODING).yaml_emit($addresses,YAML_UTF8_ENCODING));
-		file_put_contents('games/'.$this->main->gameid.'.yml', $output);
+		file_put_contents(sprintf('games/%1$s/%1$s.yml',$this->main->gameid), $output);
 	}
 	public static function shouldhandle() {
 		if (!isset(Main::get()->addresses[Main::get()->offset]['type']) || (Main::get()->addresses[Main::get()->offset]['type'] !== 'data'))

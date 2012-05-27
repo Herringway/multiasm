@@ -1,11 +1,6 @@
 <?php
 class display {
-	private $main;
 	public $mode;
-	
-	function __construct(&$main) {
-		$this->main = $main;
-	}
 
 	public function getArgv() {
 		return array_slice($_SERVER['argv'], 1);
@@ -25,6 +20,9 @@ class display {
 		fwrite(STDERR, $label.': ');
 		fwrite(STDERR, var_export($var, true).PHP_EOL);
 	}
+	public static function debugmessage($msg, $level = 'error') {
+		fwrite(STDERR, $msg.PHP_EOL);
+	}
 	private function disassemble($data) {
 		foreach ($data as $instruction) {
 			if (isset($instruction['label']))
@@ -34,7 +32,7 @@ class display {
 		}
 	}
 	public static function display_error($error) {
-		printf("Unhandled Exception: %s\n", $error['message']);
+		printf("Unhandled Exception: %s".PHP_EOL, $error['message']);
 	}
 	public function canWrite() {
 		return true;

@@ -29,7 +29,7 @@ function replacechar($char, $charset) {
 		return htmlentities($char);
 	}
 	if (isset($charset[ord($char)]))
-		$c = trim(substr($charset[ord($char)],0,1), "\t\n\r");
+		$c = trim(mb_substr($charset[ord($char)],0,1), "\t\n\r");
 	if (isset($c) && ($c != ''))
 		return htmlentities($c);
 	return '░';

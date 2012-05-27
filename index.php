@@ -4,6 +4,8 @@ require_once 'libs/commonfunctions.php';
 require_once 'libs/rom.php';
 require_once 'libs/cache.php';
 require_once 'libs/settings.php';
+
+
 ob_start();
 class Main {
 	public static $instance;
@@ -24,6 +26,7 @@ class Main {
 	public $godpowers = false;
 	public $menuitems = array();
 	public $gamelist = array();
+	public $format;
 	
 	private function __construct() { }
 	
@@ -40,6 +43,7 @@ class Main {
 		
 		$display = new display();
 		$argv = $display->getArgv();
+		$this->format = $display->getFormat();
 		
 		//Some debug output
 		$this->debugvar($_SERVER, 'Server');
@@ -62,6 +66,7 @@ class Main {
 		else
 			$this->gameid = $this->settings['gameid'];
 			
+		$this->debugmessage("Loading cached data");
 		//Load game data. from cache if possible
 		list($this->game, $this->addresses) = $this->loadYAML($this->gameid);
 		
@@ -73,7 +78,7 @@ class Main {
 		rom::get($this->settings['rompath'].'/'.$this->gameid.'.'.platform::extension);
 		//$this->platform = platform::get();
 		
-		
+		$this->debugmessage("Loading CPU Core");
 		
 		//Load CPU Class
 		
@@ -84,6 +89,7 @@ class Main {
 		
 		$magicvalues = array();
 		
+		$this->debugmessage("Loading Modules");
 		//Load Modules
 		for ($dir = opendir('./mods/'); $file = readdir($dir); ) {
 			if (substr($file, -4) == ".php") {
@@ -96,6 +102,7 @@ class Main {
 			}
 		}
 		
+		$this->debugmessage("Determining location");
 		//Where are we?
 		$this->offset = core::get()->getDefault();
 		if (isset($argv[1]) && ($argv[1] != null)) {
@@ -130,19 +137,36 @@ class Main {
 		$display->mode = $modname;
 		if (method_exists($module, 'getTemplate'))
 			$display->mode = $module->getTemplate();
+			
 		//Display stuff
-		if (isset($this->opts['yaml'])) {
-			header('Content-Type: text/plain; charset=UTF-8');
+		switch($this->format) {
+		case 'yml':
+			if ($this->opts['dump']) {
+				header('Content-Type: text/plain; charset=UTF-8');
+			} else {
+				header('Content-Type: text/yaml; charset=UTF-8');
+			}
 			if ($output !== null)
 				foreach ($output as $yamldoc)
-					echo yaml_emit($yamldoc);
-		} else
-			$display->display($output);
-			
+					echo yaml_emit($yamldoc, YAML_UTF8_ENCODING, YAML_ANY_BREAK);
+			break;
+		case 'json':
+			if ($this->opts['dump']) {
+				header('Content-Type: text/plain; charset=UTF-8');
+			} else {
+				header('Content-Type: application/json; charset=UTF-8');
+			}
+			echo json_encode($output, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_FORCE_OBJECT);
+			break;
+		default:
+			$display->display($output); break;
+		}
 		$this->debugvar(sprintf('%f MB', memory_get_usage()/1024/1024), 'Total Memory usage');
 		$this->debugvar(sprintf('%f seconds', microtime(true) - $time_start), 'Total Execution time');
 	}
-	public function getOffsetName($offset) {
+	public function getOffsetName($offset, $onlyifexists = false) {
+		if ($onlyifexists)
+			return isset($this->addresses[$offset]['name']) ? $this->addresses[$offset]['name'] : '';
 		return isset($this->addresses[$offset]['name']) ? $this->addresses[$offset]['name'] : sprintf(core::addressformat, $offset);
 	}
 	public function getDataBlock($ioffset) {
@@ -153,14 +177,17 @@ class Main {
 		return $offset;
 	}
 	public function loadYAML($id) {
-		if (isset($this->cache[sprintf('MPASM.ymlmodified.%s', $id)]) && ($this->cache[sprintf('MPASM.ymlmodified.%s', $id)] === filemtime(sprintf('games/%1$s/%1$s.yml', $id)))) {
-			$this->debugmessage(sprintf("Game data (%s) loaded from cache", $id), 'info');
-			list($game,$addresses) = $this->cache[sprintf('MPASM.ymlcache.%s', $id)];
-		} else { //Load game data & platform class from yml
-			list($game,$addresses) = $this->cache[sprintf('MPASM.ymlcache.%s', $id)] = yaml_parse_file(sprintf('games/%1$s/%1$s.yml', $id), -1);
-			$this->cache[sprintf('MPASM.ymlmodified.%s', $id)] = filemtime(sprintf('games/%1$s/%1$s.yml', $id));
-		}
-		return array($game,$addresses);
+		if ($this->settings['cache']) {
+			if (isset($this->cache[sprintf('MPASM.ymlmodified.%s', $id)]) && ($this->cache[sprintf('MPASM.ymlmodified.%s', $id)] === filemtime(sprintf('games/%1$s/%1$s.yml', $id)))) {
+				$this->debugmessage(sprintf("Game data (%s) loaded from cache", $id), 'info');
+				list($game,$addresses) = $this->cache[sprintf('MPASM.ymlcache.%s', $id)];
+			} else { //Load game data & platform class from yml
+				list($game,$addresses) = $this->cache[sprintf('MPASM.ymlcache.%s', $id)] = yaml_parse_file(sprintf('games/%1$s/%1$s.yml', $id), -1);
+				$this->cache[sprintf('MPASM.ymlmodified.%s', $id)] = filemtime(sprintf('games/%1$s/%1$s.yml', $id));
+			}
+			return array($game,$addresses);
+		} else 
+			return yaml_parse_file(sprintf('games/%1$s/%1$s.yml', $id), -1);
 	}
 	public function decimal_to_function($input) {
 		return (isset($this->addresses[$input]['name']) && ($this->addresses[$input]['name'] != "")) ? $this->addresses[$input]['name'] : sprintf(core::addressformat, $input);
@@ -180,6 +207,5 @@ class Main {
 		return self::$instance;
 	}
 }
-
 Main::get()->execute();
 ?>

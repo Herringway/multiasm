@@ -94,7 +94,7 @@ class core extends core_base {
 				if ($tmpoutput['args'][0]&0x20)
 					$accum = ($tmpoutput['opcode'] == 0xC2) ? 16 : 8;
 			}
-			if (isset($this->opcodes[$tmpoutput['opcode']]['undefined']))
+			if (!Main::get()->settings['debug'] && isset($this->opcodes[$tmpoutput['opcode']]['undefined']))
 				throw new Exception("Undefined opcode encountered. You sure this is assembly?");
 				
 			$fulladdr = $this->fix_addr($tmpoutput['opcode'], $tmpoutput['value']);

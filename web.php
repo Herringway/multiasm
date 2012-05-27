@@ -22,7 +22,23 @@ class display extends singleton {
 		$this->dwoo = new Dwoo();
 	}
 	public function getArgv() {
-		return array_slice(explode('/', str_replace($_SERVER['SCRIPT_NAME'], '', $_SERVER['REQUEST_URI'])),1);
+		$args = array_slice(explode('/', str_replace($_SERVER['SCRIPT_NAME'], '', urldecode($_SERVER['REQUEST_URI']))),1);
+		if (strstr($args[count($args)-1], '.') !== FALSE)
+			$args[count($args)-1] = strstr($args[count($args)-1], '.', true);
+		return $args;
+	}
+	public function getFormat() {
+		static $types = array();
+		if (function_exists('yaml_emit'))
+			$types[] = 'yml';
+		if (function_exists('json_encode'))
+			$types[] = 'json';
+		$v = substr(strrchr($_SERVER['REQUEST_URI'], '.'),1);
+		if ($v == 'yaml')
+			return 'yml';
+		if (!in_array($v, $types))
+			return 'html';
+		return $v;
 	}
 	public function getOpts($argv) {
 		$opts = array();
@@ -53,9 +69,9 @@ class display extends singleton {
 		'options' => Main::get()->opts, 
 		'writemode' => Main::get()->godpowers,
 		'offsetname' => Main::get()->decimal_to_function(Main::get()->offset), 
-		'realname' => Main::get()->getOffsetName(Main::get()->offset),
+		'realname' => Main::get()->getOffsetName(Main::get()->offset, true),
 		'realdesc' => Main::get()->realdesc,
-		'size' => isset(Main::get()->opts['size']) ? Main::get()->opts['size'] : 0,
+		'size' => isset(Main::get()->opts['size']) ? Main::get()->opts['size'] : '',
 		'addrformat' => core::addressformat, 
 		'menuitems' => Main::get()->menuitems, 
 		'opcodeformat' => core::opcodeformat,

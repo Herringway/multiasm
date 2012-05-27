@@ -38,6 +38,9 @@ function hexafixer($matches) {
 	//	return sprintf(' 0x%04X:', $matches[1]);
 	return sprintf('0x%06X:', $matches[1]);
 }
+function json($obj) {
+	return json_encode($obj, JSON_UNESCAPED_UNICODE | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_TAG);
+}
 function hexafixer_human($matches) {
 	static $i = 0;
 	return sprintf('<a href="#'.core::addressformat.'" name="'.core::addressformat.'">%d ('.core::addressformat.'</a>)', $matches[1], $matches[1], $i++, $matches[1]);

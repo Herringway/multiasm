@@ -44,7 +44,7 @@ class table {
 			case 'hexint':
 				return str_pad(strtoupper(dechex(rom::get()->read_varint($entry['size']))),$entry['size']*2, '0', STR_PAD_LEFT);
 			case 'pointer':
-				if (isset(Main::get()->opts['yaml']))
+				if (Main::get()->format != 'html')
 					return $this->read_pointer($entry['size'], false, isset($entry['endianness']) ? $entry['endianness'] : null,  isset($entry['base']) ? $entry['base'] : null);
 				else
 					return $this->read_pointer($entry['size'], true, isset($entry['endianness']) ? $entry['endianness'] : null, isset($entry['base']) ? $entry['base'] : null);
