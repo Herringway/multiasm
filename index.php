@@ -151,11 +151,7 @@ class Main {
 					echo yaml_emit($yamldoc, YAML_UTF8_ENCODING, YAML_ANY_BREAK);
 			break;
 		case 'json':
-			if ($this->opts['dump']) {
-				header('Content-Type: text/plain; charset=UTF-8');
-			} else {
-				header('Content-Type: application/json; charset=UTF-8');
-			}
+			header('Content-Type: application/json; charset=UTF-8');
 			echo json_encode($output, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_FORCE_OBJECT);
 			break;
 		default:
