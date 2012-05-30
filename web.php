@@ -11,6 +11,7 @@ if (isset($_GET['begin'])) {
 	header(sprintf('Location: http://%s/%s/%s/%s',$_SERVER['HTTP_HOST'],$_GET['game'], $_GET['begin'], implode('/', $options)));
 	die();
 }
+require_once 'libs/chromephp/ChromePhp.php';
 class display extends singleton {
 	static $instance;
 	private $dwoo;

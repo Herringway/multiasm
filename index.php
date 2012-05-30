@@ -1,5 +1,4 @@
 <?php
-require_once 'libs/chromephp.php';
 require_once 'libs/commonfunctions.php';
 require_once 'libs/rom.php';
 require_once 'libs/cache.php';

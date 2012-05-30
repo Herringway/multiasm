@@ -7,3 +7,6 @@
 [submodule "games/mo3"]
 	path = games/mo3
 	url = git@github.com:PKHackers/MO3YAML.git
+[submodule "libs/chromephp"]
+	path = libs/chromephp
+	url = https://github.com/ccampbell/chromephp.git
