@@ -1,3 +1,4 @@
+---
 0x2100: 
   description: Screen display register
   name: INIDISP
@@ -495,3 +496,4 @@
     DMA Channel 7 transfer size & HDMA
     address register
   name: DAS7L
+...

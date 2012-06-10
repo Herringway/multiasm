@@ -1,9 +1,8 @@
 <?php
 class rom {
 	private $handle;
-	private static $instance;
 	
-	private function __construct($filename) {
+	function __construct($filename) {
 		$this->handle = fopen($filename, 'r');
 	}
 	
@@ -114,7 +113,7 @@ class rom {
 		$data = fread($this->handle, 8*$bpp);
 		$curpos = $this->currentoffset();
 		if ($palette >= 0) {
-			$this->seekTo(Backend::instance()->platform->map_rom($palette));
+			$this->seekTo(platform::get()->map_rom($palette));
 			$colours = $this->read_palette(pow(2,$bpp+1));
 			$this->seekTo($curpos);
 		} else
@@ -159,14 +158,6 @@ class rom {
 		for ($i = 0; $i < count($values); $i++)
 			$output[$values[$i]] = ($val&pow(2,$i)) != 0;
 		return $output;
-	}
-	public static function get($filename = '') {
-		if (!isset(self::$instance)) {
-			if ($filename == '')
-				throw new Exception("File not open!");
-			self::$instance = new self($filename);
-		}
-		return self::$instance;
 	}
 }
 ?>

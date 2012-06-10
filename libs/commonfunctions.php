@@ -6,14 +6,15 @@ set_error_handler('error_handling');
 ini_set('yaml.output_width', -1);
 define('BRANCH_LIMIT', 5000);
 function print_exception($exception) {
-	display::get()->mode = 'error';
-	display::get()->seterror();
-	display::get()->display(array('trace' => $exception->getTrace(), 'message' => $exception->getMessage()));
+	global $display;
+	$display->mode = 'error';
+	$display->seterror();
+	$display->display(array('trace' => $exception->getTrace(), 'message' => $exception->getMessage()));
 }
 function error_handling($errno, $message, $file, $line) {
 	static $errors = 0;
 	//ini_set('display_errors', 'Off');
-	if ($errors++ < Main::get()->settings['errorlimit']) {
+	if ($errors++ < $GLOBALS['settings']['errorlimit']) {
 		if (!class_exists('display'))
 			printf("%s on %s:%d", $message, $file, $line);
 		else
@@ -59,8 +60,7 @@ function asprintf($string, $haystack) {
 		$output[] = vsprintf($string, $needle);
 	return $output;
 }
-abstract class platform_base extends singleton {
-	static $instance;
+abstract class platform_base {
 	protected $main;
 	public function getRegisters() {
 		return array();
@@ -92,8 +92,13 @@ function defaultv($format) {
 		return $format;
 	return '%s';
 }
-abstract class core_base extends singleton {
-	static $instance;
+abstract class gamemod {
+	const title = '';
+	public function description() {
+		return $this::title;
+	}
+}
+abstract class core_base {
 	public $initialoffset;
 	public $currentoffset;
 	public $branches;
@@ -116,13 +121,50 @@ abstract class core_base extends singleton {
 		return array();
 	}
 }
-abstract class singleton {
-	
-	public static function get() {
-		$class = get_called_class();
-		if (!isset($class::$instance))
-			$class::$instance = new $class();
-		return $class::$instance;
-	}
+function getOffsetName($offset, $onlyifexists = false) {
+	global $addresses;
+	if ($onlyifexists)
+		return isset($addresses[$offset]['name']) ? $addresses[$offset]['name'] : '';
+	return isset($addresses[$offset]['name']) ? $addresses[$offset]['name'] : sprintf(core::addressformat, $offset);
+}
+function getDescription($offset, $onlyifexists = false) {
+	global $addresses;
+	if ($onlyifexists)
+		return isset($addresses[$offset]['description']) ? $addresses[$offset]['description'] : '';
+	if (isset($addresses[$offset]['description']))
+		return $addresses[$offset]['description'];
+	if (isset($addresses[$offset]['name']))
+		return $addresses[$offset]['name'];
+	return sprintf(core::addressformat, $offset);
+}
+function gametitle($game) {
+	$miscdata = array();
+	if (isset($game['country']))
+		$miscdata[] = $game['country'];
+	if (isset($game['version']))
+		$miscdata[] = 'v'.$game['version'];
+	return $game['title'].(($miscdata != array()) ? ' ('.implode(' ', $miscdata).')' : '');
+}
+function getDataBlock($ioffset) {
+	global $addresses;
+	$offset = $ioffset;
+	for (;!isset($addresses[$offset]) && ($offset > 0); $offset--);
+	if (!isset($addresses[$offset]) || ($ioffset - $offset > $addresses[$offset]['size']))
+		return -1;
+	return $offset;
+}
+function decimal_to_function($input) {
+	global $addresses;
+	if (!class_exists('core'))
+		return '';
+	return (isset($addresses[$input]['name']) && ($addresses[$input]['name'] != "")) ? $addresses[$input]['name'] : sprintf(core::addressformat, $input);
+}
+function debugvar($var, $label) {
+	if ($GLOBALS['settings']['debug'])
+		display::debugvar($var, $label);
+}
+function debugmessage($msg, $level = 'error') {
+	if ($GLOBALS['settings']['debug'])
+		display::debugmessage($msg,$level);
 }
 ?>

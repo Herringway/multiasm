@@ -5,7 +5,9 @@ class platform extends platform_base {
 	const extension = 'sfc';
 	
 	function __construct() {
-		Main::get()->addresses += yaml_parse_file('platforms/snes_registers.yml');
+		$GLOBALS['addresses'] += yaml_parse_file('platforms/snes_registers.yml');
+		if (isset($GLOBALS['game']['superfx']) && (Main::get()->game['superfx'] == true))
+			$GLOBALS['addresses'] += yaml_parse_file('platforms/snes_superfx.yml');
 		$this->detectHiROM();
 	}
 	public function map_rom($offset) {
@@ -44,9 +46,10 @@ class platform extends platform_base {
 			throw new Exception('Not RAM');
 	}
 	private function detectHiROM() {
-		rom::get()->seekTo(0x7FDC);
-		$checksum = rom::get()->getShort();
-		$checksumcomplement = rom::get()->getShort();
+		global $rom;
+		$rom->seekTo(0x7FDC);
+		$checksum = $rom->getShort();
+		$checksumcomplement = $rom->getShort();
 		$this->isHiROM = (($checksum^$checksumcomplement) != 0xFFFF);
 	}
 }

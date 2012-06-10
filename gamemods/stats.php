@@ -1,13 +1,10 @@
 <?php
-class stats {
-	private $main;
-	
+class stats extends gamemod {
 	const magic = 'stats';
+	const title = 'Stats';
 	
-	function __construct() {
-		$this->main = Main::get();
-	}
 	public function execute() {
+		global $addresses, $game, $metadata, $platform;
 		$stats = array();
 		$counteddata = 0;
 		$biggest = array('size' => 0, 'offset' => 0);
@@ -15,8 +12,10 @@ class stats {
 		$divisions = array();
 		$routines = array();
 		$biggest = $biggestroutine = array('size' => 0, 'name' => 'undefined');
-		foreach ($this->main->addresses as $k => $entry) {
-			if (!platform::get()->isRom($k))
+		foreach ($addresses as $k => $entry) {
+			if (!is_numeric($k))
+				continue;
+			if (!$platform->isRom($k))
 				continue;
 			if (isset($entry['ignore']) && ($entry['ignore']))
 				continue;
@@ -39,11 +38,9 @@ class stats {
 		$stats['Known_Data'] = $counteddata;
 		$stats['Biggest'] = $biggest;
 		$stats['Biggest_Routine'] = $biggestroutine;
-		if ($counteddata < $this->main->game['size'])
-			$divisions['Unknown'] = $this->main->game['size'] - $counteddata;
+		if ($counteddata < $game['size'])
+			$divisions['Unknown'] = $game['size'] - $counteddata;
 		$stats['Size'] = $divisions;
-		//$this->main->yamldata[] = $stats;
-		$this->main->dataname = 'ROM Stats';
 		return array($stats);
 	}
 }

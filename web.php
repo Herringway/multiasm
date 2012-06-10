@@ -1,22 +1,26 @@
 <?php
-if (isset($_GET['begin'])) {
+if (count($_GET) > 0) {
 	$options = '';
+	if (isset($_GET['coremod']))
+		$options[] = $_GET['coremod'];
+	if (isset($_GET['param']))
+		$options[] = $_GET['param'];
 	foreach ($_GET as $key => $val)
-		if (($key != 'begin') && ($key != 'game')) {
+		if (($key != 'param') && ($key != 'coremod')) {
 			if ($val == 'true')
 				$options[] = $key;
 			else if ($val != null)
 				$options[] = sprintf('%s=%s', $key, $val);
 		}
-	header(sprintf('Location: http://%s/%s/%s/%s',$_SERVER['HTTP_HOST'],$_GET['game'], $_GET['begin'], implode('/', $options)));
+	header(sprintf('Location: http://%s/%s/',$_SERVER['HTTP_HOST'], implode('/', $options)));
 	die();
 }
 require_once 'libs/chromephp/ChromePhp.php';
-class display extends singleton {
-	static $instance;
+class display {
 	private $dwoo;
 	public $mode;
 	private $error = false;
+	public $displaydata = array();
 	
 	function __construct() {
 		require_once 'Dwoo/dwooAutoload.php';
@@ -57,29 +61,30 @@ class display extends singleton {
 	}
 	public function display($data) {
 		global $miscoutput;
-		Main::get()->debugvar($this->mode, 'displaymode');
+		debugvar($this->mode, 'displaymode');
 		header('Content-Type: text/html; charset=UTF-8');
-		$this->dwoo->output('templates/'.$this->mode.'.tpl',
-		array(
-		'routinename' => Main::get()->dataname, 
-		'title' => Main::get()->game['title'], 
-		'nextoffset' => Main::get()->nextoffset, 
-		'game' => Main::get()->gameid, 
-		'data' => $data, 
-		'thisoffset' => Main::get()->offset, 
-		'options' => Main::get()->opts, 
-		'writemode' => Main::get()->godpowers,
-		'offsetname' => Main::get()->decimal_to_function(Main::get()->offset), 
-		'realname' => Main::get()->getOffsetName(Main::get()->offset, true),
-		'realdesc' => Main::get()->realdesc,
-		'size' => isset(Main::get()->opts['size']) ? Main::get()->opts['size'] : '',
+		$this->displaydata['data'] = $data;
+		$this->dwoo->output('templates/'.$this->mode.'.tpl', $this->displaydata);
+		/*
+		array('title' => $GLOBALS['game']['fulltitle'], 'routinename' => $GLOBALS['dataname'])
+		
+		'nextoffset' => $GLOBALS['nextoffset'], 
+		'game' => $GLOBALS['gameid'], 
+		'thisoffset' => $GLOBALS['offset'], 
+		'options' => $GLOBALS['opts'], 
+		'writemode' => $GLOBALS['godpowers'],
+		'offsetname' => decimal_to_function($GLOBALS['offset']), 
+		'realname' => getOffsetName($GLOBALS['offset'], true),
+		'realdesc' => $GLOBALS['realdesc'],
+		'size' => isset($GLOBALS['opts']['size']) ? $GLOBALS['opts']['size'] : '',
 		'addrformat' => core::addressformat, 
-		'menuitems' => Main::get()->menuitems, 
+		'menuitems' => $GLOBALS['menuitems'], 
 		'opcodeformat' => core::opcodeformat,
-		'comments' => Main::get()->comments,
-		'miscdata' => platform::get()->getMiscInfo(),
+		'comments' => $GLOBALS['comments'],
+		'miscdata' => $GLOBALS['platform']->getMiscInfo(),
 		'error' => $this->error,
-		'gamelist' => Main::get()->gamelist));
+		'gamelist' => $GLOBALS['gamelist'])
+		*/
 	}
 	public static function display_error($error) {
 		$dwoo = new Dwoo();
@@ -102,13 +107,13 @@ class display extends singleton {
 		}
 	}
 	public function canWrite() {
-		if (isset(Main::get()->opts['logout'])) {
+		if (isset($GLOBALS['opts']['logout'])) {
 			setcookie('pass', null, -1, '/', $_SERVER['SERVER_NAME']);
 			return false;
-		} else if (isset(Main::get()->opts['login']) && (hash('sha256', Main::get()->opts['login']) === Main::get()->settings['password'])) {
+		} else if (isset($GLOBALS['opts']['login']) && (hash('sha256', Main::get()->opts['login']) === Main::get()->settings['password'])) {
 			setcookie('pass', Main::get()->settings['password'], pow(2,31)-1, '/', $_SERVER['SERVER_NAME']);
 			return true;
-		} else if (isset($_COOKIE['pass']) && ($_COOKIE['pass'] === Main::get()->settings['password']))
+		} else if (isset($_COOKIE['pass']) && ($_COOKIE['pass'] === $GLOBALS['settings']['password']))
 			return true;
 		return false;
 	}

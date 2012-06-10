@@ -7,7 +7,11 @@ class platform extends platform_base {
 			return ($offset-0x8000000)&0x1FFFFFF;
 		throw new Exception("NOT ROM");
 	}
-
+	public function map_ram($offset) {
+		if ($offset < 0x8000000)
+			return $offset;
+		throw new Exception("NOT RAM");
+	}
 
 }
 ?>

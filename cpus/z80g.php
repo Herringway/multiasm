@@ -8,27 +8,28 @@ class core extends core_base {
 			throw new Exception('Error parsing opcodes!');
 	}
 	public function getDefault() {
-		return platform::get()->map_rom(rom::get()->getShort(platform::get()->map_rom(0x102)));
+		return $GLOBALS['platform']->map_rom($GLOBALS['rom']->getShort($GLOBALS['platform']->map_rom(0x102)));
 	}
 	public function execute($offset) {
+		global $rom, $platform, $addresses, $settings;
 		$this->initialoffset = $this->currentoffset = $offset;
-		rom::get()->seekTo(platform::get()->map_rom($offset));
+		$rom->seekTo($platform->map_rom($offset));
 		while (true) {
-			$opcode = rom::get()->getByte();
+			$opcode = $rom->getByte();
 			if ($opcode == 0xCB)
-				$opcode = ($opcode<<8)+rom::get()->getByte();
+				$opcode = ($opcode<<8)+$rom->getByte();
 			$args = array();
 			$val = 0;
-			if (isset(Main::get()->addresses[$this->initialoffset]['labels']) && isset(Main::get()->addresses[$this->initialoffset]['labels'][$this->currentoffset&0xFFFF]))
-				$output[] = array('label' => Main::get()->addresses[$this->initialoffset]['labels'][$this->currentoffset&0xFFFF]);
-			if (!Main::get()->settings['debug'] && !isset($this->opcodes[$opcode]))
+			if (isset($addresses[$this->initialoffset]['labels']) && isset($addresses[$this->initialoffset]['labels'][$this->currentoffset&0xFFFF]))
+				$output[] = array('label' => $addresses[$this->initialoffset]['labels'][$this->currentoffset&0xFFFF]);
+			if (!$settings['debug'] && !isset($this->opcodes[$opcode]))
 				throw new Exception(sprintf('Undefined opcode: 0x%02X', $opcode));
 			else if (!isset($this->opcodes[$opcode])) {
 				$output[] = array('offset' => $this->currentoffset, 'opcode' => $opcode, 'instruction' => 'UNKNOWN');
 				continue;
 			}
 			for ($i = 0; $i < $this->opcodes[$opcode]['Size']; $i++) {
-				$args[$i] = rom::get()->getByte();
+				$args[$i] = $rom->getByte();
 				$val += $args[$i]<<($i*8);
 			}
 			$tmp =  array(
@@ -43,20 +44,20 @@ class core extends core_base {
 					$lookup = $val;
 				else if ($this->opcodes[$opcode]['Fixaddr'] == 2)
 					$lookup = $val;
-				if (isset(Main::get()->addresses[$lookup]['name']))
-					$tmp['name'] = Main::get()->addresses[$lookup]['name'];
+				if (isset($addresses[$lookup]['name']))
+					$tmp['name'] = $addresses[$lookup]['name'];
 					
-				if (isset(Main::get()->addresses[$lookup]['description']))
-					$tmp['comment'] = Main::get()->addresses[$lookup]['description'];
+				if (isset($addresses[$lookup]['description']))
+					$tmp['comment'] = $addresses[$lookup]['description'];
 					
-				if (isset(Main::get()->addresses[$lookup]['arguments']))
-					$tmp['commentarguments'] = Main::get()->addresses[$lookup]['arguments'];
+				if (isset($addresses[$lookup]['arguments']))
+					$tmp['commentarguments'] = $addresses[$lookup]['arguments'];
 			}
 			if (isset($this->opcodes[$opcode]['branch'])) {
 				$val = $this->currentoffset+uint($val, 8)+$this->opcodes[$opcode]['Size']+1;
-				if (isset(Main::get()->addresses[$this->initialoffset]['labels'][$val&0xFFFF])) {
-					$tmp['uri'] = sprintf('%04X#%s', $this->initialoffset, Main::get()->addresses[$this->initialoffset]['labels'][$val&0xFFFF]);
-					$tmp['name'] = Main::get()->addresses[$this->initialoffset]['labels'][$val&0xFFFF];
+				if (isset($addresses[$this->initialoffset]['labels'][$val&0xFFFF])) {
+					$tmp['uri'] = sprintf('%04X#%s', $this->initialoffset, $addresses[$this->initialoffset]['labels'][$val&0xFFFF]);
+					$tmp['name'] = $addresses[$this->initialoffset]['labels'][$val&0xFFFF];
 				}
 				$this->branches[$val] = '';
 			}

@@ -1,0 +1,5 @@
+---
+0x3000:
+  name: FXREG0
+  description: source/destination register
+...
