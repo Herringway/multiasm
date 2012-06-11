@@ -5,7 +5,7 @@ class asm extends gamemod {
 		return getDescription($offset);
 	}
 	public function execute() {
-		global $metadata, $core, $offset, $addresses, $godpowers, $opts;
+		global $metadata, $core, $offset, $addresses, $godpowers, $opts, $realdesc;
 		$output = $core->execute($offset);
 		$metadata['nextoffset'] = decimal_to_function($core->currentoffset);
 			
@@ -18,6 +18,13 @@ class asm extends gamemod {
 		else if (isset($core->branches))
 			foreach ($core->branches as $branch)
 				$metadata['menu'][$branch] = $branch;
+		$metadata['form']['options'][] = array('adminonly' => true, 'label' => 'Name', 'type' => 'text', 'id' => 'name', 'value' => getOffsetName($offset, true));
+		$metadata['form']['options'][] = array('adminonly' => true, 'label' => 'Desc', 'type' => 'text', 'id' => 'desc', 'value' => getDescription($offset, true));
+		$metadata['form']['options'][] = array('adminonly' => true, 'label' => 'Size', 'type' => 'text', 'id' => 'size', 'value' => isset($opts['size']) ? $opts['size'] : '');
+		$metadata['form']['options'][] = array('adminonly' => true, 'label' => 'Write to file', 'type' => 'checkbox', 'id' => 'write', 'value' => 'true');
+		
+		$metadata['form']['options'] = array_merge($metadata['form']['options'], core::getOptions());
+		
 		if (isset($opts['write']) && ($godpowers))
 			$this->saveData();
 		return array($output);

@@ -1,4 +1,16 @@
 <?php
+require 'libs/lightopenid/openid.php';
+$openid = new LightOpenID($_SERVER['SERVER_NAME']);
+if ($openid->validate()) {
+	session_start();
+	$attr = $openid->getAttributes();
+	$splitmail = explode('@', $attr['contact/email']);
+	$_SESSION['username'] = $splitmail[0];
+	$split = explode('=', $openid->identity);
+	$_SESSION['id'] = $split[1];
+	header(sprintf('Location: http://%s/',$_SERVER['SERVER_NAME']));
+	die();
+}
 if (count($_GET) > 0) {
 	$options = '';
 	if (isset($_GET['coremod']))
@@ -10,12 +22,14 @@ if (count($_GET) > 0) {
 			if ($val == 'true')
 				$options[] = $key;
 			else if ($val != null)
-				$options[] = sprintf('%s=%s', $key, $val);
+				$options[] = sprintf('%s=%s', urlencode($key), urlencode($val));
 		}
 	header(sprintf('Location: http://%s/%s/',$_SERVER['HTTP_HOST'], implode('/', $options)));
 	die();
 }
+session_start();
 require_once 'libs/chromephp/ChromePhp.php';
+debugvar($_SESSION, 'session info');
 class display {
 	private $dwoo;
 	public $mode;
@@ -27,7 +41,8 @@ class display {
 		$this->dwoo = new Dwoo();
 	}
 	public function getArgv() {
-		$args = array_slice(explode('/', str_replace($_SERVER['SCRIPT_NAME'], '', urldecode($_SERVER['REQUEST_URI']))),1);
+		$uristring = str_replace($_SERVER['SCRIPT_NAME'], '', $_SERVER['REQUEST_URI']);
+		$args = array_slice(explode('/', $uristring),1);
 		if (strstr($args[count($args)-1], '.') !== FALSE)
 			$args[count($args)-1] = strstr($args[count($args)-1], '.', true);
 		return $args;
@@ -107,13 +122,7 @@ class display {
 		}
 	}
 	public function canWrite() {
-		if (isset($GLOBALS['opts']['logout'])) {
-			setcookie('pass', null, -1, '/', $_SERVER['SERVER_NAME']);
-			return false;
-		} else if (isset($GLOBALS['opts']['login']) && (hash('sha256', Main::get()->opts['login']) === Main::get()->settings['password'])) {
-			setcookie('pass', Main::get()->settings['password'], pow(2,31)-1, '/', $_SERVER['SERVER_NAME']);
-			return true;
-		} else if (isset($_COOKIE['pass']) && ($_COOKIE['pass'] === $GLOBALS['settings']['password']))
+		if (isset($_SESSION['username']) && in_array($_SESSION['username'], $GLOBALS['settings']['admins']))
 			return true;
 		return false;
 	}

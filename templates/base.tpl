@@ -6,11 +6,12 @@
 		{block "header"}{/block}
 	</head>
 <body>
-	{if !$hideright}<div class="right">{if !empty($gamelist)}<select onchange="top.location.href = '/' + this.options[this.selectedIndex].value">{loop $gamelist}<option value="{$_key}"{if $_.title == $} selected="yes"{/if}>{$}</option>{/loop}</select>{/if}
+	{if !$hideright}<div class="right"><div class="loginbox">{if $user}<img style="float: right;" src="{gravatar "$user.username@gmail.com"}" />{$user.username}{if $user.admin}<br />Admin{/if}<br /><a href="/logout">Log out</a>{else}<a href="/login">Login</a>{/if}</div>{if !empty($gamelist)}<select onchange="top.location.href = '/' + this.options[this.selectedIndex].value">{loop $gamelist}<option value="{$_key}"{if $_.title == $} selected="yes"{/if}>{$}</option>{/loop}</select>{/if}
 	{if $nextoffset}<a rel="next" accesskey="n" href="/{$coremod}/{string_format($nextoffset,'%s')}">Next Function</a>{/if}
 	{if $form}{with $form}
-	<form action="/index.php"><input type="hidden" name="coremod" value="{$coremod}">
-	<label>Offset<input type="text" value="{$offsetname}" name="param"></label><br />{block "options"}{/block}
+	<form action="/index.php"><input type="hidden" name="coremod" value="{$_root.coremod}">
+	<label>Offset<input type="text" value="{$_root.offsetname}" name="param"></label><br />{loop $options}{if ($_root.user.admin || !$adminonly)}
+	<label>{$label}<input type="{$type}" value="{$value}" name="{$id}"></label><br />{/if}{/loop}
 	<input type="submit" value="Submit">
 	</form>{/with}{/if}</div>{/if}
 	<div class="menu"><div>

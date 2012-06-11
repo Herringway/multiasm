@@ -115,6 +115,9 @@ abstract class core_base {
 	public static function getRegisters() {
 		return array();
 	}
+	public static function getOptions() {
+		return array();
+	}
 	public function getDefault() {
 	}
 	public function getMisc() {

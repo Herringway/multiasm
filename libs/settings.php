@@ -8,6 +8,7 @@ class settings implements arrayaccess {
 		'password' => 'changeme',
 		'gamemenu' => false,
 		'cache' => true,
+		'admins' => array(),
 		'errorlimit' => 40,
 		'localvar format' => '.%s');
 	public function __construct($filename) {

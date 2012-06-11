@@ -122,10 +122,5 @@ class game {
 		} else 
 			return yaml_parse_file(sprintf('games/%1$s/%1$s.yml', $id), -1);
 	}
-	public static function get() {
-		if (!isset(self::$instance))
-			self::$instance = new self();
-		return self::$instance;
-	}
 }
 ?>

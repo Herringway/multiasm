@@ -16,7 +16,10 @@ class changes extends gamemod {
 					$buff['version'] = $tmp[1];
 					$metadata['menuitems'][$tmp[1]] = substr($tmp[1], 0, 10);
 				} else if ($tmp[0] == 'Author:') {
-					$buff['author'] = implode(' ', array_slice($tmp, 1));
+					$authorstring = implode(' ', array_slice($tmp, 1));
+					$authorsplit = explode('<', $authorstring);
+					$buff['author'] = trim($authorsplit[0]);
+					$buff['authoremail'] = substr($authorsplit[1],0,-1);
 				} else if ($tmp[0] == 'Date:') {
 					$buff['date'] = trim(implode(' ', array_slice($tmp, 1)));
 				} else if (trim($line) != '')

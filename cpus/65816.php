@@ -1,7 +1,6 @@
 <?php
 class core extends core_base {
 	const addressformat = '%06X';
-	const template = 'snes';
 	private $opcodes;
 	private $accum = 16;
 	private $index = 16;
@@ -21,6 +20,11 @@ class core extends core_base {
 		if (isset($GLOBALS['opts']['index']))
 			$output['indexsize'] = 8;
 		return $output;
+	}
+	public static function getOptions() {
+		return array(	array('adminonly' => false, 'label' => 'Initial 8-bit Index', 'type' => 'checkbox', 'id' => 'index', 'value' => 'true'),
+						array('adminonly' => false, 'label' => 'Initial 8-bit Accum', 'type' => 'checkbox', 'id' => 'accum', 'value' => 'true'),
+						array('adminonly' => false, 'label' => 'Simpler Output', 'type' => 'checkbox', 'id' => 'clean', 'value' => 'true'));
 	}
 	private function get_processor_bits($arg) {
 		$output = '';

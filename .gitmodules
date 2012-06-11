@@ -10,3 +10,6 @@
 [submodule "libs/chromephp"]
 	path = libs/chromephp
 	url = https://github.com/ccampbell/chromephp.git
+[submodule "libs/lightopenid"]
+	path = libs/lightopenid
+	url = git://gitorious.org/lightopenid/lightopenid.git
