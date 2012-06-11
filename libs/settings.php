@@ -5,7 +5,6 @@ class settings implements arrayaccess {
 		'gameid' => 'eb',
 		'rompath' => '.',
 		'debug' => false,
-		'password' => 'changeme',
 		'gamemenu' => false,
 		'cache' => true,
 		'admins' => array(),
