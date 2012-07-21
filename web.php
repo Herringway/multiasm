@@ -49,16 +49,16 @@ class display {
 	}
 	public function getFormat() {
 		static $types = array();
-		if (function_exists('yaml_emit'))
-			$types[] = 'yml';
+		if (function_exists('yaml_emit')) {
+			$types['yml'] = 'yml';
+			$types['yaml'] = 'yml';
+		}
 		if (function_exists('json_encode'))
-			$types[] = 'json';
+			$types['json'] = 'json';
 		$v = substr(strrchr($_SERVER['REQUEST_URI'], '.'),1);
-		if ($v == 'yaml')
-			return 'yml';
-		if (!in_array($v, $types))
+		if (!isset($types[$v]))
 			return 'html';
-		return $v;
+		return $types[$v];
 	}
 	public function getOpts($argv) {
 		$opts = array();

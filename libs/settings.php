@@ -1,6 +1,8 @@
 <?php
 class settings implements arrayaccess {
 	private $settings;
+	private $needswrite = false;
+	private $writefile;
 	private $defaults = array(
 		'gameid' => 'eb',
 		'rompath' => '.',
@@ -10,20 +12,31 @@ class settings implements arrayaccess {
 		'admins' => array(),
 		'errorlimit' => 40,
 		'localvar format' => '.%s');
-	public function __construct($filename) {
-		if (!file_exists($filename))
-			file_put_contents($filename, yaml_emit($this->defaults));
-		$this->settings = yaml_parse_file($filename);
+	public function __construct($filename = 'settings.yml') {
+		$this->writefile = $filename;
+		if (!file_exists($filename)) {
+			$this->needswrite = true;
+			$this->settings = $this->defaults;
+		} else
+			$this->settings = yaml_parse_file($filename);
+	}
+	function __destruct() {
+		if ($this->needswrite) 
+			file_put_contents($this->writefile, yaml_emit($this->settings));
 	}
 	public function offsetSet($key, $value) {
 		if (!isset($this->defaults[$key]))
 			throw new Exception(sprintf('Unknown setting: %s!', $key));
+		if ($this->settings[$key] !== $value)
+			$this->needswrite = true;
 		return $this->settings[$key] = $value;
     }
     public function offsetExists($key) {
 		return isset($this->defaults[$key]);
     }
     public function offsetUnset($key) {
+		if (isset($this->settings[$key]))
+			$this->needswrite = true;
 		unset($this->settings[$key]);
     }
     public function offsetGet($key) {

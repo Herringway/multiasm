@@ -5,8 +5,10 @@ class platform extends platform_base {
 	const extension = 'sfc';
 	
 	function __construct() {
+		if (!is_array($GLOBALS['addresses']))
+			$GLOBALS['addresses'] = array();
 		$GLOBALS['addresses'] += yaml_parse_file('platforms/snes_registers.yml');
-		if (isset($GLOBALS['game']['superfx']) && (Main::get()->game['superfx'] == true))
+		if (isset($GLOBALS['game']['superfx']) && ($GLOBALS['game']['superfx'] == true))
 			$GLOBALS['addresses'] += yaml_parse_file('platforms/snes_superfx.yml');
 		$this->detectHiROM();
 	}

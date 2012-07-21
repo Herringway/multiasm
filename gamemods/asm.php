@@ -12,12 +12,11 @@ class asm extends gamemod {
 		if (isset($addresses[$offset]['arguments']))
 			$metadata['comments'] = $addresses[$offset]['arguments'];
 			
-		if (isset($addresses[$offset]['labels']))
-			foreach ($addresses[$offset]['labels'] as $branch)
-				$metadata['menu'][$branch] = $branch;
-		else if (isset($core->branches))
-			foreach ($core->branches as $branch)
-				$metadata['menu'][$branch] = $branch;
+		if (!isset($addresses[$offset]['labels']))
+			$addresses[$offset]['labels'] = $core->branches;
+		foreach ($addresses[$offset]['labels'] as $branch)
+			$metadata['menuitems'][$branch] = $branch;
+			
 		$metadata['form']['options'][] = array('adminonly' => true, 'label' => 'Name', 'type' => 'text', 'id' => 'name', 'value' => getOffsetName($offset, true));
 		$metadata['form']['options'][] = array('adminonly' => true, 'label' => 'Desc', 'type' => 'text', 'id' => 'desc', 'value' => getDescription($offset, true));
 		$metadata['form']['options'][] = array('adminonly' => true, 'label' => 'Size', 'type' => 'text', 'id' => 'size', 'value' => isset($opts['size']) ? $opts['size'] : '');
