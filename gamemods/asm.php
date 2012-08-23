@@ -14,8 +14,9 @@ class asm extends gamemod {
 			
 		if (!isset($addresses[$offset]['labels']))
 			$addresses[$offset]['labels'] = $core->branches;
-		foreach ($addresses[$offset]['labels'] as $branch)
-			$metadata['menuitems'][$branch] = $branch;
+		if (isset($addresses[$offset]['labels']))
+			foreach ($addresses[$offset]['labels'] as $branch)
+				$metadata['menuitems'][$branch] = $branch;
 			
 		$metadata['form']['options'][] = array('adminonly' => true, 'label' => 'Name', 'type' => 'text', 'id' => 'name', 'value' => getOffsetName($offset, true));
 		$metadata['form']['options'][] = array('adminonly' => true, 'label' => 'Desc', 'type' => 'text', 'id' => 'desc', 'value' => getDescription($offset, true));

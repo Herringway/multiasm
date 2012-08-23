@@ -1,8 +1,8 @@
 <?php
-register_shutdown_function('flagrant_system_error');
+//register_shutdown_function('flagrant_system_error');
 date_default_timezone_set('America/Halifax');
-set_exception_handler('print_exception');
-set_error_handler('error_handling');
+//set_exception_handler('print_exception');
+//set_error_handler('error_handling');
 ini_set('yaml.output_width', -1);
 define('BRANCH_LIMIT', 5000);
 function print_exception($exception) {

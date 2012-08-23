@@ -31,14 +31,21 @@ session_start();
 require_once 'libs/chromephp/ChromePhp.php';
 debugvar($_SESSION, 'session info');
 class display {
-	private $dwoo;
+	private $twig;
 	public $mode;
 	private $error = false;
 	public $displaydata = array();
 	
 	function __construct() {
-		require_once 'Dwoo/dwooAutoload.php';
-		$this->dwoo = new Dwoo();
+		global $settings;
+		require_once 'Twig/Autoloader.php';
+		Twig_Autoloader::register();
+		require_once 'peng/twigext.php';
+		header('Content-Type: text/html; charset=utf-8');
+		$loader = new Twig_Loader_Filesystem('templates');
+		$this->twig = new Twig_Environment($loader, array('debug' => $settings['debug']));
+		$this->twig->addExtension(new Twig_Extension_Debug());
+		$this->twig->addExtension(new Penguin_Twig_Extensions());
 	}
 	public function getArgv() {
 		$uristring = str_replace($_SERVER['SCRIPT_NAME'], '', $_SERVER['REQUEST_URI']);
@@ -79,31 +86,13 @@ class display {
 		debugvar($this->mode, 'displaymode');
 		header('Content-Type: text/html; charset=UTF-8');
 		$this->displaydata['data'] = $data;
-		$this->dwoo->output('templates/'.$this->mode.'.tpl', $this->displaydata);
-		/*
-		array('title' => $GLOBALS['game']['fulltitle'], 'routinename' => $GLOBALS['dataname'])
-		
-		'nextoffset' => $GLOBALS['nextoffset'], 
-		'game' => $GLOBALS['gameid'], 
-		'thisoffset' => $GLOBALS['offset'], 
-		'options' => $GLOBALS['opts'], 
-		'writemode' => $GLOBALS['godpowers'],
-		'offsetname' => decimal_to_function($GLOBALS['offset']), 
-		'realname' => getOffsetName($GLOBALS['offset'], true),
-		'realdesc' => $GLOBALS['realdesc'],
-		'size' => isset($GLOBALS['opts']['size']) ? $GLOBALS['opts']['size'] : '',
-		'addrformat' => core::addressformat, 
-		'menuitems' => $GLOBALS['menuitems'], 
-		'opcodeformat' => core::opcodeformat,
-		'comments' => $GLOBALS['comments'],
-		'miscdata' => $GLOBALS['platform']->getMiscInfo(),
-		'error' => $this->error,
-		'gamelist' => $GLOBALS['gamelist'])
-		*/
+		echo $this->twig->render($this->mode.'.tpl', $this->displaydata);
 	}
 	public static function display_error($error) {
-		$dwoo = new Dwoo();
-		$dwoo->output('./templates/error.tpl', array('routinename' => '', 'hideright' => true, 'title' => 'FLAGRANT SYSTEM ERROR', 'nextoffset' => '', 'game' => '', 'data' => $error, 'thisoffset' => '', 'options' => '', 'offsetname' => '', 'addrformat' => '', 'menuitems' => '', 'opcodeformat' => '', 'gamelist' => '', 'error' => 1));
+		$twig = new Twig_Environment(new Twig_Loader_Filesystem('templates'), array('debug' => $settings['debug']));
+		$twig->addExtension(new Twig_Extension_Debug());
+		$twig->addExtension(new Penguin_Twig_Extensions());
+		echo $this->twig->render('error.tpl', array('routinename' => '', 'hideright' => true, 'title' => 'FLAGRANT SYSTEM ERROR', 'nextoffset' => '', 'game' => '', 'data' => $error, 'thisoffset' => '', 'options' => '', 'offsetname' => '', 'addrformat' => '', 'menuitems' => '', 'opcodeformat' => '', 'gamelist' => '', 'error' => 1));
 	}
 	public static function debugvar($var, $label) {
 		static $limit = 100;
