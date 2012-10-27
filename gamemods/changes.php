@@ -10,11 +10,11 @@ class changes extends gamemod {
 				$tmp = explode(' ', $line);
 				if ($tmp[0] == 'commit') {
 					if (isset($buff)) {
+						$metadata['menuitems'][$tmp[1]] = substr($buff['version'], 0, 10).' ('.$buff['author'].')';
 						$output[] = $buff;
 						unset($buff);
 					}
 					$buff['version'] = $tmp[1];
-					$metadata['menuitems'][$tmp[1]] = substr($tmp[1], 0, 10);
 				} else if ($tmp[0] == 'Author:') {
 					$authorstring = implode(' ', array_slice($tmp, 1));
 					$authorsplit = explode('<', $authorstring);
