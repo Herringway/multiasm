@@ -1,4 +1,4 @@
 {%extends "base.tpl"%}
 {%block content%}
-{print_magical_yaml($data.1)}
+{{data[1]|yaml}}
 {%endblock%}

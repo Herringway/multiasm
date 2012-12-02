@@ -1,28 +1,32 @@
 <?php
+require 'platforms/platformFactory.php';
 class game {
 	const magic = '';
 	
 	function __construct() {
-		global $offset, $rom, $settings, $game, $platform, $gameid, $display, $gamelist, $argv, $addresses, $metadata;
+		global $offset, $settings, $game, $platform, $gameid, $display, $gamelist, $argv, $addresses, $metadata;
 		//Determine which game to work with
 		if (isset($argv[0]) && ($argv[0] != null) && file_exists(sprintf('games/%1$s/%1$s.yml', $argv[0])))
 			$gameid = $argv[0];
 		else
 			$gameid = $settings['gameid'];
 			
-		debugmessage("Loading cached data");
+		debugmessage("Loading cached data", 'info');
 		//Load game data. from cache if possible
 		list($game, $GLOBALS['addresses']) = $this->loadYAML($gameid);
 		
 		require_once sprintf('platforms/%s.php', $game['platform']);
+		$platform = platformFactory::getPlatform($game['platform']);
+		$rom = new rawData(null);
+		$rom->open($settings['rompath'].'/'.$gameid.'.'.$platform::extension);
+		$platform->setDataSource($rom, 'rom');
 		
-		if (!file_exists($settings['rompath'].'/'.$gameid.'.'.platform::extension))
-			die ('Could not locate source data!');
-		$game['size'] = filesize($settings['rompath'].'/'.$gameid.'.'.platform::extension);
-		$rom = new rom($settings['rompath'].'/'.$gameid.'.'.platform::extension);
-		$platform = new platform();
+		//if (!file_exists($settings['rompath'].'/'.$gameid.'.'.$platform::extension))
+		//	die ('Could not locate source data!');
+		//$game['size'] = filesize($settings['rompath'].'/'.$gameid.'.'.$platform::extension);
+		//$rom = new rom($settings['rompath'].'/'.$gameid.'.'.$platform::extension);
 		
-		debugmessage("Loading CPU Core");
+		debugmessage("Loading CPU Core", 'info');
 		
 		//Load CPU Class
 		
@@ -31,19 +35,17 @@ class game {
 			$cpu = $this->addresses[$offset]['cpu']; //Override if game data sez so
 		require_once sprintf('cpus/%s.php', $cpu);
 		
-		$GLOBALS['core'] = new core();
+		//$GLOBALS['core'] = new core();
 		
 		$magicvalues = array();
 		$metadata['title'] = gametitle($game);
 		$metadata['coremod'] = $gameid;
-		$metadata['addrformat'] = core::addressformat;
-		$metadata['opcodeformat'] = core::opcodeformat;
 		
-		debugmessage("Loading Modules");
+		debugmessage("Loading Modules", 'info');
 		//Load Modules
-		for ($dir = opendir('./gamemods/'); $file = readdir($dir); ) {
+		for ($dir = opendir('./mods/game/'); $file = readdir($dir); ) {
 			if (substr($file, -4) == ".php") {
-				require_once './gamemods/' . $file;
+				require_once './mods/game/' . $file;
 				$modClass = substr($file,0, -4);
 				if (defined("$modClass::magic")) {
 					$magicvalues[] = $modClass::magic;
@@ -54,20 +56,18 @@ class game {
 			}
 		}
 		asort($metadata['submods']);
-		debugmessage("Determining location");
+		debugmessage("Determining location", 'info');
 		//Where are we?
-		$offset = $GLOBALS['core']->getDefault();
 		if (isset($argv[1]) && ($argv[1] != null)) {
 			if (in_array($argv[1], $magicvalues))
 				$offset = $argv[1];
 			else {
 				$tval = $argv[1];
-				if (is_numeric('0x'.$argv[1]) && $platform->isRom(hexdec($argv[1])))
+				if (is_numeric('0x'.$argv[1]) && $platform->isInRange(hexdec($argv[1])))
 					$offset = $tval = hexdec($argv[1]);
 				if (isset($addresses[$tval]['offset']))
 					$offset = $addresses[$tval]['offset'];
 				debugvar($offset, 'Location');
-				debugvar($platform->map_rom($offset), 'Real Location');
 			}
 		}
 		$metadata['offsetname'] = decimal_to_function($offset);
@@ -77,11 +77,11 @@ class game {
 			$modname = $offset;
 		else
 			foreach ($othermods as $mod)
-				if ($mod::shouldhandle())
+				if ($mod::shouldhandle($offset))
 					$modname = $mod;
 		$module = new $modname();
 		$metadata['description'] = $module->description();
-		$output = $module->execute();
+		$output = $module->execute($offset);
 		$display->mode = $modname;
 		if (method_exists($module, 'getTemplate'))
 			$display->mode = $module->getTemplate();
@@ -90,11 +90,11 @@ class game {
 		$display->displaydata += $metadata;
 		switch($GLOBALS['format']) {
 		case 'yml':
-			if ($this->opts['dump']) {
+			//if ($this->opts['dump']) {
 				header('Content-Type: text/plain; charset=UTF-8');
-			} else {
-				header('Content-Type: text/yaml; charset=UTF-8');
-			}
+			//} else {
+			//	header('Content-Type: text/yaml; charset=UTF-8');
+			//}
 			if ($output !== null)
 				foreach ($output as $yamldoc)
 					echo yaml_emit($yamldoc, YAML_UTF8_ENCODING, YAML_ANY_BREAK);

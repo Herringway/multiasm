@@ -1,23 +1,48 @@
 <?php
+function loadModules($path, $mod) {
+	for ($dir = opendir($path); $file = readdir($dir); ) {
+		if (substr($file, -4) == ".php") {
+			require_once $path . $file;
+			$modClass = substr($file,0, -4);
+			$coremagicvalues[$modClass::magic] = $modClass;
+		}
+	}
+	$mainmod = 'game';
+	if (isset($coremagicvalues[$mod]))
+		$mainmod = $coremagicvalues[$mod];
+	return $mainmod;
+}
+if (count($_GET) > 0) {
+	$options = '';
+	if (isset($_GET['coremod']))
+		$options[] = $_GET['coremod'];
+	if (isset($_GET['param']))
+		$options[] = $_GET['param'];
+	foreach ($_GET as $key => $val)
+		if (($key != 'param') && ($key != 'coremod')) {
+			if ($val == 'true')
+				$options[] = $key;
+			else if ($val != null)
+				$options[] = sprintf('%s=%s', urlencode($key), urlencode($val));
+		}
+	header(sprintf('Location: http://%s/%s/',$_SERVER['HTTP_HOST'], implode('/', $options)));
+	die();
+}
+require_once 'libs/chromephp/ChromePhp.php';
 require_once 'libs/commonfunctions.php';
-require_once 'libs/rom.php';
 require_once 'libs/cache.php';
 require_once 'libs/settings.php';
 
-ini_set('session.use_only_cookies', true);
 ob_start();
 $time_start = microtime(true);
 $settings = new settings('settings.yml');
 
-if (PHP_SAPI === 'cli')
-	require_once 'cli.php';
-else
-	require_once 'web.php';
+require_once 'web.php';
 
 $cache = new cache();
 
 $display = new display();
-$argv = $display->getArgv();
+$argv = getArgv();
 $format = $display->getFormat();
 
 //Some debug output
@@ -28,17 +53,8 @@ $opts = $display->getOpts($argv);
 $metadata['options'] = $opts;
 debugvar($argv, 'args');
 debugvar($opts, 'options');
-$godpowers = $display->canWrite();
-debugvar($godpowers, 'Admin?');
-debugmessage("Loading Core Modules");
+debugmessage("Loading Core Modules", 'info');
 //Load Modules
-for ($dir = opendir('./mods/'); $file = readdir($dir); ) {
-	if (substr($file, -4) == ".php") {
-		require_once './mods/' . $file;
-		$modClass = substr($file,0, -4);
-		$coremagicvalues[$modClass::magic] = $modClass;
-	}
-}
 if ($settings['gamemenu']) {
 	for ($dir = opendir('./games/'); $file = readdir($dir); ) {
 		if (($file[0] != '.') && is_dir('./games/'.$file)) {
@@ -48,13 +64,8 @@ if ($settings['gamemenu']) {
 	}
 	asort($metadata['gamelist']);
 }
-if (isset($_SESSION['username']))
-	$metadata['user'] = array('username' => $_SESSION['username'], 'admin' => $godpowers);
-$mainmod = 'game';
-if (isset($coremagicvalues[$argv[0]]))
-	$mainmod = $coremagicvalues[$argv[0]];
-	
-debugvar($mainmod, 'main module');
+$mainmod = loadModules('./mods/', $argv[0]);
+debugvar($mainmod, 'Main Module');
 new $mainmod();
 
 ?>

@@ -1,15 +1,15 @@
 <?php
 class table extends gamemod {
+	private $offset;
 	private $pointerblocks = array();
-	public function execute() {
-		global $platform, $offset, $addresses,$rom, $metadata;
-		$realoffset = $platform->map_rom($offset);
-		$rom->seekTo($realoffset);
-		$table = $addresses[$offset];
+	public function execute($arg) {
+		$this->offset = $arg;
+		global $addresses, $metadata;
+		$table = $addresses[$this->offset];
 		
-		$entries = $this->read_table($offset, $offset+$table['size'], $table['entries'], true, isset($table['terminator']) ? $table['terminator'] : null);
+		$entries = $this->read_table($this->offset, $this->offset+$table['size'], $table['entries'], true, isset($table['terminator']) ? $table['terminator'] : null);
 		
-		$metadata['nextoffset'] = decimal_to_function($offset);
+		$metadata['nextoffset'] = decimal_to_function($this->offset);
 		$i = 0;
 		foreach ($entries as $k => $item)
 			if (isset($item['Name']) && (trim($item['Name']) !== ''))
@@ -19,10 +19,10 @@ class table extends gamemod {
 		return array($table['entries'], $entries);
 	}
 	public function description() {
-		return getDescription($GLOBALS['offset']);
+		return getDescription($this->offset);
 	}
-	public static function shouldhandle() {
-		global $offset, $addresses;
+	public static function shouldhandle($offset) {
+		global $addresses;
 		if (isset($addresses[$offset]['type']) && ($addresses[$offset]['type'] === 'data') && isset($addresses[$offset]['entries']))
 			return true;
 		return false;

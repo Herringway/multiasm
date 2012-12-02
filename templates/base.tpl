@@ -7,7 +7,7 @@
 		{%block header%}{%endblock%}
 	</head>
 <body>
-	{%if hideright != true%}<div class="right"><div class="loginbox">{%if user%}<img style="float: right;" src="{{"%s@gmail.com"|format(user.username)|gravatar('retro',60)}}" />{{user.username}}{%if user.admin%}<br />Admin{%endif%}<br /><a href="/logout">Log out</a>{%else%}<a href="/login">Login</a>{%endif%}</div>{%if gamelist is not empty%}<select onchange="top.location.href = '/' + this.options[this.selectedIndex].value">{%for gameval,game in gamelist%}<option value="{{gameval}}"{%if title == game%} selected="yes"{%endif%}>{{game}}</option>{%endfor%}</select>{%endif%}
+	{%if hideright != true%}<div class="right">{%if gamelist is not empty%}<select onchange="top.location.href = '/' + this.options[this.selectedIndex].value">{%for gameval,game in gamelist%}<option value="{{gameval}}"{%if title == game%} selected="yes"{%endif%}>{{game}}</option>{%endfor%}</select>{%endif%}
 	{%if nextoffset%}<a rel="next" accesskey="n" href="/{{coremod}}/{{nextoffset}}">Next Function</a>{%endif%}
 	{%if form%}
 	<form action="/index.php"><input type="hidden" name="coremod" value="{{coremod}}">

@@ -1,17 +1,21 @@
 <?php
-class core extends core_base {
-	const addressformat = '%06X';
+class cpu_65816 extends cpucore {
 	private $opcodes;
 	private $accum = 16;
 	private $index = 16;
 	private $DBR;
 	private $PBR;
+	private $state;
+	public static function addressFormat() {
+		return '%06X';
+	}
 	function __construct() {
 		$this->opcodes = yaml_parse_file('./cpus/65816_opcodes.yml');
 		$this->DBR = 0x007E;
 	}
 	public function getDefault() {
-		return $GLOBALS['rom']->getShort($GLOBALS['platform']->map_rom(0x00FFFC));
+		$this->dataSource->seekTo(0xFFFC);
+		return $this->dataSource->getShort();
 	}
 	public function getMisc() {
 		$output = array();
@@ -24,15 +28,7 @@ class core extends core_base {
 	public static function getOptions() {
 		return array(	array('adminonly' => false, 'label' => 'Initial 8-bit Index', 'type' => 'checkbox', 'id' => 'index', 'value' => 'true'),
 						array('adminonly' => false, 'label' => 'Initial 8-bit Accum', 'type' => 'checkbox', 'id' => 'accum', 'value' => 'true'),
-						array('adminonly' => false, 'label' => 'Simpler Output', 'type' => 'checkbox', 'id' => 'clean', 'value' => 'true'));
-	}
-	private function get_processor_bits($arg) {
-		$output = '';
-		$processor_bits = array('Carry', 'Zero', 'IRQ', 'Decimal', '8bit Index', '8bit Accum', 'Overflow', 'Negative');
-		for ($i = 0; $i < 8; $i++)
-			$output .= $arg&pow(2,$i) ? $processor_bits[$i].' ' : '';
-
-		return $output;
+						array('adminonly' => false, 'label' => 'Simpler Output',      'type' => 'checkbox', 'id' => 'clean', 'value' => 'true'));
 	}
 	private function fix_addr($instruction, $val) {
 		if (isset($this->opcodes[$instruction]['addressing']['UseDBR']))
@@ -43,19 +39,30 @@ class core extends core_base {
 			return ($this->PBR << 16) + $val;
 		return $val;
 	}
+	private function getComments($opcode, $offset, $args) {
+		$comments = array();
+		if (($opcode == 0xC2) || ($opcode == 0xE2)) {
+			$bits = '';
+			$processor_bits = array('Carry', 'Zero', 'IRQ', 'Decimal', '8bit Index', '8bit Accum', 'Overflow', 'Negative');
+			for ($i = 0; $i < 8; $i++)
+				$bits .= $args[0]&pow(2,$i) ? $processor_bits[$i].' ' : '';
+			$comments[($opcode == 0xC2 ? 'Unset' : 'Set')] = $bits;
+		}
+		/*if (isset($addresses[$offset]['description']))
+			$comments['Description'] = $addresses[$offset]['description'];
+		if (isset($addresses[$offset]['arguments']))
+			foreach ($addresses[$offset]['arguments'] as $arg=>$val)
+				$comments[$arg] = $val;*/
+		return $comments;
+	}
 	public function execute($offset) {
-		global $rom, $platform, $opts, $addresses, $game, $settings;
-		$realoffset = $platform->map_rom($offset);
+		$this->dataSource->seekTo($offset);
 		$this->PBR = $offset>>16;
 		$farthestbranch = $this->initialoffset = $this->currentoffset = $offset;
 		if (isset($opts['size']))
 			$lengthoverride = $opts['size'];
 		else if (isset($addresses[$this->initialoffset]['size']))
 			$lengthoverride = $addresses[$this->initialoffset]['size'];
-		if (($realoffset < 0) || ($realoffset > $game['size']))
-			throw new Exception (sprintf('Bad offset (%X)!', $realoffset));
-		$rom->seekTo($realoffset);
-		$unknownbranches = 0;
 		$tmpoutput['opcode'] = 0;
 		$index = isset($addresses[$this->initialoffset]['indexsize']) ? $addresses[$this->initialoffset]['indexsize'] : $this->index;
 		$accum = isset($addresses[$this->initialoffset]['accumsize']) ? $addresses[$this->initialoffset]['accumsize'] : $this->accum;
@@ -71,12 +78,11 @@ class core extends core_base {
 				break;
 			if (($this->initialoffset&0xFF0000) != ($this->currentoffset&0xFF0000)) //Cannot cross bank boundaries
 				break;
-			$comments = array();
 			$tmpoutput = array();
 			$tmpoutput['offset'] = $this->currentoffset;
 			if (isset($addresses[$this->initialoffset]['labels']) && isset($addresses[$this->initialoffset]['labels'][$this->currentoffset&0xFFFF]))
 				$output[] = array('label' => $addresses[$this->initialoffset]['labels'][$this->currentoffset&0xFFFF]);
-			$tmpoutput['opcode'] = $rom->getByte();
+			$tmpoutput['opcode'] = $this->dataSource->getByte();
 			$tmpoutput['instruction'] = $this->opcodes[$tmpoutput['opcode']]['mnemonic'];
 			$tmpoutput['args'] = array();
 			
@@ -88,19 +94,18 @@ class core extends core_base {
 				$size = $this->opcodes[$tmpoutput['opcode']]['addressing']['size'];
 			$tmpoutput['value'] = 0;
 			for($j = 0; $j < $size; $j++) {
-				$t = $rom->getByte();
+				$t = $this->dataSource->getByte();
 				$tmpoutput['args'][] = $t;
 				$tmpoutput['value'] += $t<<($j*8);
 			}
 			if (($tmpoutput['opcode'] == 0xC2) | ($tmpoutput['opcode'] == 0xE2)) {
-				$tmpoutput['comments']['Description'] = ($tmpoutput['opcode'] == 0xC2 ? 'Unset: ' : 'Set: ').$this->get_processor_bits($tmpoutput['args'][0]);
 				if ($tmpoutput['args'][0]&0x10)
 					$index = ($tmpoutput['opcode'] == 0xC2) ? 16 : 8;
 				if ($tmpoutput['args'][0]&0x20)
 					$accum = ($tmpoutput['opcode'] == 0xC2) ? 16 : 8;
 			}
-			if (!$settings['debug'] && isset($this->opcodes[$tmpoutput['opcode']]['undefined']))
-				throw new Exception("Undefined opcode encountered. You sure this is assembly?");
+			//if (isset($this->opcodes[$tmpoutput['opcode']]['undefined']))
+			//	throw new Exception("Undefined opcode encountered. You sure this is assembly?");
 				
 			$fulladdr = $this->fix_addr($tmpoutput['opcode'], $tmpoutput['value']);
 			
@@ -109,10 +114,10 @@ class core extends core_base {
 				
 			if ((($this->opcodes[$tmpoutput['opcode']]['addressing']['type'] == 'absolutejmp') || ($this->opcodes[$tmpoutput['opcode']]['addressing']['type'] == 'absolutelongjmp'))) {
 				if (isset($addresses[$fulladdr]['name'])) {
-					if ($platform->isROM($fulladdr))
+					if ($this->dataSource->isInRange($fulladdr, 'rom'))
 						$tmpoutput['uri'] = $addresses[$fulladdr]['name'];
 				} else {
-					if ($platform->isROM($fulladdr))
+					if ($this->dataSource->isInRange($fulladdr, 'rom'))
 						$tmpoutput['uri'] = sprintf('%06X', $fulladdr);
 				}
 			}
@@ -152,11 +157,8 @@ class core extends core_base {
 			}
 			if (isset($this->opcodes[$tmpoutput['opcode']]['addressing']['addrformat']))
 				$tmpoutput['value'] = sprintf($this->opcodes[$tmpoutput['opcode']]['addressing']['addrformat'], $tmpoutput['value'],isset($tmpoutput['args'][0]) ? $tmpoutput['args'][0] : 0,isset($tmpoutput['args'][1]) ? $tmpoutput['args'][1] : 0, isset($tmpoutput['args'][2]) ? $tmpoutput['args'][2] : 0, $this->currentoffset>>16, ($this->currentoffset+uint($tmpoutput['value']+$size+1,$size*8))&0xFFFF);
-			if (isset($addresses[$fulladdr]['description']))
-				$tmpoutput['comments']['Description'] = $addresses[$fulladdr]['description'];
-			if (isset($addresses[$fulladdr]['arguments']))
-				foreach ($addresses[$fulladdr]['arguments'] as $arg=>$val)
-				$tmpoutput['comments'][$arg] = $val;
+
+			$tmpoutput['comments'] = $this->getComments($tmpoutput['opcode'], $fulladdr, $tmpoutput['args']);
 			if (isset($this->opcodes[$tmpoutput['opcode']]['addressing']['printformat']))
 				$tmpoutput['printformat'] = $this->opcodes[$tmpoutput['opcode']]['addressing']['printformat'];
 			$output[] = $tmpoutput;
