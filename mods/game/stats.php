@@ -3,7 +3,7 @@ class stats extends gamemod {
 	const magic = 'stats';
 	const title = 'Stats';
 	
-	public function execute($platform, $arg) {
+	public function execute($arg) {
 		global $addresses, $game, $metadata;
 		$stats = array();
 		$counteddata = 0;
@@ -12,10 +12,10 @@ class stats extends gamemod {
 		$divisions = array();
 		$routines = array();
 		$biggest = $biggestroutine = array('size' => 0, 'name' => 'undefined');
-		foreach ($addresses as $k => $entry) {
+		foreach ($this->addresses as $k => $entry) {
 			if (!is_numeric($k))
 				continue;
-			if ($platform->identifyArea($k) != 'rom')
+			if ($this->platform->identifyArea($k) != 'rom')
 				continue;
 			if (isset($entry['ignore']) && ($entry['ignore']))
 				continue;
@@ -38,7 +38,7 @@ class stats extends gamemod {
 		$stats['Known_Data'] = $counteddata;
 		$stats['Biggest'] = $biggest;
 		$stats['Biggest_Routine'] = $biggestroutine;
-		$stats['miscdata'] = $platform->getMiscInfo();
+		$stats['miscdata'] = $this->platform->getMiscInfo();
 		//if ($counteddata < $game['size'])
 		//	$divisions['Unknown'] = $game['size'] - $counteddata;
 		$stats['Size'] = $divisions;

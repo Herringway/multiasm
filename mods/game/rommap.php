@@ -3,13 +3,13 @@ class rommap extends gamemod {
 	const magic = 'rommap';
 	const title = 'ROM Map';
 	public function execute() {
-		global $addresses, $platform, $opts;
+		$opts = array();
 		$output = array();
 		$groupbuff = array();
-		foreach ($addresses as $addr=>$data) {
+		foreach ($this->addresses as $addr=>$data) {
 			if (!is_numeric($addr))
 				continue;
-			if (($platform->identifyArea($addr) == 'rom') && !isset($data['ignore'])) {
+			if (($this->platform->identifyArea($addr) == 'rom') && !isset($data['ignore'])) {
 				if (!isset($opts['collapse']))
 					$output[] = array('address' => $addr, 'type' => isset($data['type']) ? $data['type'] : 'unknown', 'name' => !empty($data['name']) ? $data['name'] : '', 'description' => isset($data['description']) ? $data['description'] : '', 'size' => isset($data['size']) ? $data['size'] : 0);
 				else {

@@ -134,8 +134,17 @@ function defaultv($format) {
 }
 abstract class gamemod {
 	const title = '';
+	protected $addresses;
+	protected $platform;
+	
 	public function description() {
 		return $this::title;
+	}
+	public function setAddresses($addr) {
+		$this->addresses = $addr;
+	}
+	public function setPlatform($platform) {
+		$this->platform = $platform;
 	}
 }
 abstract class cpucore {

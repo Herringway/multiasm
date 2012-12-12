@@ -4,7 +4,7 @@ class game {
 	const magic = '';
 	
 	function __construct() {
-		global $offset, $settings, $game, $gameid, $display, $gamelist, $argv, $addresses, $metadata;
+		global $settings, $display, $argv, $metadata;
 		//Determine which game to work with
 		if (isset($argv[0]) && ($argv[0] != null) && file_exists(sprintf('games/%1$s/%1$s.yml', $argv[0])))
 			$gameid = $argv[0];
@@ -13,7 +13,7 @@ class game {
 			
 		debugmessage("Loading cached data", 'info');
 		//Load game data. from cache if possible
-		list($game, $GLOBALS['addresses']) = $this->loadYAML($gameid);
+		list($game, $addresses) = $this->loadYAML($gameid);
 		
 		$platform = platformFactory::getPlatform($game['platform']);
 		$rom = new rawData(null);
@@ -64,7 +64,9 @@ class game {
 					$modname = $mod;
 		$module = new $modname();
 		$metadata['description'] = $module->description();
-		$output = $module->execute($platform, $offset);
+		$module->setPlatform($platform);
+		$module->setAddresses($addresses);
+		$output = $module->execute($offset);
 		$display->mode = $modname;
 		if (method_exists($module, 'getTemplate'))
 			$display->mode = $module->getTemplate();
