@@ -1,1347 +1,1347 @@
 
 ---
 0x00:
-  Instruction: NOP
+  Mnemonic: NOP
   Size: 0
 0x01:
-  Instruction: LD
+  Mnemonic: LD
   PrintFormat: BC, %s
   Address: $%04X
   Size: 2
 0x02:
-  Instruction: LD
+  Mnemonic: LD
   Address: (BC), A
   Size: 0
 0x03:
-  Instruction: INC
+  Mnemonic: INC
   Address: BC
   Size: 0
 0x04:
-  Instruction: INC
+  Mnemonic: INC
   Address: B
   Size: 0
 0x05:
-  Instruction: DEC
+  Mnemonic: DEC
   Address: B
   Size: 0
 0x06:
-  Instruction: LD
+  Mnemonic: LD
   PrintFormat: B, %s
   Address: $%02X
   Size: 1
 0x07:
-  Instruction: RLCA
+  Mnemonic: RLCA
   Size: 0
 0x08:
-  Instruction: LD
+  Mnemonic: LD
   PrintFormat: (%s), SP
   Address: $%04X
   Size: 2
 0x09:
-  Instruction: ADD
+  Mnemonic: ADD
   Address: HL, BC
   Size: 0
 0x0a:
-  Instruction: LD
+  Mnemonic: LD
   Address: A, (BC)
   Size: 0
 0x0b:
-  Instruction: DEC
+  Mnemonic: DEC
   Address: BC
   Size: 0
 0x0c:
-  Instruction: INC
+  Mnemonic: INC
   Address: C
   Size: 0
 0x0d:
-  Instruction: DEC
+  Mnemonic: DEC
   Address: C
   Size: 0
 0x0e:
-  Instruction: LD
+  Mnemonic: LD
   Address: C, %02X
   Size: 1
 0x0f:
-  Instruction: RRCA
+  Mnemonic: RRCA
   Size: 0
 0x10:
-  Instruction: NYI
+  Mnemonic: NYI
   Size: 1
 0x11:
-  Instruction: LD
+  Mnemonic: LD
   Address: DE, %04X
   Size: 2
 0x12:
-  Instruction: LD
+  Mnemonic: LD
   Address: (DE), A
   Size: 0
 0x13:
-  Instruction: INC
+  Mnemonic: INC
   Address: DE
   Size: 0
 0x14:
-  Instruction: INC
+  Mnemonic: INC
   Address: D
   Size: 0
 0x15:
-  Instruction: DEC
+  Mnemonic: DEC
   Address: D
   Size: 0
 0x16:
-  Instruction: LD
+  Mnemonic: LD
   Address: D, %02X
   Size: 1
 0x17:
-  Instruction: RLA
+  Mnemonic: RLA
   Size: 0
 0x18:
-  Instruction: JR
+  Mnemonic: JR
   Address: "%02X"
   branch: y
   Size: 1
 0x19:
-  Instruction: ADD
+  Mnemonic: ADD
   Address: HL, DE
   Size: 0
 0x1a:
-  Instruction: LD
+  Mnemonic: LD
   Address: A, (DE)
   Size: 0
 0x1b:
-  Instruction: DEC
+  Mnemonic: DEC
   Address: DE
   Size: 0
 0x1c:
-  Instruction: INC
+  Mnemonic: INC
   Address: E
   Size: 0
 0x1d:
-  Instruction: DEC
+  Mnemonic: DEC
   Address: E
   Size: 0
 0x1e:
-  Instruction: LD
+  Mnemonic: LD
   Address: E, %02X
   Size: 1
 0x1f:
-  Instruction: RRA
+  Mnemonic: RRA
   Size: 0
 0x20:
-  Instruction: JR
+  Mnemonic: JR
   PrintFormat: NZ, %s
   Address: "%02X"
   branch: y
   Size: 1
 0x21:
-  Instruction: LD
+  Mnemonic: LD
   PrintFormat: HL, %s
   Address: $%04X
   Size: 2
 0x22:
-  Instruction: LDI
+  Mnemonic: LDI
   Address: (HL), A
   Size: 0
 0x23:
-  Instruction: INC
+  Mnemonic: INC
   Address: HL
   Size: 0
 0x24:
-  Instruction: INC
+  Mnemonic: INC
   Address: H
   Size: 0
 0x25:
-  Instruction: DEC
+  Mnemonic: DEC
   Address: H
   Size: 0
 0x26:
-  Instruction: LD
+  Mnemonic: LD
   Address: H, %02X
   Size: 1
 0x27:
-  Instruction: DAA
+  Mnemonic: DAA
   Size: 0
 0x28:
-  Instruction: JR
+  Mnemonic: JR
   PrintFormat: Z, %s
   Address: "%02X"
   branch: y
   Size: 1
 0x29:
-  Instruction: ADD
+  Mnemonic: ADD
   Address: HL, HL
   Size: 0
 0x2a:
-  Instruction: LDI
+  Mnemonic: LDI
   Address: A, (HL)
   Size: 0
 0x2b:
-  Instruction: DEC
+  Mnemonic: DEC
   Address: HL
   Size: 0
 0x2c:
-  Instruction: INC
+  Mnemonic: INC
   Address: L
   Size: 0
 0x2d:
-  Instruction: DEC
+  Mnemonic: DEC
   Address: L
   Size: 0
 0x2e:
-  Instruction: LD
+  Mnemonic: LD
   Address: L, %02X
   Size: 1
 0x2f:
-  Instruction: CPL
+  Mnemonic: CPL
   Size: 0
 0x30:
-  Instruction: JR
+  Mnemonic: JR
   PrintFormat: NC, %s
   Address: "%02X"
   branch: y
   Size: 1
 0x31:
-  Instruction: LD
+  Mnemonic: LD
   PrintFormat: SP, %s
   Address: $%04X
   Size: 2
 0x32:
-  Instruction: LDD
+  Mnemonic: LDD
   Address: (HL), A
   Size: 0
 0x33:
-  Instruction: INC
+  Mnemonic: INC
   Address: SP
   Size: 0
 0x34:
-  Instruction: INC
+  Mnemonic: INC
   Address: (HL)
   Size: 0
 0x35:
-  Instruction: DEC
+  Mnemonic: DEC
   Address: (HL)
   Size: 0
 0x36:
-  Instruction: LD
+  Mnemonic: LD
   PrintFormat: (HL), %s
   Address: "%02X"
   Size: 1
 0x37:
-  Instruction: SCF
+  Mnemonic: SCF
   Size: 0
 0x38:
-  Instruction: JR
+  Mnemonic: JR
   PrintFormat: C, %s
   Address: "%02X"
   branch: y
   Size: 1
 0x39:
-  Instruction: ADD
+  Mnemonic: ADD
   Address: HL, SP
   Size: 0
 0x3a:
-  Instruction: LDD
+  Mnemonic: LDD
   Address: A, (HL)
   Size: 0
 0x3b:
-  Instruction: DEC
+  Mnemonic: DEC
   Address: SP
   Size: 0
 0x3c:
-  Instruction: INC
+  Mnemonic: INC
   Address: A
   Size: 0
 0x3d:
-  Instruction: DEC
+  Mnemonic: DEC
   Address: A
   Size: 0
 0x3e:
-  Instruction: LD
+  Mnemonic: LD
   PrintFormat: A, %s
   Address: "#$%02X"
   Size: 1
 0x3f:
-  Instruction: CCF
+  Mnemonic: CCF
   Size: 0
 0x40:
-  Instruction: LD
+  Mnemonic: LD
   Address: B, B
   Size: 0
 0x41:
-  Instruction: LD
+  Mnemonic: LD
   Address: B, C
   Size: 0
 0x42:
-  Instruction: LD
+  Mnemonic: LD
   Address: B, D
   Size: 0
 0x43:
-  Instruction: LD
+  Mnemonic: LD
   Address: B, E
   Size: 0
 0x44:
-  Instruction: LD
+  Mnemonic: LD
   Address: B, H
   Size: 0
 0x45:
-  Instruction: LD
+  Mnemonic: LD
   Address: B, L
   Size: 0
 0x46:
-  Instruction: LD
+  Mnemonic: LD
   Address: B, (HL)
   Size: 0
 0x47:
-  Instruction: LD
+  Mnemonic: LD
   Address: B, A
   Size: 0
 0x48:
-  Instruction: LD
+  Mnemonic: LD
   Address: C, B
   Size: 0
 0x49:
-  Instruction: LD
+  Mnemonic: LD
   Address: C, C
   Size: 0
 0x4a:
-  Instruction: LD
+  Mnemonic: LD
   Address: C, D
   Size: 0
 0x4b:
-  Instruction: LD
+  Mnemonic: LD
   Address: C, E
   Size: 0
 0x4c:
-  Instruction: LD
+  Mnemonic: LD
   Address: C, H
   Size: 0
 0x4d:
-  Instruction: LD
+  Mnemonic: LD
   Address: C, L
   Size: 0
 0x4e:
-  Instruction: LD
+  Mnemonic: LD
   Address: C, (HL)
   Size: 0
 0x4f:
-  Instruction: LD
+  Mnemonic: LD
   Address: C, A
   Size: 0
 0x50:
-  Instruction: LD
+  Mnemonic: LD
   Address: D, B
   Size: 0
 0x51:
-  Instruction: LD
+  Mnemonic: LD
   Address: D, C
   Size: 0
 0x52:
-  Instruction: LD
+  Mnemonic: LD
   Address: D, D
   Size: 0
 0x53:
-  Instruction: LD
+  Mnemonic: LD
   Address: D, E
   Size: 0
 0x54:
-  Instruction: LD
+  Mnemonic: LD
   Address: D, H
   Size: 0
 0x55:
-  Instruction: LD
+  Mnemonic: LD
   Address: D, L
   Size: 0
 0x56:
-  Instruction: LD
+  Mnemonic: LD
   Address: D, (HL)
   Size: 0
 0x57:
-  Instruction: LD
+  Mnemonic: LD
   Address: D, A
   Size: 0
 0x58:
-  Instruction: LD
+  Mnemonic: LD
   Address: E, B
   Size: 0
 0x59:
-  Instruction: LD
+  Mnemonic: LD
   Address: E, C
   Size: 0
 0x5a:
-  Instruction: LD
+  Mnemonic: LD
   Address: E, D
   Size: 0
 0x5b:
-  Instruction: LD
+  Mnemonic: LD
   Address: E, E
   Size: 0
 0x5c:
-  Instruction: LD
+  Mnemonic: LD
   Address: E, H
   Size: 0
 0x5d:
-  Instruction: LD
+  Mnemonic: LD
   Address: E, L
   Size: 0
 0x5e:
-  Instruction: LD
+  Mnemonic: LD
   Address: E, (HL)
   Size: 0
 0x5f:
-  Instruction: LD
+  Mnemonic: LD
   Address: E, A
   Size: 0
 0x60:
-  Instruction: LD
+  Mnemonic: LD
   Address: H, B
   Size: 0
 0x61:
-  Instruction: LD
+  Mnemonic: LD
   Address: H, C
   Size: 0
 0x62:
-  Instruction: LD
+  Mnemonic: LD
   Address: H, D
   Size: 0
 0x63:
-  Instruction: LD
+  Mnemonic: LD
   Address: H, E
   Size: 0
 0x64:
-  Instruction: LD
+  Mnemonic: LD
   Address: H, H
   Size: 0
 0x65:
-  Instruction: LD
+  Mnemonic: LD
   Address: H, L
   Size: 0
 0x66:
-  Instruction: LD
+  Mnemonic: LD
   Address: H, (HL)
   Size: 0
 0x67:
-  Instruction: LD
+  Mnemonic: LD
   Address: H, A
   Size: 0
 0x68:
-  Instruction: LD
+  Mnemonic: LD
   Address: L, B
   Size: 0
 0x69:
-  Instruction: LD
+  Mnemonic: LD
   Address: L, C
   Size: 0
 0x6a:
-  Instruction: LD
+  Mnemonic: LD
   Address: L, D
   Size: 0
 0x6b:
-  Instruction: LD
+  Mnemonic: LD
   Address: L, E
   Size: 0
 0x6c:
-  Instruction: LD
+  Mnemonic: LD
   Address: L, H
   Size: 0
 0x6d:
-  Instruction: LD
+  Mnemonic: LD
   Address: L, L
   Size: 0
 0x6e:
-  Instruction: LD
+  Mnemonic: LD
   Address: L, (HL)
   Size: 0
 0x6f:
-  Instruction: LD
+  Mnemonic: LD
   Address: L, A
   Size: 0
 0x70:
-  Instruction: LD
+  Mnemonic: LD
   Address: (HL), B
   Size: 0
 0x71:
-  Instruction: LD
+  Mnemonic: LD
   Address: (HL), C
   Size: 0
 0x72:
-  Instruction: LD
+  Mnemonic: LD
   Address: (HL), D
   Size: 0
 0x73:
-  Instruction: LD
+  Mnemonic: LD
   Address: (HL), E
   Size: 0
 0x74:
-  Instruction: LD
+  Mnemonic: LD
   Address: (HL), H
   Size: 0
 0x75:
-  Instruction: LD
+  Mnemonic: LD
   Address: (HL), L
   Size: 0
 0x76:
-  Instruction: HALT
+  Mnemonic: HALT
   Size: 0
 0x77:
-  Instruction: LD
+  Mnemonic: LD
   Address: (HL), A
   Size: 0
 0x78:
-  Instruction: LD
+  Mnemonic: LD
   Address: A, B
   Size: 0
 0x79:
-  Instruction: LD
+  Mnemonic: LD
   Address: A, C
   Size: 0
 0x7a:
-  Instruction: LD
+  Mnemonic: LD
   Address: A, D
   Size: 0
 0x7b:
-  Instruction: LD
+  Mnemonic: LD
   Address: A, E
   Size: 0
 0x7c:
-  Instruction: LD
+  Mnemonic: LD
   Address: A, H
   Size: 0
 0x7d:
-  Instruction: LD
+  Mnemonic: LD
   Address: A, L
   Size: 0
 0x7e:
-  Instruction: LD
+  Mnemonic: LD
   Address: A, (HL)
   Size: 0
 0x7f:
-  Instruction: LD
+  Mnemonic: LD
   Address: A, A
   Size: 0
 0x80:
-  Instruction: ADD
+  Mnemonic: ADD
   Address: A, B
   Size: 0
 0x81:
-  Instruction: ADD
+  Mnemonic: ADD
   Address: A, C
   Size: 0
 0x82:
-  Instruction: ADD
+  Mnemonic: ADD
   Address: A, D
   Size: 0
 0x83:
-  Instruction: ADD
+  Mnemonic: ADD
   Address: A, E
   Size: 0
 0x84:
-  Instruction: ADD
+  Mnemonic: ADD
   Address: A, H
   Size: 0
 0x85:
-  Instruction: ADD
+  Mnemonic: ADD
   Address: A, L
   Size: 0
 0x86:
-  Instruction: ADD
+  Mnemonic: ADD
   Address: A, (HL)
   Size: 0
 0x87:
-  Instruction: ADD
+  Mnemonic: ADD
   Address: A, A
   Size: 0
 0x88:
-  Instruction: ADC
+  Mnemonic: ADC
   Address: A, B
   Size: 0
 0x89:
-  Instruction: ADC
+  Mnemonic: ADC
   Address: A, C
   Size: 0
 0x8a:
-  Instruction: ADC
+  Mnemonic: ADC
   Address: A, D
   Size: 0
 0x8b:
-  Instruction: ADC
+  Mnemonic: ADC
   Address: A, E
   Size: 0
 0x8c:
-  Instruction: ADC
+  Mnemonic: ADC
   Address: A, H
   Size: 0
 0x8d:
-  Instruction: ADC
+  Mnemonic: ADC
   Address: A, L
   Size: 0
 0x8e:
-  Instruction: ADC
+  Mnemonic: ADC
   Address: A, (HL)
   Size: 0
 0x8f:
-  Instruction: ADC
+  Mnemonic: ADC
   Address: A, A
   Size: 0
 0x90:
-  Instruction: SUB
+  Mnemonic: SUB
   Address: B
   Size: 0
 0x91:
-  Instruction: SUB
+  Mnemonic: SUB
   Address: C
   Size: 0
 0x92:
-  Instruction: SUB
+  Mnemonic: SUB
   Address: D
   Size: 0
 0x93:
-  Instruction: SUB
+  Mnemonic: SUB
   Address: E
   Size: 0
 0x94:
-  Instruction: SUB
+  Mnemonic: SUB
   Address: H
   Size: 0
 0x95:
-  Instruction: SUB
+  Mnemonic: SUB
   Address: L
   Size: 0
 0x96:
-  Instruction: SUB
+  Mnemonic: SUB
   Address: (HL)
   Size: 0
 0x97:
-  Instruction: SUB
+  Mnemonic: SUB
   Address: A
   Size: 0
 0x98:
-  Instruction: SBC
+  Mnemonic: SBC
   Address: B
   Size: 0
 0x99:
-  Instruction: SBC
+  Mnemonic: SBC
   Address: C
   Size: 0
 0x9a:
-  Instruction: SBC
+  Mnemonic: SBC
   Address: D
   Size: 0
 0x9b:
-  Instruction: SBC
+  Mnemonic: SBC
   Address: E
   Size: 0
 0x9c:
-  Instruction: SBC
+  Mnemonic: SBC
   Address: H
   Size: 0
 0x9d:
-  Instruction: SBC
+  Mnemonic: SBC
   Address: L
   Size: 0
 0x9e:
-  Instruction: SBC
+  Mnemonic: SBC
   Address: (HL)
   Size: 0
 0x9f:
-  Instruction: SBC
+  Mnemonic: SBC
   Address: A
   Size: 0
 0xa0:
-  Instruction: AND
+  Mnemonic: AND
   Address: B
   Size: 0
 0xa1:
-  Instruction: AND
+  Mnemonic: AND
   Address: C
   Size: 0
 0xa2:
-  Instruction: AND
+  Mnemonic: AND
   Address: D
   Size: 0
 0xa3:
-  Instruction: AND
+  Mnemonic: AND
   Address: E
   Size: 0
 0xa4:
-  Instruction: AND
+  Mnemonic: AND
   Address: H
   Size: 0
 0xa5:
-  Instruction: AND
+  Mnemonic: AND
   Address: L
   Size: 0
 0xa6:
-  Instruction: AND
+  Mnemonic: AND
   Address: (HL)
   Size: 0
 0xa7:
-  Instruction: AND
+  Mnemonic: AND
   Address: A
   Size: 0
 0xa8:
-  Instruction: XOR
+  Mnemonic: XOR
   Address: B
   Size: 0
 0xa9:
-  Instruction: XOR
+  Mnemonic: XOR
   Address: C
   Size: 0
 0xaa:
-  Instruction: XOR
+  Mnemonic: XOR
   Address: D
   Size: 0
 0xab:
-  Instruction: XOR
+  Mnemonic: XOR
   Address: E
   Size: 0
 0xac:
-  Instruction: XOR
+  Mnemonic: XOR
   Address: H
   Size: 0
 0xad:
-  Instruction: XOR
+  Mnemonic: XOR
   Address: L
   Size: 0
 0xae:
-  Instruction: XOR
+  Mnemonic: XOR
   Address: (HL)
   Size: 0
 0xaf:
-  Instruction: XOR
+  Mnemonic: XOR
   Address:  A
   Size: 0
 0xb0:
-  Instruction: OR
+  Mnemonic: OR
   Address: B
   Size: 0
 0xb1:
-  Instruction: OR
+  Mnemonic: OR
   Address: C
   Size: 0
 0xb2:
-  Instruction: OR
+  Mnemonic: OR
   Address: D
   Size: 0
 0xb3:
-  Instruction: OR
+  Mnemonic: OR
   Address: E
   Size: 0
 0xb4:
-  Instruction: OR
+  Mnemonic: OR
   Address: H
   Size: 0
 0xb5:
-  Instruction: OR
+  Mnemonic: OR
   Address: L
   Size: 0
 0xb6:
-  Instruction: OR
+  Mnemonic: OR
   Address: (HL)
   Size: 0
 0xb7:
-  Instruction: OR
+  Mnemonic: OR
   Address: A
   Size: 0
 0xb8:
-  Instruction: CP
+  Mnemonic: CP
   Address: B
   Size: 0
 0xb9:
-  Instruction: CP
+  Mnemonic: CP
   Address: C
   Size: 0
 0xba:
-  Instruction: CP
+  Mnemonic: CP
   Address: D
   Size: 0
 0xbb:
-  Instruction: CP
+  Mnemonic: CP
   Address: E
   Size: 0
 0xbc:
-  Instruction: CP
+  Mnemonic: CP
   Address: H
   Size: 0
 0xbd:
-  Instruction: CP
+  Mnemonic: CP
   Address: L
   Size: 0
 0xbe:
-  Instruction: CP
+  Mnemonic: CP
   Address: (HL)
   Size: 0
 0xbf:
-  Instruction: CP
+  Mnemonic: CP
   Address: A
   Size: 0
 0xc0:
-  Instruction: RET
+  Mnemonic: RET
   Size: 0
 0xc1:
-  Instruction: POP
+  Mnemonic: POP
   Address: BC
   Size: 0
 0xc2:
-  Instruction: JP
+  Mnemonic: JP
   PrintFormat: NZ, %s
   Address: $%04X
   Jump: y
   Size: 2
 0xc3:
-  Instruction: JP
+  Mnemonic: JP
   Address: "$%04X"
   Size: 2
   Fixaddr: 4
   Jump: y
 0xc4:
-  Instruction: CALL
+  Mnemonic: CALL
   PrintFormat: NZ, %s
   Address: "$%04X"
   Jump: y
   Size: 2
 0xc5:
-  Instruction: PUSH
+  Mnemonic: PUSH
   Address: BC
   Size: 0
 0xc6:
-  Instruction: ADD
+  Mnemonic: ADD
   Address: 'A, #'
   Size: 0
 0xc7:
-  Instruction: RST
+  Mnemonic: RST
   Address: '00'
   Size: 0
 0xc8:
-  Instruction: RET
+  Mnemonic: RET
   Size: 0
 0xc9:
-  Instruction: RET
+  Mnemonic: RET
   Size: 0
 0xca:
-  Instruction: JP
+  Mnemonic: JP
   PrintFormat: Z, %s
   Address: "$%04X"
   Jump: y
   Size: 2
 0xcc:
-  Instruction: CALL
+  Mnemonic: CALL
   PrintFormat: Z, %s
   Address: $%04X
   Jump: y
   Size: 2
 0xcd:
-  Instruction: CALL
+  Mnemonic: CALL
   Address: "$%04X"
   Fixaddr: 4
   Jump: y
   Size: 2
 0xce:
-  Instruction: ADC
+  Mnemonic: ADC
   PrintFormat: A, %s
   Address: "%02X"
   Size: 1
 0xcf:
-  Instruction: RST
+  Mnemonic: RST
   Address: "08"
   Size: 0
 0xd0:
-  Instruction: RET
+  Mnemonic: RET
   Size: 0
 0xd1:
-  Instruction: POP
+  Mnemonic: POP
   Address: DE
   Size: 0
 0xd2:
-  Instruction: JP
+  Mnemonic: JP
   Address: NC, %04X
   Size: 2
 0xd4:
-  Instruction: CALL
+  Mnemonic: CALL
   Address: NC, %04X
   Size: 2
 0xd5:
-  Instruction: PUSH
+  Mnemonic: PUSH
   Address: DE
   Size: 0
 0xd6:
-  Instruction: SUB
+  Mnemonic: SUB
   Address: '#'
   Size: 0
 0xd7:
-  Instruction: RST
+  Mnemonic: RST
   Address: 10
   Size: 0
 0xd8:
-  Instruction: RET
+  Mnemonic: RET
   Size: 0
 0xd9:
-  Instruction: RETI
+  Mnemonic: RETI
   Size: 0
 0xda:
-  Instruction: JP
+  Mnemonic: JP
   Address: "%04X"
   PrintFormat: C, %s
   Size: 2
 0xdc:
-  Instruction: CALL
+  Mnemonic: CALL
   Address: "%04X"
   PrintFormat: C, %s
   Size: 2
 0xdd:
-  Instruction: DB
+  Mnemonic: DB
   Address: "%02X"
   Size: 1
 0xdf:
-  Instruction: RST
+  Mnemonic: RST
   Address: "18"
   Size: 0
 0xe0:
-  Instruction: LD
+  Mnemonic: LD
   Address: $FF%02X
   PrintFormat: (%s), A
   Size: 1
 0xe1:
-  Instruction: POP
+  Mnemonic: POP
   Address: HL
   Size: 0
 0xe2:
-  Instruction: LD
+  Mnemonic: LD
   Address: ($FF00+C), A
   Size: 0
 0xe5:
-  Instruction: PUSH
+  Mnemonic: PUSH
   Address: HL
   Size: 0
 0xe6:
-  Instruction: AND
+  Mnemonic: AND
   Address: '#'
   Size: 0
 0xe7:
-  Instruction: RST
+  Mnemonic: RST
   Address: "20"
   Size: 0
 0xe8:
-  Instruction: ADD
+  Mnemonic: ADD
   Address: "#$%02X"
   PrintFormat: SP, %s
   Size: 1
 0xe9:
-  Instruction: JP
+  Mnemonic: JP
   Address: (HL)
   Size: 0
 0xea:
-  Instruction: LD
+  Mnemonic: LD
   Address: (%04X), A
   Size: 2
 0xee:
-  Instruction: XOR
+  Mnemonic: XOR
   Address: '#'
   Size: 0
 0xef:
-  Instruction: RST
+  Mnemonic: RST
   Address: "28"
   Size: 0
 0xf0:
-  Instruction: LD
+  Mnemonic: LD
   Address: $FF%02X
   PrintFormat: A, (%s)
   Size: 1
 0xf1:
-  Instruction: POP
+  Mnemonic: POP
   Address: AF
   Size: 0
 0xf2:
-  Instruction: LD
+  Mnemonic: LD
   Address: A, ($FF00+C)
   Size: 0
 0xf3:
-  Instruction: DI
+  Mnemonic: DI
   Size: 0
 0xf5:
-  Instruction: PUSH
+  Mnemonic: PUSH
   Address: AF
   Size: 0
 0xf6:
-  Instruction: OR
+  Mnemonic: OR
   Address: '#'
   Size: 0
 0xf7:
-  Instruction: RST
+  Mnemonic: RST
   Address: "30"
   Size: 0
 0xf8:
-  Instruction: LDHL
+  Mnemonic: LDHL
   Address: "$%02X"
   PrintFormat: SP, %s
   Size: 1
 0xf9:
-  Instruction: LD
+  Mnemonic: LD
   Address: SP, HL
   Size: 0
 0xfa:
-  Instruction: LD
+  Mnemonic: LD
   Address: "%04X"
   PrintFormat: A, (%s)
   Size: 2
 0xfb:
-  Instruction: EI
+  Mnemonic: EI
   Size: 0
 0xfe:
-  Instruction: CP
+  Mnemonic: CP
   Address: "%02X"
   Size: 1
 0xff:
-  Instruction: RST
+  Mnemonic: RST
   Address: "38"
   Size: 0
 0xCB00:
-  Instruction: RLC
+  Mnemonic: RLC
   Address: B
   Size: 1
 0xCB01:
-  Instruction: RLC
+  Mnemonic: RLC
   Address: C
   Size: 1
 0xCB02:
-  Instruction: RLC
+  Mnemonic: RLC
   Address: D
   Size: 1
 0xCB03:
-  Instruction: RLC
+  Mnemonic: RLC
   Address: E
   Size: 1
 0xCB04:
-  Instruction: RLC
+  Mnemonic: RLC
   Address: H
   Size: 1
 0xCB05:
-  Instruction: RLC
+  Mnemonic: RLC
   Address: L
   Size: 1
 0xCB06:
-  Instruction: RLC
+  Mnemonic: RLC
   Address: (HL)
   Size: 1
 0xCB07:
-  Instruction: RLC
+  Mnemonic: RLC
   Address: A
   Size: 1
 0xCB08:
-  Instruction: RRC
+  Mnemonic: RRC
   Address: B
   Size: 1
 0xCB09:
-  Instruction: RRC
+  Mnemonic: RRC
   Address: C
   Size: 1
 0xCB0A:
-  Instruction: RRC
+  Mnemonic: RRC
   Address: D
   Size: 1
 0xCB0B:
-  Instruction: RRC
+  Mnemonic: RRC
   Address: E
   Size: 1
 0xCB0C:
-  Instruction: RRC
+  Mnemonic: RRC
   Address: H
   Size: 1
 0xCB0D:
-  Instruction: RRC
+  Mnemonic: RRC
   Address: L
   Size: 1
 0xCB0E:
-  Instruction: RRC
+  Mnemonic: RRC
   Address: (HL)
   Size: 1
 0xCB0F:
-  Instruction: RRC
+  Mnemonic: RRC
   Address: A
   Size: 1
 0xCB10:
-  Instruction: RL
+  Mnemonic: RL
   Address: B
   Size: 1
 0xCB11:
-  Instruction: RL
+  Mnemonic: RL
   Address: C
   Size: 1
 0xCB12:
-  Instruction: RL
+  Mnemonic: RL
   Address: D
   Size: 1
 0xCB13:
-  Instruction: RL
+  Mnemonic: RL
   Address: E
   Size: 1
 0xCB14:
-  Instruction: RL
+  Mnemonic: RL
   Address: H
   Size: 1
 0xCB15:
-  Instruction: RL
+  Mnemonic: RL
   Address: L
   Size: 1
 0xCB16:
-  Instruction: RL
+  Mnemonic: RL
   Address: (HL)
   Size: 1
 0xCB17:
-  Instruction: RL
+  Mnemonic: RL
   Address: A
   Size: 1
 0xCB18:
-  Instruction: RR
+  Mnemonic: RR
   Address: B
   Size: 1
 0xCB19:
-  Instruction: RR
+  Mnemonic: RR
   Address: C
   Size: 1
 0xCB1A:
-  Instruction: RR
+  Mnemonic: RR
   Address: D
   Size: 1
 0xCB1B:
-  Instruction: RR
+  Mnemonic: RR
   Address: E
   Size: 1
 0xCB1C:
-  Instruction: RR
+  Mnemonic: RR
   Address: H
   Size: 1
 0xCB1D:
-  Instruction: RR
+  Mnemonic: RR
   Address: L
   Size: 1
 0xCB1E:
-  Instruction: RR
+  Mnemonic: RR
   Address: (HL)
   Size: 1
 0xCB1F:
-  Instruction: RR
+  Mnemonic: RR
   Address: A
 0xCB20:
-  Instruction: SLA
+  Mnemonic: SLA
   Address: B
   Size: 1
 0xCB21:
-  Instruction: SLA
+  Mnemonic: SLA
   Address: C
   Size: 1
 0xCB22:
-  Instruction: SLA
+  Mnemonic: SLA
   Address: D
   Size: 1
 0xCB23:
-  Instruction: SLA
+  Mnemonic: SLA
   Address: E
   Size: 1
 0xCB24:
-  Instruction: SLA
+  Mnemonic: SLA
   Address: H
   Size: 1
 0xCB25:
-  Instruction: SLA
+  Mnemonic: SLA
   Address: L
   Size: 1
 0xCB26:
-  Instruction: SLA
+  Mnemonic: SLA
   Address: (HL)
   Size: 1
 0xCB27:
-  Instruction: SLA
+  Mnemonic: SLA
   Address: A
   Size: 1
 0xCB28:
-  Instruction: SRA
+  Mnemonic: SRA
   Address: B
   Size: 1
 0xCB29:
-  Instruction: SRA
+  Mnemonic: SRA
   Address: C
   Size: 1
 0xCB2A:
-  Instruction: SRA
+  Mnemonic: SRA
   Address: D
   Size: 1
 0xCB2B:
-  Instruction: SRA
+  Mnemonic: SRA
   Address: E
   Size: 1
 0xCB2C:
-  Instruction: SRA
+  Mnemonic: SRA
   Address: H
   Size: 1
 0xCB2D:
-  Instruction: SRA
+  Mnemonic: SRA
   Address: L
   Size: 1
 0xCB2E:
-  Instruction: SRA
+  Mnemonic: SRA
   Address: (HL)
   Size: 1
 0xCB2F:
-  Instruction: SRA
+  Mnemonic: SRA
   Address: A
   Size: 1
 0xCB30:
-  Instruction: SWAP
+  Mnemonic: SWAP
   Address: B
   Size: 1
 0xCB31:
-  Instruction: SWAP
+  Mnemonic: SWAP
   Address: C
   Size: 1
 0xCB32:
-  Instruction: SWAP
+  Mnemonic: SWAP
   Address: D
   Size: 1
 0xCB33:
-  Instruction: SWAP
+  Mnemonic: SWAP
   Address: E
   Size: 1
 0xCB34:
-  Instruction: SWAP
+  Mnemonic: SWAP
   Address: H
   Size: 1
 0xCB35:
-  Instruction: SWAP
+  Mnemonic: SWAP
   Address: L
   Size: 1
 0xCB36:
-  Instruction: SWAP
+  Mnemonic: SWAP
   Address: (HL)
   Size: 1
 0xCB37:
-  Instruction: SWAP
+  Mnemonic: SWAP
   Address: A
   Size: 1
 0xCB38:
-  Instruction: SRL
+  Mnemonic: SRL
   Address: B
   Size: 1
 0xCB39:
-  Instruction: SRL
+  Mnemonic: SRL
   Address: C
   Size: 1
 0xCB3A:
-  Instruction: SRL
+  Mnemonic: SRL
   Address: D
   Size: 1
 0xCB3B:
-  Instruction: SRL
+  Mnemonic: SRL
   Address: E
   Size: 1
 0xCB3C:
-  Instruction: SRL
+  Mnemonic: SRL
   Address: H
   Size: 1
 0xCB3D:
-  Instruction: SRL
+  Mnemonic: SRL
   Address: L
   Size: 1
 0xCB3E:
-  Instruction: SRL
+  Mnemonic: SRL
   Address: (HL)
   Size: 1
 0xCB3F:
-  Instruction: SRL
+  Mnemonic: SRL
   Address: A
   Size: 1
 0xCB40:
-  Instruction: BIT
+  Mnemonic: BIT
   Address: B
   Size: 1
 0xCB41:
-  Instruction: BIT
+  Mnemonic: BIT
   Address: C
   Size: 1
 0xCB42:
-  Instruction: BIT
+  Mnemonic: BIT
   Address: D
   Size: 1
 0xCB43:
-  Instruction: BIT
+  Mnemonic: BIT
   Address: E
   Size: 1
 0xCB44:
-  Instruction: BIT
+  Mnemonic: BIT
   Address: H
   Size: 1
 0xCB45:
-  Instruction: BIT
+  Mnemonic: BIT
   Address: L
   Size: 1
 0xCB46:
-  Instruction: BIT
+  Mnemonic: BIT
   Address: (HL)
   Size: 1
 0xCB47:
-  Instruction: BIT
+  Mnemonic: BIT
   Address: A
   Size: 1
 0xCB80:
-  Instruction: RES
+  Mnemonic: RES
   Address: B
   Size: 1
 0xCB81:
-  Instruction: RES
+  Mnemonic: RES
   Address: C
   Size: 1
 0xCB82:
-  Instruction: RES
+  Mnemonic: RES
   Address: D
   Size: 1
 0xCB83:
-  Instruction: RES
+  Mnemonic: RES
   Address: E
   Size: 1
 0xCB84:
-  Instruction: RES
+  Mnemonic: RES
   Address: H
   Size: 1
 0xCB85:
-  Instruction: RES
+  Mnemonic: RES
   Address: L
   Size: 1
 0xCB86:
-  Instruction: RES
+  Mnemonic: RES
   Address: (HL)
   Size: 1
 0xCB87:
-  Instruction: RES
+  Mnemonic: RES
   Address: A
   Size: 1
 0xCBC0:
-  Instruction: SET
+  Mnemonic: SET
   Address: B
   Size: 1
 0xCBC1:
-  Instruction: SET
+  Mnemonic: SET
   Address: C
   Size: 1
 0xCBC2:
-  Instruction: SET
+  Mnemonic: SET
   Address: D
   Size: 1
 0xCBC3:
-  Instruction: SET
+  Mnemonic: SET
   Address: E
   Size: 1
 0xCBC4:
-  Instruction: SET
+  Mnemonic: SET
   Address: H
   Size: 1
 0xCBC5:
-  Instruction: SET
+  Mnemonic: SET
   Address: L
   Size: 1
 0xCBC6:
-  Instruction: SET
+  Mnemonic: SET
   Address: (HL)
   Size: 1
 0xCBC7:
-  Instruction: SET
+  Mnemonic: SET
   Address: A
   Size: 1
 ...

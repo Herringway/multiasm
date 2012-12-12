@@ -3,8 +3,8 @@ class stats extends gamemod {
 	const magic = 'stats';
 	const title = 'Stats';
 	
-	public function execute() {
-		global $addresses, $game, $metadata, $platform;
+	public function execute($platform, $arg) {
+		global $addresses, $game, $metadata;
 		$stats = array();
 		$counteddata = 0;
 		$biggest = array('size' => 0, 'offset' => 0);
@@ -15,7 +15,7 @@ class stats extends gamemod {
 		foreach ($addresses as $k => $entry) {
 			if (!is_numeric($k))
 				continue;
-			if (!$platform->isRom($k))
+			if ($platform->identifyArea($k) != 'rom')
 				continue;
 			if (isset($entry['ignore']) && ($entry['ignore']))
 				continue;
@@ -38,8 +38,9 @@ class stats extends gamemod {
 		$stats['Known_Data'] = $counteddata;
 		$stats['Biggest'] = $biggest;
 		$stats['Biggest_Routine'] = $biggestroutine;
-		if ($counteddata < $game['size'])
-			$divisions['Unknown'] = $game['size'] - $counteddata;
+		$stats['miscdata'] = $platform->getMiscInfo();
+		//if ($counteddata < $game['size'])
+		//	$divisions['Unknown'] = $game['size'] - $counteddata;
 		$stats['Size'] = $divisions;
 		return array($stats);
 	}

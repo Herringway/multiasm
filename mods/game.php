@@ -4,7 +4,7 @@ class game {
 	const magic = '';
 	
 	function __construct() {
-		global $offset, $settings, $game, $platform, $gameid, $display, $gamelist, $argv, $addresses, $metadata;
+		global $offset, $settings, $game, $gameid, $display, $gamelist, $argv, $addresses, $metadata;
 		//Determine which game to work with
 		if (isset($argv[0]) && ($argv[0] != null) && file_exists(sprintf('games/%1$s/%1$s.yml', $argv[0])))
 			$gameid = $argv[0];
@@ -15,27 +15,10 @@ class game {
 		//Load game data. from cache if possible
 		list($game, $GLOBALS['addresses']) = $this->loadYAML($gameid);
 		
-		require_once sprintf('platforms/%s.php', $game['platform']);
 		$platform = platformFactory::getPlatform($game['platform']);
 		$rom = new rawData(null);
 		$rom->open($settings['rompath'].'/'.$gameid.'.'.$platform::extension);
 		$platform->setDataSource($rom, 'rom');
-		
-		//if (!file_exists($settings['rompath'].'/'.$gameid.'.'.$platform::extension))
-		//	die ('Could not locate source data!');
-		//$game['size'] = filesize($settings['rompath'].'/'.$gameid.'.'.$platform::extension);
-		//$rom = new rom($settings['rompath'].'/'.$gameid.'.'.$platform::extension);
-		
-		debugmessage("Loading CPU Core", 'info');
-		
-		//Load CPU Class
-		
-		$cpu = $game['processor'];
-		if (isset($known_addresses[$offset]['cpu'])) 
-			$cpu = $this->addresses[$offset]['cpu']; //Override if game data sez so
-		require_once sprintf('cpus/%s.php', $cpu);
-		
-		//$GLOBALS['core'] = new core();
 		
 		$magicvalues = array();
 		$metadata['title'] = gametitle($game);
@@ -81,7 +64,7 @@ class game {
 					$modname = $mod;
 		$module = new $modname();
 		$metadata['description'] = $module->description();
-		$output = $module->execute($offset);
+		$output = $module->execute($platform, $offset);
 		$display->mode = $modname;
 		if (method_exists($module, 'getTemplate'))
 			$display->mode = $module->getTemplate();

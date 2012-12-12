@@ -65,18 +65,27 @@ abstract class filter implements filter_interface {
 	public function getShort() { return $this->dataSource->getShort(); }
 	public function getLong() { return $this->dataSource->getLong(); }
 	public function seekTo($offset) { $this->dataSource->seekTo($offset); }
+	public function identifyArea($offset) { return 'data'; }
+	public function currentOffset() { return $this->dataSource->currentOffset(); }
 }
 interface seekable {
 	public function seekTo($offset);
 }
 abstract class platform extends filter implements seekable {
-	protected $main;
-	public function getRegisters() {
-		return array();
-	}
+	protected $lastSource;
+	public function setDataSource(filter $source, $where = 'rom') { $this->dataSource[$where] = $source; }
 	public function getMiscInfo() {
 		return array();
 	}
+	public function seekTo($offset) {
+		list($source, $trueOffset) = $this->map($offset);
+		$this->lastSource = $source;
+		$this->dataSource[$source]->seekTo($trueOffset);
+	}
+	public function getByte() { return $this->dataSource[$this->lastSource]->getByte(); }
+	public function getShort() { return $this->dataSource[$this->lastSource]->getShort(); }
+	public function getLong() { return $this->dataSource[$this->lastSource]->getLong();	}
+	public function identifyArea($offset) { return $this->map($offset)[0]; }
 }
 class rawData extends filter {
 	private $handle;
@@ -87,21 +96,19 @@ class rawData extends filter {
 		fseek($this->handle, $curoffset, SEEK_SET);
 		return $offset <= $size;
 	}
-	public function getByte() {
-		return $this->read_varint(1);
-	}
-	public function getShort() {
-		return $this->read_varint(2);
-	}
-	public function getLong() {
-		return $this->read_varint(4);
-	}
-	public function seekTo($offset) {
-		fseek($this->handle, $offset);
-	}
-	public function open($file) {
+	
+	public function getByte() { return $this->read_varint(1); }
+	public function getShort() { return $this->read_varint(2); }
+	public function getLong() { return $this->read_varint(4); }
+	public function getString($size) { return fread($this->handle, $size); }
+	public function seekTo($offset) { fseek($this->handle, $offset); }
+	public function open($file) { 
+		if (!file_exists($file))
+			throw new Exception('Could not find file');
 		$this->handle = fopen($file, 'r');
 	}
+	public function currentOffset() { return ftell($this->handle); }
+	
 	public function read_varint($size, $offset = -1, $endianness = null) {
 		if ($offset > 0)
 			$this->seekTo($offset);
@@ -132,23 +139,23 @@ abstract class gamemod {
 	}
 }
 abstract class cpucore {
-	public $initialoffset;
-	public $currentoffset;
-	public $branches;
-	public $placeholdernames = false;
-	public $dump = false;
+	protected $initialoffset;
+	protected $currentoffset;
+	protected $branches;
 	protected $dataSource;
 	protected $platform;
 	
 	public static function getTemplate() { return 'assembly'; }
 	public static function addressFormat() { return '%X'; }
 	public static function opcodeFormat() { return '%02X'; }
-	public static function getRegisters() { return array(); }
 	public static function getOptions() { return array(); }
+	public function getOpcodes() { return array(); }
+	public function getCurrentOffset() { return $this->currentoffset; }
+	public function getInitialOffset() { return $this->initialoffset; }
+	public function getBranches() { return $this->branches; }
 	public function getDefault() { }
-	public function getMisc() { return array(); }
-	public function setDataSource($src) { $this->dataSource = $src; }
-	public function setPlatform($platform) { $this->platform = $platform; }
+	public function setPlatform($src) { $this->dataSource = $src; $this->platform = $src; }
+	//public function setPlatform($platform) { $this->platform = $platform; }
 }
 function getOffsetName($offset, $onlyifexists = false) {
 	global $addresses;
