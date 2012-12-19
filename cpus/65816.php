@@ -58,8 +58,6 @@ class cpu_65816 extends cpucore {
 				break;
 			$tmpoutput = array();
 			$tmpoutput['offset'] = $this->currentoffset;
-			if (isset($addresses[$this->initialoffset]['labels']) && isset($addresses[$this->initialoffset]['labels'][$this->currentoffset&0xFFFF]))
-				$output[] = array('label' => $addresses[$this->initialoffset]['labels'][$this->currentoffset&0xFFFF]);
 			$tmpoutput['opcode'] = $this->dataSource->getByte();
 			$tmpoutput['args'] = array();
 			
@@ -86,10 +84,11 @@ class cpu_65816 extends cpucore {
 				
 			$fulladdr = $this->fix_addr($tmpoutput['opcode'], $tmpoutput['value']);
 			
+			if (($this->opcodes[$tmpoutput['opcode']]['addressing']['type'] == 'relative') && !in_array($fulladdr + ($this->PBR<<16), $this->branches))
+				$this->branches[] = $fulladdr + ($this->PBR<<16);
+				
 			if ($this->opcodes[$tmpoutput['opcode']]['addressing']['type'] == 'relative')
 				$farthestbranch = max($farthestbranch, $fulladdr + ($this->currentoffset&0xFF0000));
-			//if (isset($this->opcodes[$tmpoutput['opcode']]['addressing']['directpage']) && isset($addresses[$this->initialoffset]['localvars'][$tmpoutput['value']]))
-			//	$tmpoutput['name'] = sprintf($settings['localvar format'], $addresses[$this->initialoffset]['localvars'][$tmpoutput['value']]);
 				
 			if (isset($this->opcodes[$tmpoutput['opcode']]['addressing']['addrformat']))
 				$tmpoutput['value'] = sprintf($this->opcodes[$tmpoutput['opcode']]['addressing']['addrformat'], $tmpoutput['value'],isset($tmpoutput['args'][0]) ? $tmpoutput['args'][0] : 0,isset($tmpoutput['args'][1]) ? $tmpoutput['args'][1] : 0, isset($tmpoutput['args'][2]) ? $tmpoutput['args'][2] : 0, $this->currentoffset>>16, ($this->currentoffset+uint($tmpoutput['value']+$size+1,$size*8))&0xFFFF);
@@ -98,10 +97,7 @@ class cpu_65816 extends cpucore {
 			$this->currentoffset += $size+1;
 			
 		}
-		if (($this->branches === null) && isset($addresses[$this->initialoffset]['labels']))
-			$this->branches = $addresses[$this->initialoffset]['labels'];
 		return $output;
 	}
 }
-
 ?>

@@ -24,7 +24,7 @@ class ebcomp extends filter {
 	public function identifyArea($offset) { return 'comp_data'; }
 	public function currentOffset() { return $this->dataSource->currentOffset(); }
 	private function decomp($offset) {
-		$bpos2 = 0;
+		$bpos = 0;
 		while (($val = $this->dataSource->getByte()) !== 0xFF) {
 			$cmdtype = $val >> 5;
 			$len = ($val & 0x1F) + 1;
@@ -34,7 +34,7 @@ class ebcomp extends filter {
 				$len = (($val & 3) << 8) + $nval + 1;
 			}
 			if ($cmdtype >= 4) {
-				$bpos2 = ($this->dataSource->getByte() << 8) + $this->dataSource->getByte();
+				$bpos = ($this->dataSource->getByte() << 8) + $this->dataSource->getByte();
 			}
 			switch ($cmdtype) {
 			case 0: // uncompressed ?
@@ -61,11 +61,11 @@ class ebcomp extends filter {
 				break;
 			case 4: // use previous data ?
 				for ($i = 0; $i < $len; $i++)
-					$this->buffer[] = $this->buffer[$bpos2++];
+					$this->buffer[] = $this->buffer[$bpos++];
 				break;
 			case 5:
 				while ($len-- !== 0) {
-					$tmp = $this->buffer[$bpos2++];
+					$tmp = $this->buffer[$bpos++];
 					$tmp = (($tmp >> 1) & 0x55) | (($tmp << 1) & 0xAA);
 					$tmp = (($tmp >> 2) & 0x33) | (($tmp << 2) & 0xCC);
 					$tmp = (($tmp >> 4) & 0x0F) | (($tmp << 4) & 0xF0);
@@ -74,7 +74,7 @@ class ebcomp extends filter {
 				break;
 			case 6:
 				while ($len-- !== 0) {
-					$this->buffer[] = $buffer[$bpos2--];
+					$this->buffer[] = $buffer[$bpos--];
 				}
 				break;
 			}

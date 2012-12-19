@@ -72,7 +72,8 @@ interface seekable {
 	public function seekTo($offset);
 }
 abstract class platform extends filter implements seekable {
-	protected $lastSource;
+	protected $lastSource = 'rom';
+	protected $offset = 0;
 	public function setDataSource(filter $source, $where = 'rom') { $this->dataSource[$where] = $source; }
 	public function getMiscInfo() {
 		return array();
@@ -81,10 +82,19 @@ abstract class platform extends filter implements seekable {
 		list($source, $trueOffset) = $this->map($offset);
 		$this->lastSource = $source;
 		$this->dataSource[$source]->seekTo($trueOffset);
+		$this->offset = $offset;
 	}
-	public function getByte() { return $this->dataSource[$this->lastSource]->getByte(); }
-	public function getShort() { return $this->dataSource[$this->lastSource]->getShort(); }
-	public function getLong() { return $this->dataSource[$this->lastSource]->getLong();	}
+	public function isInRange($offset) { return true; }
+	public function getByte() { $this->offset++; return $this->dataSource[$this->lastSource]->getByte(); }
+	public function getShort() { $this->offset += 2; return $this->dataSource[$this->lastSource]->getShort(); }
+	public function getLong() { $this->offset += 4; return $this->dataSource[$this->lastSource]->getLong();	}
+	public function getVar($size) { 
+		$output = 0;
+		for ($i = 0; $i < $size; $i++)
+			$output += ($this->getByte())<<($i*8);
+		return $output;
+	}
+	public function currentOffset() { return $this->offset; }
 	public function identifyArea($offset) { return $this->map($offset)[0]; }
 }
 class rawData extends filter {
@@ -136,21 +146,36 @@ abstract class gamemod {
 	const title = '';
 	protected $addresses;
 	protected $platform;
+	protected $game;
+	protected $metadata = array();
 	
-	public function description() {
+	public function getMetadata() {
+		return $this->metadata;
+	}
+	public function getDescription() {
 		return $this::title;
 	}
 	public function setAddresses($addr) {
 		$this->addresses = $addr;
 	}
-	public function setPlatform($platform) {
+	public function setDataSource($platform) {
 		$this->platform = $platform;
 	}
+	public function setGameData($data) {
+		$this->game = $data;
+	}
+	public function getTemplate() {
+		return $this::title;
+	}
+}
+interface table_data {
+	public function __construct(filter $source, $gamedetails, $values);
+	public function getValue();
 }
 abstract class cpucore {
 	protected $initialoffset;
 	protected $currentoffset;
-	protected $branches;
+	protected $branches = array();
 	protected $dataSource;
 	protected $platform;
 	
@@ -161,7 +186,7 @@ abstract class cpucore {
 	public function getOpcodes() { return array(); }
 	public function getCurrentOffset() { return $this->currentoffset; }
 	public function getInitialOffset() { return $this->initialoffset; }
-	public function getBranches() { return $this->branches; }
+	public function getBranches() { ksort($this->branches); return $this->branches; }
 	public function getDefault() { }
 	public function setPlatform($src) { $this->dataSource = $src; $this->platform = $src; }
 	//public function setPlatform($platform) { $this->platform = $platform; }
@@ -229,12 +254,5 @@ function debugmessage($message, $level = 'error') {
 		else
 			ChromePhp::log($message);
 	}
-}
-function getArgv() {
-	$uristring = str_replace($_SERVER['SCRIPT_NAME'], '', $_SERVER['REQUEST_URI']);
-	$args = array_slice(explode('/', $uristring),1);
-	if (strstr($args[count($args)-1], '.') !== FALSE)
-		$args[count($args)-1] = strstr($args[count($args)-1], '.', true);
-	return $args;
 }
 ?>

@@ -43,5 +43,8 @@ class rommap extends gamemod {
 		}
 		return array($output);
 	}
+	public function getTemplate() {
+		return 'rommap';
+	}
 }
 ?>

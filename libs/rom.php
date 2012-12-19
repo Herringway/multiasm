@@ -49,59 +49,6 @@ class rom {
 		return fread($this->handle, $size);
 	}
 	
-	public function read_string(&$size, $table, $terminator = null, $hideccs = false) {
-		$initialsize = ($size == 0) ? 0x100000 : $size;
-		static $chars = 0;
-		$output = '';
-		for ($i = 0; $i < $initialsize; $i++) {
-			$length = 1;
-			if ($terminator !== null)
-				$size++;
-			$val = $this->getByte();
-			if ($table === 'ascii') {
-				$output .= chr($val);
-			} else if ($table === 'utf16') {
-				$val = $val + ($this->getByte()<<8);
-				$output .= json_decode(sprintf('"\u%04X"',$val));
-			} else {
-				unset($replacement);
-				if (isset($table['replacements'][$val]))
-					$replacement = $table['replacements'][$val];
-				if (isset($table['lengths'][$val])) {
-					$cval = 0;
-					$length = $entry = $table['lengths'][$val];
-					if (is_array($entry))
-						$length = $entry['default'];
-						
-					for ($j = 1; $j < $length; $j++) {
-						$cval = $this->getByte();
-						$val = ($val<<8) + $cval;
-						if (isset($entry[$cval])) {
-							$length = $entry = $entry[$cval];
-							if (is_array($entry))
-								$length = $entry['default'];
-						}
-						if (isset($replacement[$cval]))
-							$replacement = $replacement[$cval];
-						else
-							unset($replacement);
-						$i++;
-						if ($terminator !== null)
-							$size++;
-					}
-				}
-				if (isset($replacement))
-					$output .= $replacement;
-				else if (!$hideccs)
-					$output .= sprintf('[%0'.(max($length,1)*2).'X]',$val);
-			}
-			if ($val === $terminator) {
-				break;
-			}
-		}
-		return $output;
-	}
-	
 	public function read_palette($size) {
 		$palettes = array();
 		$snespal = unpack('v*', fread($this->handle,$size));

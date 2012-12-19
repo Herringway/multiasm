@@ -44,5 +44,8 @@ class stats extends gamemod {
 		$stats['Size'] = $divisions;
 		return array($stats);
 	}
+	public function getTemplate() {
+		return 'stats';
+	}
 }
 ?>

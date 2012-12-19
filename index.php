@@ -41,15 +41,45 @@ require_once 'web.php';
 
 $cache = new cache();
 
-$display = new display();
-$argv = getArgv();
-$format = $display->getFormat();
+require_once 'Twig/Autoloader.php';
+Twig_Autoloader::register();
+require_once 'libs/twigext.php';
+header('Content-Type: text/html; charset=utf-8');
+$loader = new Twig_Loader_Filesystem('templates');
+$twig = new Twig_Environment($loader, array('debug' => $settings['debug']));
+$twig->addExtension(new Twig_Extension_Debug());
+$twig->addExtension(new Penguin_Twig_Extensions());
+
+$uristring = str_replace($_SERVER['SCRIPT_NAME'], '', $_SERVER['REQUEST_URI']);
+$argv = array_slice(explode('/', $uristring),1);
+if (strstr($argv[count($argv)-1], '.') !== FALSE)
+	$argv[count($argv)-1] = strstr($argv[count($argv)-1], '.', true);
+$opts = array();
+for ($i = 2; $i < count($argv); $i++) {
+	$v = explode('=', $argv[$i]);
+	if (isset($v[1]))
+		$opts[$v[0]] = $v[1];
+	else
+		$opts[$v[0]] = true;
+}
+
+$types = array();
+if (function_exists('yaml_emit')) {
+	$types['yml'] = 'yml';
+	$types['yaml'] = 'yml';
+}
+if (function_exists('json_encode'))
+	$types['json'] = 'json';
+$v = substr(strrchr($_SERVER['REQUEST_URI'], '.'),1);
+if (!isset($types[$v]))
+	$format = 'html';
+else
+	$format = $types[$v];
 
 //Some debug output
 debugvar($_SERVER, 'Server');
 
 //Options!
-$opts = $display->getOpts($argv);
 $metadata['options'] = $opts;
 debugvar($argv, 'args');
 debugvar($opts, 'options');
@@ -58,14 +88,39 @@ debugmessage("Loading Core Modules", 'info');
 if ($settings['gamemenu']) {
 	for ($dir = opendir('./games/'); $file = readdir($dir); ) {
 		if (($file[0] != '.') && is_dir('./games/'.$file)) {
-			$game = yaml_parse_file('./games/'.$file.'/'.$file.'.yml', 0);
-			$metadata['gamelist'][$file] = gametitle($game);
+			$gamedetails = yaml_parse_file('./games/'.$file.'/'.$file.'.yml', 0);
+			$metadata['gamelist'][$file] = gametitle($gamedetails);
 		}
 	}
 	asort($metadata['gamelist']);
 }
 $mainmod = loadModules('./mods/', $argv[0]);
 debugvar($mainmod, 'Main Module');
-new $mainmod();
+$mod = new $mainmod();
+$data = $mod->execute($argv);
 
+
+//Display stuff
+$displaydata = array_merge($metadata, $mod->getMetadata());
+switch($GLOBALS['format']) {
+case 'yml':
+		header('Content-Type: text/plain; charset=UTF-8');
+	if ($data !== null)
+		foreach ($data as $yamldoc)
+			if (!isset($yamldoc['hideme']) || !$yamldoc['hideme'])
+				echo yaml_emit($yamldoc, YAML_UTF8_ENCODING, YAML_ANY_BREAK);
+	break;
+case 'json':
+	header('Content-Type: application/json; charset=UTF-8');
+	echo json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_FORCE_OBJECT);
+	break;
+default:
+	debugvar($mod->getMetadata()['template'], 'displaymode');
+	header('Content-Type: text/html; charset=UTF-8');
+	$displaydata['data'] = $data;
+	echo $twig->render($displaydata['template'].'.tpl', $displaydata);
+	break;
+}
+debugvar(sprintf('%f MB', memory_get_usage()/1024/1024), 'Total Memory usage');
+debugvar(sprintf('%f seconds', microtime(true) - $GLOBALS['time_start']), 'Total Execution time');
 ?>

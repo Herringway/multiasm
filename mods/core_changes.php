@@ -2,8 +2,7 @@
 class core_changes {
 	const magic = 'changes';
 	function __construct() {
-		global $display, $metadata, $game;
-		$display->mode = 'changes';
+		global $metadata, $game;
 		if (file_exists('.git')) {
 			exec('git log', $data);
 			foreach ($data as $line) {
@@ -32,8 +31,6 @@ class core_changes {
 		$metadata['routinename'] = 'Changelog';
 		$metadata['offsetname'] = '';
 		$metadata['coremod'] = 'changes';
-		$display->displaydata += $metadata;
-		$display->display($output);
 	}
 }
 ?>
