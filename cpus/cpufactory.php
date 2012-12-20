@@ -1,8 +1,8 @@
 <?php
 class cpuFactory {
+	private static $cpus = array();
 	private function _construct() { }
-	static function getCPU($name) {
-		debugmessage('Getting CPU...'.$name, 'info');
+	public static function getCPU($name) {
 		$name = strtolower($name);
 		$subcpu = '';
 		switch ($name) {
@@ -30,7 +30,11 @@ class cpuFactory {
 		}
 		require_once 'cpus/'.$cpu.'.php';
 		$name = 'cpu_'.$cpu;
-		return new $name($subcpu);
+		if (!isset(self::$cpus[$name])) {
+			debugmessage('Getting new CPU...'.$name, 'info');
+			self::$cpus[$name] = new $name($subcpu);
+		}
+		return self::$cpus[$name];
 	}
 }
 ?>

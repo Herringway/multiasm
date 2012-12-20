@@ -37,8 +37,6 @@ ob_start();
 $time_start = microtime(true);
 $settings = new settings('settings.yml');
 
-require_once 'web.php';
-
 $cache = new cache();
 
 require_once 'Twig/Autoloader.php';

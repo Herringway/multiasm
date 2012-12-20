@@ -18,7 +18,7 @@ function error_handling($errno, $message, $file, $line) {
 		if (!class_exists('display'))
 			printf("%s on %s:%d", $message, $file, $line);
 		else
-			display::debugmessage(sprintf("%s on %s:%d", $message, $file, $line));
+			debugmessage(sprintf("%s on %s:%d", $message, $file, $line));
 	}
 	return true;
 }
@@ -28,11 +28,17 @@ function flagrant_system_error() {
 			if (PHP_SAPI == 'cli')
 				printf('SERIOUS ERROR: %s in %s:%d', $error['message'], $error['file'], $error['line']);
 			else
-				display::display_error(array('trace' => debug_backtrace(), 'message' => $error['message']));
+				display_error(array('trace' => debug_backtrace(), 'message' => $error['message']));
 		}
 	} else {
 		ob_end_flush();
 	}
+}
+function display_error($error) {
+	$twig = new Twig_Environment(new Twig_Loader_Filesystem('templates'), array('debug' => $settings['debug']));
+	$twig->addExtension(new Twig_Extension_Debug());
+	$twig->addExtension(new Penguin_Twig_Extensions());
+	echo $this->twig->render('error.tpl', array('routinename' => '', 'hideright' => true, 'title' => 'FLAGRANT SYSTEM ERROR', 'nextoffset' => '', 'game' => '', 'data' => $error, 'thisoffset' => '', 'options' => '', 'offsetname' => '', 'addrformat' => '', 'menuitems' => '', 'opcodeformat' => '', 'gamelist' => '', 'error' => 1));
 }
 function hexafixer($matches) {
 	//if ($matches[0][0] === ' ')

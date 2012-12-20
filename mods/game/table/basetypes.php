@@ -57,9 +57,11 @@ class table_binint implements table_data {
 class table_pointer implements table_data {
 	private $source;
 	private $details;
+	private $gamedetails;
 	public function __construct(filter $source, $gamedetails, $entry) {
 		$this->source = $source;
 		$this->details = $entry;
+		$this->gamedetails = $gamedetails;
 	}
 	public function getValue() {
 		$base = 0;
@@ -82,7 +84,23 @@ class table_pointer implements table_data {
 				return $this->pointerblocks[$offset] = sprintf('<a href="%s#%3$X">%1$s+%2$d (%3$X)</a>', decimal_to_function($datablock), $offset-$datablock, $offset);
 			return $this->pointerblocks[$offset] = sprintf('<a href="%s">%1$s</a>', decimal_to_function($datablock));
 		}*/
-		return $offset;
+		$cpu = cpuFactory::getCPU($this->gamedetails['processor']);
+		return sprintf($cpu::addressFormat(), $offset);
+	}
+}
+class table_bitfield implements table_data {
+	private $source;
+	private $details;
+	public function __construct(filter $source, $gamedetails, $entry) {
+		$this->source = $source;
+		$this->details = $entry;
+	}
+	public function getValue() {
+		$val = $this->source->getVar($this->details['size']);
+		$output = array();
+		for ($i = 0; $i < count($this->details['bitvalues']); $i++)
+			$output[$this->details['bitvalues'][$i]] = ($val&pow(2,$i)) != 0;
+		return $output;
 	}
 }
 class table_text implements table_data {
@@ -138,8 +156,8 @@ class table_text implements table_data {
 				}
 				if (isset($replacement))
 					$output .= $replacement;
-				else if (!$hideccs)
-					$output .= sprintf('[%0'.(max($length,1)*2).'X]',$val);
+				//else if (!$hideccs)
+				//	$output .= sprintf('[%0'.(max($length,1)*2).'X]',$val);
 			}
 			if (isset($this->details['terminator']) && ($val === $this->details['terminator']))
 				break;
