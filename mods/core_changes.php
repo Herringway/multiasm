@@ -1,15 +1,18 @@
 <?php
 class core_changes {
+	private $metadata;
 	const magic = 'changes';
-	function __construct() {
-		global $metadata, $game;
+	public function getMetadata() {
+		return $this->metadata;
+	}
+	function execute($arg) {
 		if (file_exists('.git')) {
 			exec('git log', $data);
 			foreach ($data as $line) {
 				$tmp = explode(' ', $line);
 				if ($tmp[0] == 'commit') {
 					if (isset($buff)) {
-						$metadata['menuitems'][$tmp[1]] = substr($buff['version'], 0, 10).' ('.$buff['author'].')';
+						$this->metadata['menuitems'][$tmp[1]] = substr($buff['version'], 0, 10).' ('.$buff['author'].')';
 						$output[] = $buff;
 						unset($buff);
 					}
@@ -26,11 +29,13 @@ class core_changes {
 			}
 		} else
 			$output = array('No changelog found');
-		$metadata['title'] = 'MPASM';
-		$metadata['description'] = trim(`cat .git/HEAD |awk -F'/' '{print $3}'`);
-		$metadata['routinename'] = 'Changelog';
-		$metadata['offsetname'] = '';
-		$metadata['coremod'] = 'changes';
+		$this->metadata['title'] = 'MPASM';
+		$this->metadata['description'] = trim(`cat .git/HEAD |awk -F'/' '{print $3}'`);
+		$this->metadata['routinename'] = 'Changelog';
+		$this->metadata['offsetname'] = '';
+		$this->metadata['coremod'] = 'changes';
+		$this->metadata['template'] = 'changes';
+		return $output;
 	}
 }
 ?>

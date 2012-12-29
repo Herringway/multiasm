@@ -3,14 +3,13 @@ class changes extends gamemod {
 	const magic = 'changes';
 	const title = 'Changelog';
 	public function execute() {
-		global $gameid, $metadata;
-		if (file_exists('games/' . $gameid . '/.git')) {
-			exec('git --git-dir ./games/'.$gameid.'/.git log', $data);
+		if (file_exists('games/' . $this->game['id'] . '/.git')) {
+			exec('git --git-dir ./games/'.$this->game['id'].'/.git log', $data);
 			foreach ($data as $line) {
 				$tmp = explode(' ', $line);
 				if ($tmp[0] == 'commit') {
 					if (isset($buff)) {
-						$metadata['menuitems'][$tmp[1]] = substr($buff['version'], 0, 10).' ('.$buff['author'].')';
+						$this->metadata['menuitems'][$tmp[1]] = substr($buff['version'], 0, 10).' ('.$buff['author'].')';
 						$output[] = $buff;
 						unset($buff);
 					}
@@ -28,6 +27,9 @@ class changes extends gamemod {
 		} else
 			$output = array('No changelog found');
 		return $output;
+	}
+	public function getTemplate() {
+		return 'changes';
 	}
 }
 ?>

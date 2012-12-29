@@ -5,26 +5,10 @@
 	A variant of the compression format used in Super Mario World.
 	Has two additional commands: a bit-reversed buffer copy and a byte-reversed buffer copy.
 */
-class ebcomp extends filter {
-	private $buffer;
-	private $location = 0;
-	public function isInRange($offset) { return $this->dataSource->isInRange($offset); }
-	public function getByte() {
-		if (isset($this->buffer[$this->location]))
-			$this->decomp($this->location);
-		return $this->buffer[$this->location++];
-	}
-	public function getShort() {
-		return ($this->getByte()<<8) + $this->getByte();
-	}
-	public function getLong() {
-		return ($this->getLong()<<16) + $this->getLong();
-	}
-	public function seekTo($offset) { $this->location = $offset; }
-	public function identifyArea($offset) { return 'comp_data'; }
-	public function currentOffset() { return $this->dataSource->currentOffset(); }
-	private function decomp($offset) {
+class ebcomp extends compression_filter {
+	protected function decomp($offset) {
 		$bpos = 0;
+		debugmessage('decompressing...');
 		while (($val = $this->dataSource->getByte()) !== 0xFF) {
 			$cmdtype = $val >> 5;
 			$len = ($val & 0x1F) + 1;
@@ -74,7 +58,7 @@ class ebcomp extends filter {
 				break;
 			case 6:
 				while ($len-- !== 0) {
-					$this->buffer[] = $buffer[$bpos--];
+					$this->buffer[] = $this->buffer[$bpos--];
 				}
 				break;
 			}
@@ -82,6 +66,5 @@ class ebcomp extends filter {
 				break;
 		}
 	}
-
 }
 ?>

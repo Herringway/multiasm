@@ -88,6 +88,77 @@ class table_pointer implements table_data {
 		return sprintf($cpu::addressFormat(), $offset);
 	}
 }
+class table_table implements table_data {
+	private $source;
+	private $details;
+	private $offsetkeys;
+	private $gamedetails;
+	public function __construct(filter $source, $gamedetails, $entry) {
+		$this->source = $source;
+		$this->details = $entry;
+		$this->gamedetails = $gamedetails;
+		$this->offsetkeys = false;
+	}
+	public function useOffsetKeys($option) {
+		$this->offsetkeys = $option;
+	}
+	public function getValue() {
+		debugvar($this->details, 'table details');
+		$output = array();
+		$offsets = array();
+		$initialoffset = $this->source->currentOffset();
+		$i = 0;
+		while (true) {
+			$tmpoffset = $this->source->currentOffset();
+			//debugvar($tmpoffset-$initialoffset, 'reloffset');
+			if (isset($this->details['size']) && ($this->details['size'] <= $tmpoffset-$initialoffset))
+				break;
+			//debugvar($this->details['size'], 'size');
+			$tmparray = array();
+			$ints = array();
+			foreach ($this->details['entries'] as $entry) {
+				if ($i++ > 0x10000)
+					break 2;
+				if (isset($entry['size']))
+					$entry['size'] = eval('return '.str_replace(array_keys($ints), $ints, $entry['size']).';');
+				$size = isset($entry['size']) ? $entry['size'] : 0;
+				
+				$value = $this->getSubValue(isset($entry['type']) ? $entry['type'] : 'int', $entry, $size);
+				
+				if (isset($entry['name'])) {
+					if (!isset($entry['type']) || ($entry['type'] == 'int'))
+						$ints[$entry['name']] = $value;
+					$tmparray[$entry['name']] = $value;
+					
+				} else {
+					$tmparray[] = $value;
+				}
+				if (isset($this->details['terminator']) && ($value == $this->details['terminator'])) {
+					debugvar($tmparray[$entry['name']], 'val');
+					debugvar($this->details['terminator'], 'terminator');
+					break 2;
+				}
+			}
+			if ($this->offsetkeys)
+				$output[$tmpoffset] = $tmparray;
+			else
+				$output[] = $tmparray;
+		}
+		return $output;
+	}
+	private function getSubValue($type, $entry, $size) {
+		if (file_exists($type.'.php'))
+			require_once 'mods/game/table/'.$type.'.php';
+		if (!class_exists('table_'.$type))
+			throw new Exception($type.' is unimplemented!');
+		$type = 'table_'.$type;
+		$valmod = new $type($this->source, $this->gamedetails, $entry);
+		if ($valmod instanceof table_data) { }
+		else
+			throw new Exception('Potential class name conflict');
+		return $valmod->getValue();
+	}
+}
 class table_bitfield implements table_data {
 	private $source;
 	private $details;
@@ -112,7 +183,8 @@ class table_text implements table_data {
 		$this->gamedetails = $gamedetails;
 	}
 	public function getValue() {
-		$initialsize = ($this->details['size'] == 0) ? 0x100000 : $this->details['size'];
+		$initialsize = (!isset($this->details['size']) || $this->details['size'] == 0) ? 0x100000 : $this->details['size'];
+		$hideccs = false;
 		static $chars = 0;
 		if (!isset($this->details['charset']))
 			$charset = $this->gamedetails['defaulttext'];
@@ -156,8 +228,8 @@ class table_text implements table_data {
 				}
 				if (isset($replacement))
 					$output .= $replacement;
-				//else if (!$hideccs)
-				//	$output .= sprintf('[%0'.(max($length,1)*2).'X]',$val);
+				else if (!$hideccs)
+					$output .= sprintf('[%0'.(max($length,1)*2).'X]',$val);
 			}
 			if (isset($this->details['terminator']) && ($val === $this->details['terminator']))
 				break;
@@ -166,4 +238,49 @@ class table_text implements table_data {
 	}
 }
 
+class table_tile implements table_data {
+	private $source;
+	private $details;
+	public function __construct(filter $source, $gamedetails, $entry) {
+		$this->source = $source;
+		$this->details = $entry;
+		$this->gamedetails = $gamedetails;
+	}
+	public function getValue() {
+		$data = $this->source->getString($this->details['size']);
+		$output = array();
+		//debugmessage('data:');
+		$colours = array(0, 0, 0x3933FF, 0xDCFFFF, 0x330086,  0xBF7300,  0x00CFFF, 0x330086,  0xEFEBB4, 0x930000, 0x51FF00, 0xFFAC00, 0xBC11A4, 0x63CF63, 0x598CF2, 0xB6009F, 0x83DC00, 0xB8DE3A);
+		/*if (false) {
+			$img = imagecreate(8,8);
+			for ($i = 0; $i < pow(2,$this->details['bpp']); $i++)
+				$colour[] = imagecolorallocate($img, $colours[$i]&0xFF, ($colours[$i]>>8)&0xFF, $colours[$i]>>16);
+			ImageColorTransparent($img, $colour[0]);
+			for ($x = 0; $x < 8; $x++) {
+				for ($y = 0; $y < 8; $y++) {
+					$tile[$x][$y] = 0;
+					for ($bitplane = 0; $bitplane < $this->details['bpp']; $bitplane++)
+						$tile[$x][$y] += ((ord($data[$y*2+(floor($bitplane/2)*16+($bitplane&1))])    & (1 << 7-$x)) >> 7-$x) << $bitplane;
+					if ($tile[$x][$y] != 0)
+						imagesetpixel($img,$x,$y,$colour[$tile[$x][$y]]);
+				}
+			}
+			ob_start();
+			imagepng($img);
+			$image = ob_get_contents();
+			ob_end_clean();
+			$output = sprintf('<img src="data:image/png;base64,%s"/>', base64_encode($image));
+		} else { 
+				}
+		}*/
+			/*for ($x = 0; $x < 8; $x++)
+				for ($y = 0; $y < 8; $y++) {
+					$tile = 0;
+					for ($bitplane = 0; $bitplane < $this->details['bpp']; $bitplane++) { }
+						//$tile += ((ord($data[$y*2+(floor($bitplane/2)*16+($bitplane&1))]) & (1 << 7-$x)) >> 7-$x) << $bitplane;
+					$output[$x][$y] = $tile;
+				}*/
+		return $output;
+	}
+}
 ?>

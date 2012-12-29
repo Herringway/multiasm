@@ -19,8 +19,6 @@ class snes extends platform {
 				return array('ram', $offset-0x7E0000);
 			if ($offset&0x400000)
 				return array('rom', ($offset&0x3FFFFF));
-			if (($offset < 0x400000) && (($offset&0xFFFF) >= 0x2000) && (($offset & 0xFFFF) < 0x8000))
-				return array('registers', ($offset&0xFFFF) - 0x2000);
 			$this->detectHiROM();
 			if ($this->isHiROM) {
 				if (($offset >= 0x300000) && ($offset < 0x3F0000) && (($offset&0xFFFF) >= 0x6000) && (($offset&0xFFFF) < 0x7FFF))
@@ -30,6 +28,8 @@ class snes extends platform {
 				else
 					throw new Exception('Unknown: '.dechex($offset));
 			} else {
+				if (($offset < 0x400000) && (($offset&0xFFFF) >= 0x2000) && (($offset & 0xFFFF) < 0x8000))
+					return array('registers', ($offset&0xFFFF) - 0x2000);
 				if (($offset < 0x400000) && ($offset&0xFFFF < 0x2000))
 					return array('ram', $offset & 0xFFFF);
 				else if (!($offset&0x8000))
@@ -52,6 +52,7 @@ class snes extends platform {
 	public function isInRange($offset) {
 		try {
 			list($source, $trueOffset) = $this->map($offset);
+			debugvar($trueOffset, 'true offset');
 			return $this->dataSource[$source]->isInRange($trueOffset);
 		} catch (Exception $e) {
 		}

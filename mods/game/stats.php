@@ -4,7 +4,6 @@ class stats extends gamemod {
 	const title = 'Stats';
 	
 	public function execute($arg) {
-		global $addresses, $game, $metadata;
 		$stats = array();
 		$counteddata = 0;
 		$biggest = array('size' => 0, 'offset' => 0);

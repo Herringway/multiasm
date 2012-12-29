@@ -1,6 +1,6 @@
 <?php
 function hexview($data,$wrap = 16, $baseaddress = 0, $charset = null) {
-	$output = '        ';
+	$output = '         ';
 	for ($i = 0; $i < $wrap; $i++)
 		$output .= sprintf('%02X ', ($baseaddress+$i)%$wrap);
 	$output .= sprintf('<hr>%06X: ', $baseaddress);

@@ -4,23 +4,23 @@ class asm extends gamemod {
 	private $cpucore;
 	private $offset;
 	
-	public function getDescription() {
-		return getDescription($this->offset);
-	}
-	private function initCPU($proc) {
+	public function getTemplate() {
 		if (!isset($this->cpucore)) {
-			$this->cpucore = cpuFactory::getCPU($proc);
-			$this->cpucore->setPlatform($this->platform);
+			if (!isset($this->game))
+				throw new Exception('cannot get template without loaded game data');
+			$this->initCPU($this->game['processor']);
 		}
+		return $this->cpucore->getTemplate();
 	}
 	public function execute($arg) {
 		$this->offset = $arg;
 		$this->initCPU($this->game['processor']);
 		if ($this->offset == -1)
 			$this->offset = $this->cpucore->getDefault();
+		if (isset($this->addresses[$this->offset]['size']))
+			$this->cpucore->setBreakPoint($this->offset + $this->addresses[$this->offset]['size']);
 		$output = $this->cpucore->execute($this->offset);
 		$this->metadata['opcodes'] = $this->cpucore->getOpcodes();
-		$this->metadata['nextoffset'] = decimal_to_function($this->cpucore->getCurrentOffset());
 		
 		$this->metadata['addrformat'] = $this->cpucore->addressFormat();
 		$this->metadata['opcodeformat'] = $this->cpucore->opcodeFormat();
@@ -41,16 +41,13 @@ class asm extends gamemod {
 			}
 			$this->metadata['menuitems'][$label] = $label;
 		}
-		
 		return array($output);
 	}
-	public function getTemplate() {
+	private function initCPU($proc) {
 		if (!isset($this->cpucore)) {
-			if (!isset($this->game))
-				throw new Exception('cannot get template without loaded game data');
-			$this->initCPU($this->game['processor']);
+			$this->cpucore = cpuFactory::getCPU($proc);
+			$this->cpucore->setPlatform($this->source);
 		}
-		return $this->cpucore->getTemplate();
 	}
 }
 ?>

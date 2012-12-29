@@ -6,7 +6,6 @@ date_default_timezone_set('America/Halifax');
 ini_set('yaml.output_width', -1);
 define('BRANCH_LIMIT', 5000);
 function print_exception($exception) {
-	global $display;
 	$display->mode = 'error';
 	$display->seterror();
 	$display->display(array('trace' => $exception->getTrace(), 'message' => $exception->getMessage()));
@@ -65,14 +64,19 @@ interface filter_interface {
 }
 abstract class filter implements filter_interface {
 	protected $dataSource;
+	protected $options;
+	public function __construct(filter $source = null) { $this->dataSource = $source; }
 	public function setDataSource(filter $source) { $this->dataSource = $source; }
 	public function isInRange($offset) { return $this->dataSource->isInRange($offset); }
 	public function getByte() { return $this->dataSource->getByte(); }
 	public function getShort() { return $this->dataSource->getShort(); }
 	public function getLong() { return $this->dataSource->getLong(); }
+	public function getString($size) { return $this->dataSource->getString($size); }
+	public function getVar($size) { return $this->dataSource->getVar($size); }
 	public function seekTo($offset) { $this->dataSource->seekTo($offset); }
 	public function identifyArea($offset) { return 'data'; }
 	public function currentOffset() { return $this->dataSource->currentOffset(); }
+	public function setOption($option, $value) { $this->options[$option] = $value; }
 }
 interface seekable {
 	public function seekTo($offset);
@@ -86,6 +90,7 @@ abstract class platform extends filter implements seekable {
 	}
 	public function seekTo($offset) {
 		list($source, $trueOffset) = $this->map($offset);
+		debugvar($source, 'seeking into:');
 		$this->lastSource = $source;
 		$this->dataSource[$source]->seekTo($trueOffset);
 		$this->offset = $offset;
@@ -94,6 +99,7 @@ abstract class platform extends filter implements seekable {
 	public function getByte() { $this->offset++; return $this->dataSource[$this->lastSource]->getByte(); }
 	public function getShort() { $this->offset += 2; return $this->dataSource[$this->lastSource]->getShort(); }
 	public function getLong() { $this->offset += 4; return $this->dataSource[$this->lastSource]->getLong();	}
+	public function getString($size) { $this->offset += $size; return $this->dataSource[$this->lastSource]->getString($size);	}
 	public function getVar($size) { 
 		$output = 0;
 		for ($i = 0; $i < $size; $i++)
@@ -103,19 +109,53 @@ abstract class platform extends filter implements seekable {
 	public function currentOffset() { return $this->offset; }
 	public function identifyArea($offset) { return $this->map($offset)[0]; }
 }
+abstract class compression_filter extends filter {
+	protected $buffer;
+	protected $location = 0;
+	public function isInRange($offset) { return $this->dataSource->isInRange($offset); }
+	public function getByte() {
+		if (!isset($this->buffer[$this->location]))
+			$this->decomp($this->location);
+		return $this->buffer[$this->location++];
+	}
+	public function getShort() {
+		return ($this->getByte()<<8) + $this->getByte();
+	}
+	public function getLong() {
+		return ($this->getLong()<<16) + $this->getLong();
+	}
+	public function getString($size) {
+		if (!isset($this->buffer[$this->location+$size]))
+			$this->decomp($this->location+$size);
+		$output = '';
+		for ($i = 0; $i < $size; $i++)
+			$output .= chr($this->buffer[$this->location+$i]);
+		$this->location += $size;
+		return $output;
+	}
+	public function seekTo($offset) { $this->location = $offset; }
+	public function identifyArea($offset) { return 'comp_data'; }
+	public function currentOffset() { return $this->location; }
+	protected function decomp($offset) { }
+}
 class rawData extends filter {
 	private $handle;
+	private $size;
 	public function isInRange($offset) {
-		$curoffset = ftell($this->handle);
-		fseek($this->handle, 0, SEEK_END);
-		$size = ftell($this->handle);
-		fseek($this->handle, $curoffset, SEEK_SET);
-		return $offset <= $size;
+		$this->getFileSize();
+		return $offset <= $this->size;
 	}
-	
-	public function getByte() { return $this->read_varint(1); }
-	public function getShort() { return $this->read_varint(2); }
-	public function getLong() { return $this->read_varint(4); }
+	private function getFileSize() {
+		if (!isset($this->size)) {
+			$curoffset = ftell($this->handle);
+			fseek($this->handle, 0, SEEK_END);
+			$this->size = ftell($this->handle);
+			fseek($this->handle, $curoffset, SEEK_SET);
+		}
+	}
+	public function getByte() { return $this->getVar(1); }
+	public function getShort() { return $this->getVar(2); }
+	public function getLong() { return $this->getVar(4); }
 	public function getString($size) { return fread($this->handle, $size); }
 	public function seekTo($offset) { fseek($this->handle, $offset); }
 	public function open($file) { 
@@ -125,9 +165,7 @@ class rawData extends filter {
 	}
 	public function currentOffset() { return ftell($this->handle); }
 	
-	public function read_varint($size, $offset = -1, $endianness = null) {
-		if ($offset > 0)
-			$this->seekTo($offset);
+	public function getVar($size, $endianness = null) {
 		$output = 0;
 		if ($endianness == 'l')
 			for ($i = 0; $i < $size; $i++)
@@ -151,7 +189,7 @@ function defaultv($format) {
 abstract class gamemod {
 	const title = '';
 	protected $addresses;
-	protected $platform;
+	protected $source;
 	protected $game;
 	protected $metadata = array();
 	
@@ -159,13 +197,13 @@ abstract class gamemod {
 		return $this->metadata;
 	}
 	public function getDescription() {
-		return $this::title;
+		return '';
 	}
 	public function setAddresses($addr) {
 		$this->addresses = $addr;
 	}
 	public function setDataSource($platform) {
-		$this->platform = $platform;
+		$this->source = $platform;
 	}
 	public function setGameData($data) {
 		$this->game = $data;
@@ -184,6 +222,7 @@ abstract class cpucore {
 	protected $branches = array();
 	protected $dataSource;
 	protected $platform;
+	protected $breakpoints = array();
 	
 	public static function getTemplate() { return 'assembly'; }
 	public static function addressFormat() { return '%X'; }
@@ -195,24 +234,35 @@ abstract class cpucore {
 	public function getBranches() { ksort($this->branches); return $this->branches; }
 	public function getDefault() { }
 	public function setPlatform($src) { $this->dataSource = $src; $this->platform = $src; }
+	public function setBreakPoint($addr) { $this->breakpoints[] = $addr; }
+	protected function initializeProcessor() { }
+	protected function setup($addr) { }
+	protected function executeInstruction($instruction) { }
+	public function execute($addr) {
+		$this->initializeProcessor();
+		$this->dataSource->seekTo($addr);
+		$this->initialoffset = $this->currentoffset = $addr;
+		$this->setup($addr);
+		$output = array();
+		while (true) {
+			foreach ($this->breakpoints as $breakpoint)
+				if ($breakpoint <= $this->currentoffset) {
+					debugmessage('Breaking at breakpoint');
+					break 2;
+				}
+			$instruction = array();
+			$instruction['offset'] = $this->currentoffset;
+			try {
+				$instruction = array_merge($instruction, $this->fetchInstruction());
+				$output[] = $instruction;
+			} catch (Exception $e) {
+				$this->setBreakPoint($this->currentoffset);
+			}
+			$this->executeInstruction($instruction);
+		}
+		return $output;
+	}
 	//public function setPlatform($platform) { $this->platform = $platform; }
-}
-function getOffsetName($offset, $onlyifexists = false) {
-	global $addresses;
-	if ($onlyifexists)
-		return isset($addresses[$offset]['name']) ? $addresses[$offset]['name'] : '';
-	return isset($addresses[$offset]['name']) ? $addresses[$offset]['name'] : sprintf(core::addressformat, $offset);
-}
-function getDescription($offset, $onlyifexists = false) {
-	global $addresses;
-	if ($onlyifexists)
-		return isset($addresses[$offset]['description']) ? $addresses[$offset]['description'] : '';
-	if (isset($addresses[$offset]['description']))
-		return $addresses[$offset]['description'];
-	if (isset($addresses[$offset]['name']))
-		return $addresses[$offset]['name'];
-	return '';
-	//return sprintf(core::addressformat, $offset);
 }
 function gametitle($game) {
 	$miscdata = array();
@@ -222,21 +272,6 @@ function gametitle($game) {
 		$miscdata[] = 'v'.$game['version'];
 	return $game['title'].(($miscdata != array()) ? ' ('.implode(' ', $miscdata).')' : '');
 }
-function getDataBlock($ioffset) {
-	global $addresses;
-	$offset = $ioffset;
-	for (;!isset($addresses[$offset]) && ($offset > 0); $offset--);
-	if (!isset($addresses[$offset]) || ($ioffset - $offset > $addresses[$offset]['size']))
-		return -1;
-	return $offset;
-}
-function decimal_to_function($input) {
-	global $addresses;
-	if (!class_exists('core'))
-		return '';
-	return (isset($addresses[$input]['name']) && ($addresses[$input]['name'] != "")) ? $addresses[$input]['name'] : sprintf(core::addressformat, $input);
-}
-
 function debugvar($var, $label) {
 	if (!$GLOBALS['settings']['debug'])
 		return;
@@ -260,5 +295,10 @@ function debugmessage($message, $level = 'error') {
 		else
 			ChromePhp::log($message);
 	}
+}
+function dprintf($message) {
+	$args = func_get_args();
+	array_shift($args);
+	debugmessage(vsprintf($message, $args), 'info');
 }
 ?>

@@ -3,13 +3,12 @@ class issues extends gamemod {
 	const magic = 'issues';
 	const title = 'Issues';
 	public function execute() {
-		global $addresses, $platform, $game;
 		$allproblems = array();
 		$prev = 0;
-		foreach ($addresses as $offset => $entry) {
+		foreach ($this->addresses as $offset => $entry) {
 			if (!is_numeric($offset))
 				continue;
-			if (!$platform->isRom($offset))
+			if ($this->platform->identifyArea($offset) != 'rom')
 				continue;
 			if (isset($entry['ignore']) && ($entry['ignore'] == true))
 				continue;
@@ -26,11 +25,14 @@ class issues extends gamemod {
 				$problems[] = 'No description defined';
 			if ($problems != array())
 				$allproblems[decimal_to_function($offset)] = $problems;
-			if (isset($entry['size']) && !isset($addresses[$offset+$entry['size']]) && ($platform->map_rom($offset+$entry['size']) < $game['size']))
-				$allproblems[decimal_to_function($offset+$entry['size'])] = array('Undefined area!');
+			//if (isset($entry['size']) && !isset($this->addresses[$offset+$entry['size']]) && ($this->platform->map_rom($offset+$entry['size']) < $this->game['size']))
+			//	$allproblems[decimal_to_function($offset+$entry['size'])] = array('Undefined area!');
 			$prev = $offset+(isset($entry['size']) ? $entry['size'] : 0);
 		}
 		return array($allproblems);
+	}
+	public function getTemplate() {
+		return 'issues';
 	}
 }
 ?>

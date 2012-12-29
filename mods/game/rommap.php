@@ -9,7 +9,7 @@ class rommap extends gamemod {
 		foreach ($this->addresses as $addr=>$data) {
 			if (!is_numeric($addr))
 				continue;
-			if (($this->platform->identifyArea($addr) == 'rom') && !isset($data['ignore'])) {
+			if (($this->source->identifyArea($addr) == 'rom') && !isset($data['ignore'])) {
 				if (!isset($opts['collapse']))
 					$output[] = array('address' => $addr, 'type' => isset($data['type']) ? $data['type'] : 'unknown', 'name' => !empty($data['name']) ? $data['name'] : '', 'description' => isset($data['description']) ? $data['description'] : '', 'size' => isset($data['size']) ? $data['size'] : 0);
 				else {

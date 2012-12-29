@@ -5,7 +5,6 @@ class platform extends platform_base {
 	const extension = 'nes';
 	
 	function __construct() {
-		global $rom, $addresses;
 		$flagarray = array();
 		$rom->seekTo(0);
 		$this->details['Valid'] = ($rom->read(4) == 'NES');
