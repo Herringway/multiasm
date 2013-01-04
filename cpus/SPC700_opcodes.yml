@@ -1,1119 +1,1119 @@
 ---
 0xE8:
-  instruction: MOV
+  Mnemonic: MOV
   size: 2
   addrformat: "A, #$%02X"
   cycles: 2
   registers: N-----Z-
   description:  A <- imm
 0xE6:
-  instruction: MOV
+  Mnemonic: MOV
   size: 1
   addrformat: A, (X)	 
   cycles: 3
   registers: N-----Z-
   description:  A <- (X)
 0xBF:
-  instruction: MOV
+  Mnemonic: MOV
   size: 1
   addrformat: A, (X)+	 
   cycles: 4
   registers: N-----Z-
   description:  A <- (X), X is incremented afterward
 0xE4:
-  instruction: MOV
+  Mnemonic: MOV
   size: 2
   addrformat: A, $%02X	 
   cycles: 3
   registers: N-----Z-
   description:  A <- (dp)
 0xF4:
-  instruction: MOV
+  Mnemonic: MOV
   size: 2
   addrformat: A, $%02X+X	 
   cycles: 4
   registers: N-----Z-
   description:  A <- (dp+X)
 0xE5:
-  instruction: MOV
+  Mnemonic: MOV
   size: 3
   addrformat: A, !abs	 
   cycles: 4
   registers: N-----Z-
   description:  A <- (abs)
 0xF5:
-  instruction: MOV
+  Mnemonic: MOV
   size: 3
   addrformat: A, !abs+X
   cycles: 5
   registers: N-----Z-
   description:  A <- (abs+X)
 0xF6:
-  instruction: MOV
+  Mnemonic: MOV
   size: 3
   addrformat: A, !abs+Y
   cycles: 5
   registers: N-----Z-
   description:  A <- (abs+Y)
 0xE7:
-  instruction: MOV
+  Mnemonic: MOV
   size: 2
   addrformat: A, [$%02X+X]
   cycles: 6
   registers: N-----Z-
   description:  A <- (abs:(abs+X))
 0xF7:
-  instruction: MOV
+  Mnemonic: MOV
   size: 2
   addrformat: A, [$%02X]+Y
   cycles: 6
   registers: N-----Z-
   description:  A <- (abs:(abs)+Y)
 0xCD:
-  instruction: MOV
+  Mnemonic: MOV
   size: 2
   addrformat: "X, #$%02X"
   cycles: 2
   registers: N-----Z-
   description:  X <- imm
 0xF8:
-  instruction: MOV
+  Mnemonic: MOV
   size: 2
   addrformat: X, $%02X	 
   cycles: 3
   registers: N-----Z-
   description:  X <- (dp)
 0xF9:
-  instruction: MOV
+  Mnemonic: MOV
   size: 2
   addrformat: X, $%02X+Y	 
   cycles: 4
   registers: N-----Z-
   description:  X <- (dp+Y)
 0xE9:
-  instruction: MOV
+  Mnemonic: MOV
   size: 3
   addrformat: X, !abs	 
   cycles: 4
   registers: N-----Z-
   description:  X <- (abs)
 0x8D:
-  instruction: MOV
+  Mnemonic: MOV
   size: 2
   addrformat: "Y, #$%02X"
   cycles: 2
   registers: N-----Z-
   description:  Y <- imm
 0xEB:
-  instruction: MOV
+  Mnemonic: MOV
   size: 2
   addrformat: Y, $%02X	 
   cycles: 3
   registers: N-----Z-
   description:  Y <- (dp)
 0xFB:
-  instruction: MOV
+  Mnemonic: MOV
   size: 2
   addrformat: Y, $%02X+X	 
   cycles: 4
   registers: N-----Z-
   description:  Y <- (dp+X)
 0xEC:
-  instruction: MOV
+  Mnemonic: MOV
   size: 3
   addrformat: Y, !abs	 
   cycles: 4
   registers: N-----Z-
   description:  Y <- (abs)
 0xC6:
-  instruction: MOV
+  Mnemonic: MOV
   size: 1
   addrformat: (X), A	 
   cycles: 4
   registers: --------
   description:  A -> (X)
 0xAF:
-  instruction: MOV
+  Mnemonic: MOV
   size: 1
   addrformat: (X)+, A	 
   cycles: 4
   registers: --------
   description:  A -> (X), X is incremented
 0xC4:
-  instruction: MOV
+  Mnemonic: MOV
   size: 2
   addrformat: $%02X, A	 
   cycles: 4
   registers: --------
   description:  A -> (dp)
 0xD4:
-  instruction: MOV
+  Mnemonic: MOV
   size: 2
   addrformat: $%02X+X, A	 
   cycles: 5
   registers: --------
   description:  A -> (dp+X)
 0xC5:
-  instruction: MOV
+  Mnemonic: MOV
   size: 3
   addrformat: !abs, A	 
   cycles: 5
   registers: --------
   description:  A -> (abs)
 0xD5:
-  instruction: MOV
+  Mnemonic: MOV
   size: 3
   addrformat: !abs+X, A
   cycles: 6
   registers: --------
   description:  A -> (abs+X)
 0xD6:
-  instruction: MOV
+  Mnemonic: MOV
   size: 3
   addrformat: !abs+Y, A
   cycles: 6
   registers: --------
   description:  A -> (abs+Y)
 0xC7:
-  instruction: MOV
+  Mnemonic: MOV
   size: 2
   addrformat: "[$%02X+X], A"
   cycles: 7
   registers: --------
   description:  A -> (abs:(dp+X))
 0xD7:
-  instruction: MOV
+  Mnemonic: MOV
   size: 2
   addrformat: "[$%02X]+Y, A"
   cycles: 7
   registers: --------
   description:  A -> (abs:(dp)+Y)
 0xD8:
-  instruction: MOV
+  Mnemonic: MOV
   size: 2
   addrformat: $%02X, X	 
   cycles: 4
   registers: --------
   description:  X -> (dp)
 0xD9:
-  instruction: MOV
+  Mnemonic: MOV
   size: 2
   addrformat: $%02X+Y, X	 
   cycles: 5
   registers: --------
   description:  X -> (dp+Y)
 0xC9:
-  instruction: MOV
+  Mnemonic: MOV
   size: 3
   addrformat: !abs, X	 
   cycles: 5
   registers: --------
   description:  X -> (abs)
 0xCB:
-  instruction: MOV
+  Mnemonic: MOV
   size: 2
   addrformat: $%02X, Y	 
   cycles: 4
   registers: --------
   description:  Y -> (dp)
 0xBB:
-  instruction: MOV
+  Mnemonic: MOV
   size: 2
   addrformat: $%02X+X, Y	 
   cycles: 5
   registers: --------
   description:  Y -> (dp+X)
 0xCC:
-  instruction: MOV
+  Mnemonic: MOV
   size: 3
   addrformat: !abs, Y	 
   cycles: 5
   registers: --------
   description:  Y -> (abs)
 0x7D:
-  instruction: MOV
+  Mnemonic: MOV
   size: 1
   addrformat: A, X	 
   cycles: 2
   registers: N-----Z-
   description:  A <- X
 0xDD:
-  instruction: MOV
+  Mnemonic: MOV
   size: 1
   addrformat: A, Y	 
   cycles: 2
   registers: N-----Z-
   description:  A <- Y
 0x5D:
-  instruction: MOV
+  Mnemonic: MOV
   size: 1
   addrformat: X, A	 
   cycles: 2
   registers: N-----Z-
   description:  A -> X
 0xFD:
-  instruction: MOV
+  Mnemonic: MOV
   size: 1
   addrformat: Y, A	 
   cycles: 2
   registers: N-----Z-
   description:  A -> Y
 0x9D:
-  instruction: MOV
+  Mnemonic: MOV
   size: 1
   addrformat: X, SP	 
   cycles: 2
   registers: N-----Z-
   description:  X <- SP
 0xBD:
-  instruction: MOV
+  Mnemonic: MOV
   size: 1
   addrformat: SP, X	 
   cycles: 2
   registers: --------
   description:  X -> SP
 0xFA:
-  instruction: MOV
+  Mnemonic: MOV
   size: 3
   addrformat: $%2$02X, $%3$02X	 
   cycles: 5
   registers: --------
   description:  (dp) <- (dp)
 0x8F:
-  instruction: MOV
+  Mnemonic: MOV
   size: 3
   addrformat: "$%2$02X, #$%3$02X"
   cycles: 5
   registers: --------
   description:  (dp) <- imm
 0x88:
-  instruction: ADC
+  Mnemonic: ADC
   size: 2
   addrformat: "A, #$%02X"
   cycles: 2
   registers: NV--H-ZC
   description:  A += imm	    + C
 0x86:
-  instruction: ADC
+  Mnemonic: ADC
   size: 1
   addrformat: A, (X)	 
   cycles: 3
   registers: NV--H-ZC
   description:  A += (X)	    + C
 0x84:
-  instruction: ADC
+  Mnemonic: ADC
   size: 2
   addrformat: A, $%02X	 
   cycles: 3
   registers: NV--H-ZC
   description:  A += (dp)	    + C
 0x94:
-  instruction: ADC
+  Mnemonic: ADC
   size: 2
   addrformat: A, $%02X+X	 
   cycles: 4
   registers: NV--H-ZC
   description:  A += (dp+X)	    + C
 0x85:
-  instruction: ADC
+  Mnemonic: ADC
   size: 3
   addrformat: A, !abs	 
   cycles: 4
   registers: NV--H-ZC
   description:  A += (abs)	    + C
 0x95:
-  instruction: ADC
+  Mnemonic: ADC
   size: 3
   addrformat: A, !abs+X
   cycles: 5
   registers: NV--H-ZC
   description:  A += (abs+X)	    + C 
 0x96:
-  instruction: ADC
+  Mnemonic: ADC
   size: 3
   addrformat: A, !abs+Y
   cycles: 5
   registers: NV--H-ZC
   description:  A += (abs+Y)	    + C
 0x87:
-  instruction: ADC
+  Mnemonic: ADC
   size: 2
   addrformat: A, [$%02X+X]
   cycles: 6
   registers: NV--H-ZC
   description:  A += (abs:(dp+X)) + C
 0x97:
-  instruction: ADC
+  Mnemonic: ADC
   size: 2
   addrformat: A, [$%02X]+Y
   cycles: 6
   registers: NV--H-ZC
   description:  A += (abs:(dp)+Y) + C
 0x99:
-  instruction: ADC
+  Mnemonic: ADC
   size: 1
   addrformat: (X),(Y)	 
   cycles: 5
   registers: NV--H-ZC
   description:  (X) += (Y)	    + C
 0x89:
-  instruction: ADC
+  Mnemonic: ADC
   size: 3
   addrformat: $%2$02X, $%3$02X
   cycles: 6
   registers: NV--H-ZC
   description:  (dp) += (dp)	    + C
 0x98:
-  instruction: ADC
+  Mnemonic: ADC
   size: 3
   addrformat: "$%2$02X, #$%3$02X"
   cycles: 5
   registers: NV--H-ZC
   description:  (dp) += imm	    + C
 0xA8:
-  instruction: SBC
+  Mnemonic: SBC
   size: 2
   addrformat: "A, #$%02X"
   cycles: 2
   registers: NV--H-ZC
   description:  A -= imm	    + !C
 0xA6:
-  instruction: SBC
+  Mnemonic: SBC
   size: 1
   addrformat: A, (X)	 
   cycles: 3
   registers: NV--H-ZC
   description:  A -= (X)	    + !C
 0xA4:
-  instruction: SBC
+  Mnemonic: SBC
   size: 2
   addrformat: A, $%02X	 
   cycles: 3
   registers: NV--H-ZC
   description:  A -= (dp)	    + !C
 0xB4:
-  instruction: SBC
+  Mnemonic: SBC
   size: 2
   addrformat: A, $%02X+X	 
   cycles: 4
   registers: NV--H-ZC
   description:  A -= (dp+X)	    + !C
 0xA5:
-  instruction: SBC
+  Mnemonic: SBC
   size: 3
   addrformat: A, !abs	 
   cycles: 4
   registers: NV--H-ZC
   description:  A -= (abs)	    + !C
 0xB5:
-  instruction: SBC
+  Mnemonic: SBC
   size: 3
   addrformat: A, !abs+X
   cycles: 5
   registers: NV--H-ZC
   description:  A -= (abs+X)	    + !C
 0xB6:
-  instruction: SBC
+  Mnemonic: SBC
   size: 3
   addrformat: A, !abs+Y
   cycles: 5
   registers: NV--H-ZC
   description:  A -= (abs+Y)	    + !C
 0xA7:
-  instruction: SBC
+  Mnemonic: SBC
   size: 2
   addrformat: A, [$%02X+X]
   cycles: 6
   registers: NV--H-ZC
   description:  A -= (abs:(dp+X)) + !C
 0xB7:
-  instruction: SBC
+  Mnemonic: SBC
   size: 2
   addrformat: A, [$%02X]+Y
   cycles: 6
   registers: NV--H-ZC
   description:  A -= (abs:(dp)+Y) + !C
 0xB9:
-  instruction: SBC
+  Mnemonic: SBC
   size: 1
   addrformat: (X), (Y) 
   cycles: 5
   registers: NV--H-ZC
   description:  (X) -= (Y)	    + !C
 0xA9:
-  instruction: SBC
+  Mnemonic: SBC
   size: 3
   addrformat: $%2$02X, $%3$02X	 
   cycles: 6
   registers: NV--H-ZC
   description:  (dp) -= (dp)	    + !C
 0xB8:
-  instruction: SBC
+  Mnemonic: SBC
   size: 3
   addrformat: "$%2$02X, #$%3$02X"
   cycles: 5
   registers: NV--H-ZC
   description:  (dp) -= imm	    + !C
 0x68:
-  instruction: CMP
+  Mnemonic: CMP
   size: 2
   addrformat: "A, #$%02X"
   cycles: 2
   registers: NV----ZC
   description:  A - imm
 0x66:
-  instruction: CMP
+  Mnemonic: CMP
   size: 1
   addrformat: A, (X)	 
   cycles: 3
   registers: NV----ZC
   description:  A - (X)
 0x64:
-  instruction: CMP
+  Mnemonic: CMP
   size: 2
   addrformat: A, $%02X	 
   cycles: 3
   registers: NV----ZC
   description:  A - (dp)
 0x74:
-  instruction: CMP
+  Mnemonic: CMP
   size: 2
   addrformat: A, $%02X+X	 
   cycles: 4
   registers: NV----ZC
   description:  A - (dp+X)
 0x65:
-  instruction: CMP
+  Mnemonic: CMP
   size: 3
   addrformat: A, !abs	 
   cycles: 4
   registers: NV----ZC
   description:  A - (abs)
 0x75:
-  instruction: CMP
+  Mnemonic: CMP
   size: 3
   addrformat: A, !abs+X
   cycles: 5
   registers: NV----ZC
   description:  A - (abs+X)
 0x76:
-  instruction: CMP
+  Mnemonic: CMP
   size: 3
   addrformat: A, !abs+Y
   cycles: 5
   registers: NV----ZC
   description:  A - (abs+Y)
 0x67:
-  instruction: CMP
+  Mnemonic: CMP
   size: 2
   addrformat: A, [$%02X+X]
   cycles: 6
   registers: NV----ZC
   description:  A - (abs:(dp+X))
 0x77:
-  instruction: CMP
+  Mnemonic: CMP
   size: 2
   addrformat: A, [$%02X]+Y
   cycles: 6
   registers: NV----ZC
   description:  A - (abs:(dp)+Y)
 0x79:
-  instruction: CMP
+  Mnemonic: CMP
   size: 1
   addrformat: (X), (Y) 
   cycles: 5
   registers: NV----ZC
   description:  (X) - (Y)
 0x69:
-  instruction: CMP
+  Mnemonic: CMP
   size: 3
   addrformat: $%2$02X, $%3$02X	 
   cycles: 6
   registers: NV----ZC
   description:  (dp) - (dp)
 0x78:
-  instruction: CMP
+  Mnemonic: CMP
   size: 3
   addrformat: "$%2$02X, #$%3$02X"
   cycles: 5
   registers: NV----ZC
   description:  (dp) - imm
 0xC8:
-  instruction: CMP
+  Mnemonic: CMP
   size: 2
   addrformat: "X, #$%02X"
   cycles: 2
   registers: NV----ZC
   description:  X - imm
 0x3E:
-  instruction: CMP
+  Mnemonic: CMP
   size: 2
   addrformat: X, $%02X	 
   cycles: 3
   registers: NV----ZC
   description:  X - (dp)
 0x1E:
-  instruction: CMP
+  Mnemonic: CMP
   size: 3
   addrformat: X, !abs	 
   cycles: 4
   registers: NV----ZC
   description:  X - (abs)
 0xAD:
-  instruction: CMP
+  Mnemonic: CMP
   size: 2
   addrformat: "Y, #$%02X"
   cycles: 2
   registers: NV----ZC
   description:  Y - imm
 0x7E:
-  instruction: CMP
+  Mnemonic: CMP
   size: 2
   addrformat: Y, $%02X	 
   cycles: 3
   registers: NV----ZC
   description:  Y - (dp)
 0x5E:
-  instruction: CMP
+  Mnemonic: CMP
   size: 3
   addrformat: Y, !abs	 
   cycles: 4
   registers: NV----ZC
   description:  Y - (abs)
 0x28:
-  instruction: AND
+  Mnemonic: AND
   size: 2
   addrformat: "A, #$%02X"
   cycles: 2
   registers: N-----Z-
   description:  A &= imm
 0x26:
-  instruction: AND
+  Mnemonic: AND
   size: 1
   addrformat: A, (X)	 
   cycles: 3
   registers: N-----Z-
   description:  A &= (X)
 0x24:
-  instruction: AND
+  Mnemonic: AND
   size: 2
   addrformat: A, $%02X	 
   cycles: 3
   registers: N-----Z-
   description:  A &= (dp)
 0x34:
-  instruction: AND
+  Mnemonic: AND
   size: 2
   addrformat: A, $%02X+X	 
   cycles: 4
   registers: N-----Z-
   description:  A &= (dp+X)
 0x25:
-  instruction: AND
+  Mnemonic: AND
   size: 3
   addrformat: A, !abs	 
   cycles: 4
   registers: N-----Z-
   description:  A &= (abs)
 0x35:
-  instruction: AND
+  Mnemonic: AND
   size: 3
   addrformat: A, !abs+X
   cycles: 5
   registers: N-----Z-
   description:  A &= (abs+X)
 0x36:
-  instruction: AND
+  Mnemonic: AND
   size: 3
   addrformat: A, !abs+Y
   cycles: 5
   registers: N-----Z-
   description:  A &= (abs+Y)
 0x27:
-  instruction: AND
+  Mnemonic: AND
   size: 2
   addrformat: A, [$%02X+X]
   cycles: 6
   registers: N-----Z-
   description:  A &= (abs:(dp+X))
 0x37:
-  instruction: AND
+  Mnemonic: AND
   size: 2
   addrformat: A, [$%02X]+Y
   cycles: 6
   registers: N-----Z-
   description:  A &= (abs:(dp)+Y)
 0x39:
-  instruction: AND
+  Mnemonic: AND
   size: 1
   addrformat: (X), (Y) 
   cycles: 5
   registers: N-----Z-
   description:  (X) &= (Y)
 0x29:
-  instruction: AND
+  Mnemonic: AND
   size: 3
   addrformat: $%2$02X, $%3$02X
   cycles: 6
   registers: N-----Z-
   description:  (dp) &= (dp)
 0x38:
-  instruction: AND
+  Mnemonic: AND
   size: 3
   addrformat: "$%2$02X, #$%3$02X"
   cycles: 5
   registers: N-----Z-
   description:  (dp) &= imm
 0x08:
-  instruction: OR
+  Mnemonic: OR
   size: 2
   addrformat: "A, #$%02X"
   cycles: 2
   registers: N-----Z-
   description:  A |= imm
 0x06:
-  instruction: OR
+  Mnemonic: OR
   size: 1
   addrformat: A, (X)	 
   cycles: 3
   registers: N-----Z-
   description:  A |= (X)
 0x04:
-  instruction: OR
+  Mnemonic: OR
   size: 2
   addrformat: A, $%02X	 
   cycles: 3
   registers: N-----Z-
   description:  A |= (dp)
 0x14:
-  instruction: OR
+  Mnemonic: OR
   size: 2
   addrformat: A, $%02X+X	 
   cycles: 4
   registers: N-----Z-
   description:  A |= (dp+X)
 0x05:
-  instruction: OR
+  Mnemonic: OR
   size: 3
   addrformat: A, !abs	 
   cycles: 4
   registers: N-----Z-
   description:  A |= (abs)
 0x15:
-  instruction: OR
+  Mnemonic: OR
   size: 3
   addrformat: A, !abs+X
   cycles: 5
   registers: N-----Z-
   description:  A |= (abs+X)
 0x16:
-  instruction: OR
+  Mnemonic: OR
   size: 3
   addrformat: A, !abs+Y
   cycles: 5
   registers: N-----Z-
   description:  A |= (abs+Y)
 0x07:
-  instruction: OR
+  Mnemonic: OR
   size: 2
   addrformat: A, [$%02X+X]
   cycles: 6
   registers: N-----Z-
   description:  A |= (abs:(dp+X))
 0x17:
-  instruction: OR
+  Mnemonic: OR
   size: 2
   addrformat: A, [$%02X]+Y
   cycles: 6
   registers: N-----Z-
   description:  A |= (abs:(dp)+Y)
 0x19:
-  instruction: OR
+  Mnemonic: OR
   size: 1
   addrformat: (X), (Y) 
   cycles: 5
   registers: N-----Z-
   description:  (X) |= (Y)
 0x09:
-  instruction: OR
+  Mnemonic: OR
   size: 3
   addrformat: $%2$02X, $%3$02X	 
   cycles: 6
   registers: N-----Z-
   description:  (dp) |= (dp)
 0x18:
-  instruction: OR
+  Mnemonic: OR
   size: 3
   addrformat: "$%2$02X, #$%3$02X"
   cycles: 5
   registers: N-----Z-
   description:  (dp) |= imm
 0x48:
-  instruction: EOR
+  Mnemonic: EOR
   size: 2
   addrformat: "A, #$%02X"
   cycles: 2
   registers: N-----Z-
   description:  A ^= imm
 0x46:
-  instruction: EOR
+  Mnemonic: EOR
   size: 1
   addrformat: A, (X)	 
   cycles: 3
   registers: N-----Z-
   description:  A ^= (X)
 0x44:
-  instruction: EOR
+  Mnemonic: EOR
   size: 2
   addrformat: A, $%02X	 
   cycles: 3
   registers: N-----Z-
   description:  A ^= (dp)
 0x54:
-  instruction: EOR
+  Mnemonic: EOR
   size: 2
   addrformat: A, $%02X+X	 
   cycles: 4
   registers: N-----Z-
   description:  A ^= (dp+X)
 0x45:
-  instruction: EOR
+  Mnemonic: EOR
   size: 3
   addrformat: A, !abs	 
   cycles: 4
   registers: N-----Z-
   description:  A ^= (abs)
 0x55:
-  instruction: EOR
+  Mnemonic: EOR
   size: 3
   addrformat: A, !abs+X
   cycles: 5
   registers: N-----Z-
   description:  A ^= (abs+X)
 0x56:
-  instruction: EOR
+  Mnemonic: EOR
   size: 3
   addrformat: A, !abs+Y
   cycles: 5
   registers: N-----Z-
   description:  A ^= (abs+Y)
 0x47:
-  instruction: EOR
+  Mnemonic: EOR
   size: 2
   addrformat: A, [$%02X+X]
   cycles: 6
   registers: N-----Z-
   description:  A ^= (abs:(dp+X))
 0x57:
-  instruction: EOR
+  Mnemonic: EOR
   size: 2
   addrformat: A, [$%02X]+Y
   cycles: 6
   registers: N-----Z-
   description:  A ^= (abs:(dp)+Y))
 0x59:
-  instruction: EOR
+  Mnemonic: EOR
   size: 1
   addrformat: (X), (Y) 
   cycles: 5
   registers: N-----Z-
   description:  (X) ^= (Y)
 0x49:
-  instruction: EOR
+  Mnemonic: EOR
   size: 3
   addrformat: $%2$02X, $%3$02X	 
   cycles: 6
   registers: N-----Z-
   description:  (dp) ^= (dp)
 0x58:
-  instruction: EOR
+  Mnemonic: EOR
   size: 3
   addrformat: "$%2$02X, #$%3$02X"
   cycles: 5
   registers: N-----Z-
   description:  (dp) ^= imm
 0xBC:
-  instruction: INC
+  Mnemonic: INC
   size: 1
   addrformat: A	 
   cycles: 2
   registers: N-----Z-
   description:  ++A
 0xAB:
-  instruction: INC
+  Mnemonic: INC
   size: 2
   addrformat: $%02X	 
   cycles: 4
   registers: N-----Z-
   description:  ++(dp)
 0xBB:
-  instruction: INC
+  Mnemonic: INC
   size: 2
   addrformat: $%02X+X	 
   cycles: 5
   registers: N-----Z-
   description:  ++(dp+X)
 0xAC:
-  instruction: INC
+  Mnemonic: INC
   size: 3
   addrformat: !abs	 
   cycles: 5
   registers: N-----Z-
   description:  ++(abs)
 0x3D:
-  instruction: INC
+  Mnemonic: INC
   size: 1
   addrformat: X	 
   cycles: 2
   registers: N-----Z-
   description:  ++X
 0xFC:
-  instruction: INC
+  Mnemonic: INC
   size: 1
   addrformat: Y	 
   cycles: 2
   registers: N-----Z-
   description:  ++Y
 0x9C:
-  instruction: DEC
+  Mnemonic: DEC
   size: 1
   addrformat: A	 
   cycles: 2
   registers: N-----Z-
   description:  --A
 0x8B:
-  instruction: DEC
+  Mnemonic: DEC
   size: 2
   addrformat: $%02X	 
   cycles: 4
   registers: N-----Z-
   description:  --(dp)
 0x9B:
-  instruction: DEC
+  Mnemonic: DEC
   size: 2
   addrformat: $%02X+X	 
   cycles: 5
   registers: N-----Z-
   description:  --(dp+X)
 0x8C:
-  instruction: DEC
+  Mnemonic: DEC
   size: 3
   addrformat: !abs	 
   cycles: 5
   registers: N-----Z-
   description:  --(abs)
 0x1D:
-  instruction: DEC
+  Mnemonic: DEC
   size: 1
   addrformat: X	 
   cycles: 2
   registers: N-----Z-
   description:  --X
 0xDC:
-  instruction: DEC
+  Mnemonic: DEC
   size: 1
   addrformat: Y	 
   cycles: 2
   registers: N-----Z-
   description:  --Y
 0x1C:
-  instruction: ASL
+  Mnemonic: ASL
   size: 1
   addrformat: A	 
   cycles: 2
   registers: N-----ZC
   description:  C << A      << 0
 0x0B:
-  instruction: ASL
+  Mnemonic: ASL
   size: 2
   addrformat: $%02X	 
   cycles: 4
   registers: N-----ZC
   description:  C << (dp)   << 0
 0x1B:
-  instruction: ASL
+  Mnemonic: ASL
   size: 2
   addrformat: $%02X+X	 
   cycles: 5
   registers: N-----ZC
   description:  C << (dp+X) << 0
 0x0C:
-  instruction: ASL
+  Mnemonic: ASL
   size: 3
   addrformat: !abs	 
   cycles: 5
   registers: N-----ZC
   description:  C << (abs)  << 0
 0x5C:
-  instruction: LSR
+  Mnemonic: LSR
   size: 1
   addrformat: A	 
   cycles: 2
   registers: N-----ZC
   description:  0 >> A      >> C
 0x4B:
-  instruction: LSR
+  Mnemonic: LSR
   size: 2
   addrformat: $%02X	 
   cycles: 4
   registers: N-----ZC
   description:  0 >> (dp)   >> C
 0x5B:
-  instruction: LSR
+  Mnemonic: LSR
   size: 2
   addrformat: $%02X+X	 
   cycles: 5
   registers: N-----ZC
   description:  0 >> (dp+X) >> C
 0x4C:
-  instruction: LSR
+  Mnemonic: LSR
   size: 3
   addrformat: !abs	 
   cycles: 5
   registers: N-----ZC
   description:  0 >> (abs)  >> C
 0x3C:
-  instruction: ROL
+  Mnemonic: ROL
   size: 1
   addrformat: A	 
   cycles: 2
   registers: N-----ZC
   description:  C << A << C
 0x2B:
-  instruction: ROL
+  Mnemonic: ROL
   size: 2
   addrformat: $%02X	 
   cycles: 4
   registers: N-----ZC
   description:  C << (dp) << C
 0x3B:
-  instruction: ROL
+  Mnemonic: ROL
   size: 2
   addrformat: $%02X+X	 
   cycles: 5
   registers: N-----ZC
   description:  C << (dp+X) << C
 0x2C:
-  instruction: ROL
+  Mnemonic: ROL
   size: 3
   addrformat: !abs	 
   cycles: 5
   registers: N-----ZC
   description:  C << (abs)  << C
 0x7C:
-  instruction: ROR
+  Mnemonic: ROR
   size: 1
   addrformat: A	 
   cycles: 2
   registers: N-----ZC
   description:  C >> A      >> C
 0x6B:
-  instruction: ROR
+  Mnemonic: ROR
   size: 2
   addrformat: $%02X	 
   cycles: 4
   registers: N-----ZC
   description:  C >> (dp)   >> C
 0x7B:
-  instruction: ROR
+  Mnemonic: ROR
   size: 2
   addrformat: $%02X+X	 
   cycles: 5
   registers: N-----ZC
   description:  C >> (dp+X) >> C
 0x6C:
-  instruction: ROR
+  Mnemonic: ROR
   size: 3
   addrformat: !abs	 
   cycles: 5
   registers: N-----ZC
   description:  C >> (abs)  >> C
 0x9F:
-  instruction: XCN
+  Mnemonic: XCN
   size: 1
   addrformat: A	 
   cycles: 5
   registers: N-----Z-
   description:  Swaps the nibbles in A (A = (A>>4) | (A<<4))
 0xBA:
-  instruction: MOVW
+  Mnemonic: MOVW
   size: 2
   addrformat: YA, $%02X	 
   cycles: 5
   registers: N-----Z-
   description:  YA <- dp
 0xDA:
-  instruction: MOVW
+  Mnemonic: MOVW
   size: 2
   addrformat: $%02X, YA	 
   cycles: 4
   registers: --------
   description:  YA -> dp
 0x3A:
-  instruction: INCW
+  Mnemonic: INCW
   size: 2
   addrformat: $%02X	 
   cycles: 6
   registers: N-----Z-
   description:  ++dp
 0x1A:
-  instruction: DECW
+  Mnemonic: DECW
   size: 2
   addrformat: $%02X	 
   cycles: 6
   registers: N-----Z-
   description:  --dp
 0x7A:
-  instruction: ADDW
+  Mnemonic: ADDW
   size: 2
   addrformat: YA, $%02X	 
   cycles: 5
   registers: NV--H-ZC
   description:  YA += dp
 0x9A:
-  instruction: SUBW
+  Mnemonic: SUBW
   size: 2
   addrformat: YA, $%02X	 
   cycles: 5
   registers: NV--H-ZC
   description:  YA -= dp
 0x5A:
-  instruction: CMPW
+  Mnemonic: CMPW
   size: 2
   addrformat: YA, $%02X	 
   cycles: 4
   registers: N-----ZC
   description:  YA - dp
 0xCF:
-  instruction: MUL
+  Mnemonic: MUL
   size: 1
   addrformat: 
   cycles: 9
   registers: N-----Z-
   description:  YA <- Y*A
 0x9E:
-  instruction: DIV
+  Mnemonic: DIV
   size: 1
   addrformat: YA,X
   cycles: 12
   registers: NV--H-Z-
   description: Y <- YA % X and A <- YA / X
 0xDF:
-  instruction: DAA
+  Mnemonic: DAA
   size: 1
   addrformat: A	 
   cycles: 3
   registers: N-----ZC
   description:  decimal adjust for addition
 0xBE:
-  instruction: DAS
+  Mnemonic: DAS
   size: 1
   addrformat: A	 
   cycles: 3
   registers: N-----ZC
   description:  decimal adjust for subtraction
 0x2F:
-  instruction: BRA
+  Mnemonic: BRA
   size: 2
   branch: y
   addrformat: "%02X"	 
@@ -1121,7 +1121,7 @@
   registers: --------
   description:  Branch (always)
 0xF0:
-  instruction: BEQ
+  Mnemonic: BEQ
   size: 2
   branch: y
   addrformat: "%02X"	 
@@ -1129,7 +1129,7 @@
   registers: --------
   description:  Branch if Equal (Z=1)
 0xD0:
-  instruction: BNE
+  Mnemonic: BNE
   size: 2
   branch: y
   addrformat: "%02X"	 
@@ -1137,7 +1137,7 @@
   registers: --------
   description:  Branch if Not Equal (Z=0)
 0xB0:
-  instruction: BCS
+  Mnemonic: BCS
   size: 2
   branch: y
   addrformat: "%02X"	 
@@ -1145,7 +1145,7 @@
   registers: --------
   description:  Branch if Carry Set
 0x90:
-  instruction: BCC
+  Mnemonic: BCC
   size: 2
   branch: y
   addrformat: "%02X"	 
@@ -1153,7 +1153,7 @@
   registers: --------
   description:  Branch if Carry Cleared
 0x70:
-  instruction: BVS
+  Mnemonic: BVS
   size: 2
   branch: y
   addrformat: "%02X"	 
@@ -1161,7 +1161,7 @@
   registers: --------
   description:  Branch if V=1
 0x50:
-  instruction: BVC
+  Mnemonic: BVC
   size: 2
   branch: y
   addrformat: "%02X"	 
@@ -1169,7 +1169,7 @@
   registers: --------
   description:  Branch if V=0
 0x30:
-  instruction: BMI
+  Mnemonic: BMI
   size: 2
   branch: y
   addrformat: "%02X"	 
@@ -1177,7 +1177,7 @@
   registers: --------
   description:  Branch if Negative (N=1)
 0x10:
-  instruction: BPL
+  Mnemonic: BPL
   size: 2
   branch: y
   addrformat: "%02X"	 
@@ -1185,7 +1185,7 @@
   registers: --------
   description:  Branch if Positive (N=0)
 0x2E:
-  instruction: CBNE
+  Mnemonic: CBNE
   size: 3
   branch: y
   addrformat: "$%2$02X, %3$02X"
@@ -1193,7 +1193,7 @@
   registers: --------
   description:  Branch if A != (dp)
 0xDE:
-  instruction: CBNE
+  Mnemonic: CBNE
   size: 3
   branch: y
   addrformat: "$%2$02X+X, $%3$02X"
@@ -1201,7 +1201,7 @@
   registers: --------
   description:  Branch if A != (dp+X)
 0x6E:
-  instruction: DBNZ
+  Mnemonic: DBNZ
   size: 3
   branch: y
   addrformat: $%2$02X, %3$02X
@@ -1209,7 +1209,7 @@
   registers: --------
   description:  --(dp) and branch if not zero
 0xFE:
-  instruction: DBNZ
+  Mnemonic: DBNZ
   size: 2
   addrformat: "$%02X"
   cycles: 4/6
@@ -1217,7 +1217,7 @@
   registers: --------
   description:  --Y and branch if not zero
 0x5F:
-  instruction: JMP
+  Mnemonic: JMP
   size: 3
   addrformat: "%04X"
   printformat: "$%s"
@@ -1226,14 +1226,14 @@
   registers: --------
   description:  PC <- abs
 0x1F:
-  instruction: JMP
+  Mnemonic: JMP
   size: 3
   addrformat: "[!abs+X]"
   cycles: 6
   registers: --------
   description:  PC <- abs:(abs+X)
 0x3F:
-  instruction: CALL
+  Mnemonic: CALL
   size: 3
   addrformat: "%04X"
   printformat: "$%s"
@@ -1242,567 +1242,567 @@
   registers: --------
   description:  Subroutine call
 0x4F:
-  instruction: PCALL
+  Mnemonic: PCALL
   size: 2
   addrformat: upage	 
   cycles: 6
   registers: --------
   description:  Upage call (???)
 0x01:
-  instruction: TCALL
+  Mnemonic: TCALL
   size: 1
   addrformat: 0
   cycles: 8
   registers: --------
   description: Table Call
 0x11:
-  instruction: TCALL
+  Mnemonic: TCALL
   size: 1
   addrformat: 1
   cycles: 8
   registers: --------
   description: Table Call
 0x21:
-  instruction: TCALL
+  Mnemonic: TCALL
   size: 1
   addrformat: 2
   cycles: 8
   registers: --------
   description: Table Call
 0x31:
-  instruction: TCALL
+  Mnemonic: TCALL
   size: 1
   addrformat: 3
   cycles: 8
   registers: --------
   description: Table Call
 0x41:
-  instruction: TCALL
+  Mnemonic: TCALL
   size: 1
   addrformat: 4
   cycles: 8
   registers: --------
   description: Table Call
 0x51:
-  instruction: TCALL
+  Mnemonic: TCALL
   size: 1
   addrformat: 5
   cycles: 8
   registers: --------
   description: Table Call
 0x61:
-  instruction: TCALL
+  Mnemonic: TCALL
   size: 1
   addrformat: 6
   cycles: 8
   registers: --------
   description: Table Call
 0x71:
-  instruction: TCALL
+  Mnemonic: TCALL
   size: 1
   addrformat: 7
   cycles: 8
   registers: --------
   description: Table Call
 0x81:
-  instruction: TCALL
+  Mnemonic: TCALL
   size: 1
   addrformat: 8
   cycles: 8
   registers: --------
   description: Table Call
 0x91:
-  instruction: TCALL
+  Mnemonic: TCALL
   size: 1
   addrformat: 9
   cycles: 8
   registers: --------
   description: Table Call
 0xA1:
-  instruction: TCALL
+  Mnemonic: TCALL
   size: 1
   addrformat: 10
   cycles: 8
   registers: --------
   description: Table Call
 0xB1:
-  instruction: TCALL
+  Mnemonic: TCALL
   size: 1
   addrformat: 11
   cycles: 8
   registers: --------
   description: Table Call
 0xC1:
-  instruction: TCALL
+  Mnemonic: TCALL
   size: 1
   addrformat: 12
   cycles: 8
   registers: --------
   description: Table Call
 0xD1:
-  instruction: TCALL
+  Mnemonic: TCALL
   size: 1
   addrformat: 13
   cycles: 8
   registers: --------
   description: Table Call
 0xE1:
-  instruction: TCALL
+  Mnemonic: TCALL
   size: 1
   addrformat: 14
   cycles: 8
   registers: --------
   description: Table Call
 0xF1:
-  instruction: TCALL
+  Mnemonic: TCALL
   size: 1
   addrformat: 15
   cycles: 8
   registers: --------
   description: Table Call
 0x0F:
-  instruction: BRK
+  Mnemonic: BRK
   size: 1
   addrformat: 	 
   cycles: 8
   registers: ---1-0--
   description:  Software interrupt (???)
 0x6F:
-  instruction: RET
+  Mnemonic: RET
   size: 1
   addrformat: 	 
   cycles: 5
   registers: --------
   description:  Return from subroutine (PC is popped)
 0x7F:
-  instruction: RETI
+  Mnemonic: RETI
   size: 1
   addrformat: 	 
   cycles: 6
   registers: RESTORED
   description:  Return from interrupt (PC and PSW are popped)
 0x2D:
-  instruction: PUSH
+  Mnemonic: PUSH
   size: 1
   addrformat: A	 
   cycles: 4
   registers: --------
   description:  Push A to stack
 0x4D:
-  instruction: PUSH
+  Mnemonic: PUSH
   size: 1
   addrformat: X	 
   cycles: 4
   registers: --------
   description:  Push X to stack
 0x6D:
-  instruction: PUSH
+  Mnemonic: PUSH
   size: 1
   addrformat: Y	 
   cycles: 4
   registers: --------
   description:  Push Y to stack
 0x0D:
-  instruction: PUSH
+  Mnemonic: PUSH
   size: 1
   addrformat: PSW	 
   cycles: 4
   registers: --------
   description:  Push PSW to stack
 0xAE:
-  instruction: POP
+  Mnemonic: POP
   size: 1
   addrformat: A	 
   cycles: 4
   registers: --------
   description:  Pop A from stack
 0xCE:
-  instruction: POP
+  Mnemonic: POP
   size: 1
   addrformat: X	 
   cycles: 4
   registers: --------
   description:  Pop X from stack
 0xEE:
-  instruction: POP
+  Mnemonic: POP
   size: 1
   addrformat: Y	 
   cycles: 4
   registers: --------
   description:  Pop Y from stack
 0x8E:
-  instruction: POP
+  Mnemonic: POP
   size: 1
   addrformat: PSW	 
   cycles: 4
   registers: RESTORED
   description:  Pop PSW from stack
 0x0E:
-  instruction: TSET1
+  Mnemonic: TSET1
   size: 3
   addrformat: !abs	 
   cycles: 6
   registers: N-----Z-
   description:  Test and set bits with A (???)
 0x4E:
-  instruction: TCLR1
+  Mnemonic: TCLR1
   size: 3
   addrformat: !abs	 
   cycles: 6
   registers: N-----Z-
   description:  Test and clear bits with A (???)
 0x4A:
-  instruction: AND1
+  Mnemonic: AND1
   size: 3
   addrformat: C,mem,bit 
   cycles: 4
   registers: -------C
   description:  C &= mem:bit
 0x6A:
-  instruction: AND1
+  Mnemonic: AND1
   size: 3
   addrformat: C,/mem,bit
   cycles: 4
   registers: -------C
   description:  C &= ~mem:bit
 0x0A:
-  instruction: OR1
+  Mnemonic: OR1
   size: 3
   addrformat: C,mem,bit 
   cycles: 5
   registers: -------C
   description:  C |= mem:bit
 0x2A:
-  instruction: OR1
+  Mnemonic: OR1
   size: 3
   addrformat: C,/mem,bit
   cycles: 5
   registers: -------C
   description:  C |= ~mem:bit
 0x8A:
-  instruction: EOR1
+  Mnemonic: EOR1
   size: 3
   addrformat: C,mem,bit 
   cycles: 5
   registers: -------C
   description:  C ^= mem:bit
 0xEA:
-  instruction: NOT1
+  Mnemonic: NOT1
   size: 3
   addrformat: mem,bit	  
   cycles: 5
   registers: --------
   description:  Complement mem:bit
 0xAA:
-  instruction: MOV1
+  Mnemonic: MOV1
   size: 3
   addrformat: C,mem,bit 
   cycles: 4
   registers: -------C
   description:  C <- mem:bit
 0xCA:
-  instruction: MOV1
+  Mnemonic: MOV1
   size: 3
   addrformat: mem,bit,C 
   cycles: 6
   registers: --------
   description:  C -> mem:bit
 0x60:
-  instruction: CLRC
+  Mnemonic: CLRC
   size: 1
   addrformat: 	 
   cycles: 2
   registers: -------0
   description:  Clear Carry
 0x80:
-  instruction: SETC
+  Mnemonic: SETC
   size: 1
   addrformat: 	 
   cycles: 2
   registers: -------1
   description:  Set Carry
 0xED:
-  instruction: NOTC
+  Mnemonic: NOTC
   size: 1
   addrformat: 	 
   cycles: 3
   registers: -------c
   description:  Complement Carry
 0xE0:
-  instruction: CLRV
+  Mnemonic: CLRV
   size: 1
   addrformat: 	 
   cycles: 2
   registers: -0--0---
   description:  Clear V and H
 0x20:
-  instruction: CLRP
+  Mnemonic: CLRP
   size: 1
   addrformat: 	 
   cycles: 2
   registers: --0-----
   description:  Clear DP page to 0
 0x40:
-  instruction: SETP
+  Mnemonic: SETP
   size: 1
   addrformat: 	 
   cycles: 2
   registers: --1-----
   description:  Set DP page to 1
 0xA0:
-  instruction: EI
+  Mnemonic: EI
   size: 1
   addrformat: 	 
   cycles: 3
   registers: ------1-
   description:  Enable Interrupts (but interrupts are not supported)
 0xC0:
-  instruction: DI
+  Mnemonic: DI
   size: 1
   addrformat: 	 
   cycles: 3
   registers: ------0-
   description:  Disable Interrupts (but interrupts are not supported)
 0x00:
-  instruction: NOP
+  Mnemonic: NOP
   size: 1
   addrformat: 	 
   cycles: 2
   registers: --------
   description:  Delay
 0xEF:
-  instruction: SLEEP
+  Mnemonic: SLEEP
   size: 1
   addrformat: 	 
   cycles: 3
   registers: --------
   description:  standby SLEEP mode
 0xFF:
-  instruction: STOP
+  Mnemonic: STOP
   size: 1
   addrformat: 	 
   cycles: 3
   registers: --------
   description:  standby STOP mode
 0x02:
-  instruction: SET1
+  Mnemonic: SET1
   size: 2
   addrformat: $%02X
   cycles: 4
   registers: --------
   description: Set bit in direct page
 0x22:
-  instruction: SET2
+  Mnemonic: SET2
   size: 2
   addrformat: $%02X
   cycles: 4
   registers: --------
   description: Set bit in direct page
 0x42:
-  instruction: SET3
+  Mnemonic: SET3
   size: 2
   addrformat: $%02X
   cycles: 4
   registers: --------
   description: Set bit in direct page
 0x62:
-  instruction: SET4
+  Mnemonic: SET4
   size: 2
   addrformat: $%02X
   cycles: 4
   registers: --------
   description: Set bit in direct page
 0x82:
-  instruction: SET5
+  Mnemonic: SET5
   size: 2
   addrformat: $%02X
   cycles: 4
   registers: --------
   description: Set bit in direct page
 0xA2:
-  instruction: SET6
+  Mnemonic: SET6
   size: 2
   addrformat: $%02X
   cycles: 4
   registers: --------
   description: Set bit in direct page
 0xC2:
-  instruction: SET7
+  Mnemonic: SET7
   size: 2
   addrformat: $%02X
   cycles: 4
   registers: --------
   description: Set bit in direct page
 0xE2:
-  instruction: SET8
+  Mnemonic: SET8
   size: 2
   addrformat: $%02X
   cycles: 4
   registers: --------
   description: Set bit in direct page
 0x12:
-  instruction: CLR1
+  Mnemonic: CLR1
   size: 2
   addrformat: $%02X
   cycles: 4
   registers: --------
   description: Clear bit in direct page
 0x32:
-  instruction: CLR2
+  Mnemonic: CLR2
   size: 2
   addrformat: $%02X
   cycles: 4
   registers: --------
   description: Clear bit in direct page
 0x52:
-  instruction: CLR3
+  Mnemonic: CLR3
   size: 2
   addrformat: $%02X
   cycles: 4
   registers: --------
   description: Clear bit in direct page
 0x72:
-  instruction: CLR4
+  Mnemonic: CLR4
   size: 2
   addrformat: $%02X
   cycles: 4
   registers: --------
   description: Clear bit in direct page
 0x92:
-  instruction: CLR5
+  Mnemonic: CLR5
   size: 2
   addrformat: $%02X
   cycles: 4
   registers: --------
   description: Clear bit in direct page
 0xB2:
-  instruction: CLR6
+  Mnemonic: CLR6
   size: 2
   addrformat: $%02X
   cycles: 4
   registers: --------
   description: Clear bit in direct page
 0xD2:
-  instruction: CLR7
+  Mnemonic: CLR7
   size: 2
   addrformat: $%02X
   cycles: 4
   registers: --------
   description: Clear bit in direct page
 0xF2:
-  instruction: CLR8
+  Mnemonic: CLR8
   size: 2
   addrformat: $%02X
   cycles: 4
   registers: --------
   description: Clear bit in direct page
 0x03:
-  instruction: BBS1
+  Mnemonic: BBS1
   size: 3
   addrformat: "$%2$02X, %3$02X"
   cycles: 5/7
   registers: --------
   description: Branch if memory bit set
 0x23:
-  instruction: BBS2
+  Mnemonic: BBS2
   size: 3
   addrformat: "$%2$02X, %3$02X"
   cycles: 5/7
   registers: --------
   description: Branch if memory bit set
 0x43:
-  instruction: BBS3
+  Mnemonic: BBS3
   size: 3
   addrformat: "$%2$02X, %3$02X"
   cycles: 5/7
   registers: --------
   description: Branch if memory bit set
 0x63:
-  instruction: BBS4
+  Mnemonic: BBS4
   size: 3
   addrformat: "$%2$02X, %3$02X"
   cycles: 5/7
   registers: --------
   description: Branch if memory bit set
 0x83:
-  instruction: BBS5
+  Mnemonic: BBS5
   size: 3
   addrformat: "$%2$02X, %3$02X"
   cycles: 5/7
   registers: --------
   description: Branch if memory bit set
 0xA3:
-  instruction: BBS6
+  Mnemonic: BBS6
   size: 3
   addrformat: "$%2$02X, %3$02X"
   cycles: 5/7
   registers: --------
   description: Branch if memory bit set
 0xC3:
-  instruction: BBS7
+  Mnemonic: BBS7
   size: 3
   addrformat: "$%2$02X, %3$02X"
   cycles: 5/7
   registers: --------
   description: Branch if memory bit set
 0xE3:
-  instruction: BBS8
+  Mnemonic: BBS8
   size: 3
   addrformat: "$%2$02X, %3$02X"
   cycles: 5/7
   registers: --------
   description: Branch if memory bit set
 0x13:
-  instruction: BBC1
+  Mnemonic: BBC1
   size: 3
   addrformat: "$%2$02X, %3$02X"
   cycles: 5/7
   registers: --------
   description: Branch if memory bit cleared
 0x33:
-  instruction: BBC2
+  Mnemonic: BBC2
   size: 3
   addrformat: "$%2$02X, %3$02X"
   cycles: 5/7
   registers: --------
   description: Branch if memory bit cleared
 0x53:
-  instruction: BBC3
+  Mnemonic: BBC3
   size: 3
   addrformat: "$%2$02X, %3$02X"
   cycles: 5/7
   registers: --------
   description: Branch if memory bit cleared
 0x73:
-  instruction: BBC4
+  Mnemonic: BBC4
   size: 3
   addrformat: "$%2$02X, %3$02X"
   cycles: 5/7
   registers: --------
   description: Branch if memory bit cleared
 0x93:
-  instruction: BBC5
+  Mnemonic: BBC5
   size: 3
   addrformat: "$%2$02X, %3$02X"
   cycles: 5/7
   registers: --------
   description: Branch if memory bit cleared
 0xB3:
-  instruction: BBC6
+  Mnemonic: BBC6
   size: 3
   addrformat: "$%2$02X, %3$02X"
   cycles: 5/7
   registers: --------
   description: Branch if memory bit cleared
 0xD3:
-  instruction: BBC7
+  Mnemonic: BBC7
   size: 3
   addrformat: "$%2$02X, %3$02X"
   cycles: 5/7
   registers: --------
   description: Branch if memory bit cleared
 0xF3:
-  instruction: BBC8
+  Mnemonic: BBC8
   size: 3
   addrformat: "$%2$02X, %3$02X"
   cycles: 5/7

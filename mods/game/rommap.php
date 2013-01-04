@@ -18,7 +18,7 @@ class rommap extends gamemod {
 							$groupbuff['name'] = 'assembly';
 							$groupbuff['type'] = $data['type'];
 							$groupbuff['description'] = '';
-							$groupbuff['addr'] = $addr;
+							$groupbuff['address'] = $addr;
 							$groupbuff['size'] = 0;
 						}
 						$groupbuff['size'] += $data['size'];
@@ -27,16 +27,15 @@ class rommap extends gamemod {
 							$groupbuff['name'] = $data['group'];
 							$groupbuff['type'] = $data['type'];
 							$groupbuff['description'] = '';
-							$groupbuff['addr'] = $addr;
+							$groupbuff['address'] = $addr;
 							$groupbuff['size'] = 0;
 						}
 						$groupbuff['size'] += $data['size'];
 					} else {
 						if ($groupbuff != array()) {
-							$output[] = array('address' => $groupbuff['addr'], 'type' => $groupbuff['type'], 'name' => $groupbuff['name'], 'description' => $groupbuff['description'], 'size' => $groupbuff['size']);
+							$output[] = $groupbuff;
 							$groupbuff = array();
 						}
-						$output[] = array('address' => $addr, 'type' => isset($data['type']) ? $data['type'] : 'unknown', 'name' => !empty($data['name']) ? $data['name'] : '', 'description' => isset($data['description']) ? $data['description'] : '', 'size' => isset($data['size']) ? $data['size'] : 0);
 					}
 				}
 			}

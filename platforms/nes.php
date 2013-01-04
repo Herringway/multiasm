@@ -18,10 +18,6 @@ class platform extends platform_base {
 		$flags += $rom->getShort();
 		for ($i = 0; $i < 24; $i++)
 			$this->details['Flags'][(isset($flagarray[$i]) ? $flagarray[$i] : $i)] = (($flags & (1<<$i)) != 0);
-		$addresses += $this->getRegisters();
-	}
-	public function getRegisters() {
-		return yaml_parse_file('platforms/nes_registers.yml') + (file_exists(sprintf('platforms/nes-mapper%d.yml', $this->details['Mapper'])) ? yaml_parse_file(sprintf('platforms/nes-mapper%d.yml', $this->details['Mapper'])) : array());
 	}
 	public function map_rom($offset) {
 		if ($this->details['Mapper'] == 0) {

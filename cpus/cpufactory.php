@@ -22,7 +22,7 @@ class cpuFactory {
 				$cpu = 'ARM';
 				break;
 			case 'spc700':
-				$cpu = 'SPC-700';
+				$cpu = 'SPC700';
 				break;
 			default:
 				throw new Exception('Unrecognized CPU!');

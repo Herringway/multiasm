@@ -10,10 +10,9 @@ class game {
 	public function execute($argv) {
 		global $settings;
 		//Determine which game to work with
+		$gameid = $settings['gameid'];
 		if (isset($argv[0]) && ($argv[0] != null) && file_exists(sprintf('games/%1$s/%1$s.yml', $argv[0])))
 			$gameid = $argv[0];
-		else
-			$gameid = $settings['gameid'];
 			
 		debugmessage("Loading cached data", 'info');
 		//Load game data. from cache if possible
@@ -21,21 +20,14 @@ class game {
 		$game['id'] = $gameid;
 		
 		$platform = platformFactory::getPlatform($game['platform']);
-		$rom = new rawData(null);
-		$rom->open($settings['rompath'].'/'.$gameid.'.'.$platform::extension);
-		$platform->setDataSource($rom, 'rom');
-		foreach ($game['additional data'] as $other) {
-			$xp = explode('/', $other);
-			$type = $xp[0];
-			$source = $xp[1];
-			if (count(explode(':', $xp[1])) > 1) {
-				$newSource = new rawData(null);
-			} else {
-				$newSource = new rawData(null);
-				$newSource->open($settings['rompath'].'/'.$source);
+		for ($dir = opendir($settings['rompath']); $file = readdir($dir);) {
+			$d = explode('.', $file);
+			if ($d[0] == $gameid) {
+				dprintf('found %s for %s', $d[1], $gameid);
+				$source = new rawData(null);
+				$source->open($settings['rompath'].'/'.$file);
+				$platform->setDataSource($source, $d[1]);
 			}
-			debugvar($type, 'loading data type:');
-			$platform->setDataSource($newSource, $type);
 		}
 		
 		$magicvalues = array();
@@ -58,7 +50,6 @@ class game {
 			}
 		}
 		asort($this->metadata['submods']);
-		debugmessage("Determining location", 'info');
 		//Where are we?
 		$offset = -1;
 		if (isset($argv[1])) {
@@ -70,6 +61,8 @@ class game {
 				}
 			}
 		}
+		$cpu = cpuFactory::getCPU($game['processor']);
+		debugmessage("Determining location", 'info');
 		if (isset($argv[1]) && ($argv[1] != null)) {
 			if (in_array($argv[1], $magicvalues))
 				$offset = $argv[1];
@@ -81,13 +74,6 @@ class game {
 				debugvar($offset, 'Location');
 			}
 		}
-		if (isset($addresses[$offset]['name']) && ($addresses[$offset]['name'] != ""))
-			$this->metadata['offsetname'] = $addresses[$offset]['name'];
-		else {
-			$cpu = cpuFactory::getCPU($game['processor']);
-			$this->metadata['offsetname'] = sprintf($cpu->addressFormat(), $offset);
-		}
-		debugvar(sprintf('%f seconds', microtime(true) - $GLOBALS['time_start']), 'Pre-module time');
 		//What are we doing?
 		if (in_array($offset, $magicvalues, true))
 			$modname = $offset;
@@ -112,28 +98,41 @@ class game {
 				}
 		}
 		$module->setDataSource($source);
+		if (!isset($addresses[$offset]))
+			$addresses[$offset] = array();
+		//var_dump($addresses[$offset]);
+		$module->setAddress($addresses[$offset]);
 		$module->setAddresses($addresses);
+		$module->setMetadata($this->metadata);
 		$module->setGameData($game);
-		$this->metadata['description'] = $module->getDescription();
-		if ($this->metadata['description'] != '') { }
-		else if (isset($addresses[$offset]['description']))
-			$this->metadata['description'] = $addresses[$offset]['description'];
-		else if (isset($addresses[$offset]['name']))
-			$this->metadata['description'] = $addresses[$offset]['name'];
+		$module->init($offset);
+		if (isset($addresses[$offset]['name']) && ($addresses[$offset]['name'] != ""))
+			$this->metadata['offsetname'] = $addresses[$offset]['name'];
+		else
+			$this->metadata['offsetname'] = sprintf($cpu->addressFormat(), $source->currentOffset());
+		$tmpdesc = $module->getDescription();
+		$this->metadata['addrformat'] = $cpu->addressformat();
+		if ($tmpdesc != '')
+			$this->metadata['description'] = $tmpdesc;
+		else if (isset($addresses[$source->currentOffset()]['description']))
+			$this->metadata['description'] = $addresses[$source->currentOffset()]['description'];
+		else if (isset($addresses[$source->currentOffset()]['name']))
+			$this->metadata['description'] = $addresses[$source->currentOffset()]['name'];
 		else {
-			$cpu = cpuFactory::getCPU($game['processor']);
-			$this->metadata['description'] = sprintf($cpu->addressformat(), $offset);
+			$this->metadata['description'] = sprintf($cpu->addressformat(), $source->currentOffset());
 		}
 		$this->metadata['template'] = $module->getTemplate();
 		$output = $module->execute($offset);
-		if (isset($addresses[$source->currentOffset()]['name']) && ($addresses[$source->currentOffset()]['name'] != ""))
-			$this->metadata['nextoffset'] = $addresses[$source->currentOffset()]['name'];
+		$nextoffset = $source->currentOffset();
+		if (isset($addresses[$offset]['size']))
+			$nextoffset = $offset + $addresses[$offset]['size'];
+		if (isset($addresses[$nextoffset]['name']) && ($addresses[$nextoffset]['name'] != ""))
+			$this->metadata['nextoffset'] = $addresses[$nextoffset]['name'];
 		else {
 			$cpu = cpuFactory::getCPU($game['processor']);
-			$this->metadata['nextoffset'] = sprintf($cpu->addressFormat(), $platform->currentOffset());
+			$this->metadata['nextoffset'] = sprintf($cpu->addressFormat(), $nextoffset);
 		}
-		//$this->metadata['nextoffset'] = decimal_to_function($source->currentOffset());
-		$this->metadata = array_merge($this->metadata, $module->getMetadata());
+		//$this->metadata = array_merge($this->metadata, $module->getMetadata());
 		return $output;
 	}
 	private function decimal_to_function($input) {

@@ -20,8 +20,6 @@ class cpu_z80 extends cpucore {
 				$opcode = ($opcode<<8)+$this->dataSource->getByte();
 			$args = array();
 			$val = 0;
-			if (isset($addresses[$this->initialoffset]['labels']) && isset($addresses[$this->initialoffset]['labels'][$this->currentoffset&0xFFFF]))
-				$output[] = array('label' => $addresses[$this->initialoffset]['labels'][$this->currentoffset&0xFFFF]);
 			//if (!isset($this->opcodes[$opcode]))
 			//	throw new Exception(sprintf('Undefined opcode: 0x%02X', $opcode));
 			else if (!isset($this->opcodes[$opcode])) {
@@ -44,10 +42,6 @@ class cpu_z80 extends cpucore {
 			}
 			if (isset($this->opcodes[$opcode]['branch'])) {
 				$val = $this->currentoffset+uint($val, 8)+$this->opcodes[$opcode]['Size']+1;
-				if (isset($addresses[$this->initialoffset]['labels'][$val&0xFFFF])) {
-					$tmp['uri'] = sprintf('%04X#%s', $this->initialoffset, $addresses[$this->initialoffset]['labels'][$val&0xFFFF]);
-					$tmp['name'] = $addresses[$this->initialoffset]['labels'][$val&0xFFFF];
-				}
 				$this->branches[$val] = '';
 			}
 			if (isset($this->opcodes[$opcode]['Address']))

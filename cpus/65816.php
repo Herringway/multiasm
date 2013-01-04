@@ -1,6 +1,5 @@
 <?php
 class cpu_65816 extends cpucore {
-	private $opcodes;
 	private $processorFlags;
 	private $DBR;
 	private $PBR;
@@ -16,21 +15,18 @@ class cpu_65816 extends cpucore {
 		$this->processorFlags['8 Bit Index'] = true;
 		$this->processorFlags['Emulation'] = true;
 		$this->farthestbranch = 0;
-		if (!isset($this->opcodes))
+		if ($this->opcodes === array())
 			$this->opcodes = yaml_parse_file('./cpus/65816_opcodes.yml');
 	}
 	public function getDefault() {
 		$this->dataSource->seekTo(0xFFFC);
 		return $this->dataSource->getShort();
 	}
-	public function getOpcodes() {
-		return $this->opcodes;
-	}
 	private function fix_addr($instruction, $val) {
 		if (isset($this->opcodes[$instruction]['addressing']['UseDBR']))
 			return ($this->DBR << 16) + $val;
 		if (($this->opcodes[$instruction]['addressing']['type'] == 'relative') || ($this->opcodes[$instruction]['addressing']['type'] == 'relativelong'))
-			return ($this->currentoffset+uint($val+2,8 * $this->opcodes[$instruction]['addressing']['size']))&0xFFFF;
+			return ($this->PBR<<16) + (($this->currentoffset+uint($val+2,8 * $this->opcodes[$instruction]['addressing']['size']))&0xFFFF);
 		if (isset($this->opcodes[$instruction]['addressing']['UsePBR']))
 			return ($this->PBR << 16) + $val;
 		return $val;
@@ -65,16 +61,17 @@ class cpu_65816 extends cpucore {
 			if ($tmpoutput['args'][0]&0x20)
 				$this->processorFlags['8 Bit Accum'] = ($tmpoutput['opcode'] != 0xC2);
 		}
-		//if (isset($this->opcodes[$tmpoutput['opcode']]['undefined']))
-		//	throw new Exception("Undefined opcode encountered.");
 			
 		$fulladdr = $this->fix_addr($tmpoutput['opcode'], $tmpoutput['value']);
 		
-		if (($this->opcodes[$tmpoutput['opcode']]['addressing']['type'] == 'relative') && !in_array($fulladdr + ($this->PBR<<16), $this->branches))
-			$this->branches[] = $fulladdr + ($this->PBR<<16);
-			
-		if ($this->opcodes[$tmpoutput['opcode']]['addressing']['type'] == 'relative')
-			$this->farthestbranch = max($this->farthestbranch, $fulladdr + ($this->currentoffset&0xFF0000));
+		if ($this->opcodes[$tmpoutput['opcode']]['addressing']['type'] == 'relative') {
+			$this->farthestbranch = max($this->farthestbranch, $fulladdr);
+			if (!in_array($fulladdr, $this->branches))
+				$this->branches[] = $fulladdr;
+		}
+		
+		if (isset($this->opcodes[$tmpoutput['opcode']]['addressing']['target']))
+			$tmpoutput['target'] = $fulladdr;
 			
 		if (isset($this->opcodes[$tmpoutput['opcode']]['addressing']['addrformat']))
 			$tmpoutput['value'] = sprintf($this->opcodes[$tmpoutput['opcode']]['addressing']['addrformat'], $tmpoutput['value'],isset($tmpoutput['args'][0]) ? $tmpoutput['args'][0] : 0,isset($tmpoutput['args'][1]) ? $tmpoutput['args'][1] : 0, isset($tmpoutput['args'][2]) ? $tmpoutput['args'][2] : 0, $this->currentoffset>>16, ($this->currentoffset+uint($tmpoutput['value']+$size+1,$size*8))&0xFFFF);

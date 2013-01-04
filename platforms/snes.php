@@ -3,13 +3,11 @@ class snes extends platform {
 	private $isHiROM;
 	private $registers;
 	
-	const extension = 'sfc';
-	
 	function __construct() {
 		if (!isset($this->registers))
 			$this->registers = array();
 		$this->registers += yaml_parse_file('platforms/snes_registers.yml');
-		if (isset($GLOBALS['game']['superfx']) && ($GLOBALS['game']['superfx'] == true))
+		if (isset($this->game['superfx']) && ($this->game['superfx'] == true))
 			$this->registers += yaml_parse_file('platforms/snes_superfx.yml');
 	}
 	public function map($offset) {
@@ -21,8 +19,8 @@ class snes extends platform {
 				return array('rom', ($offset&0x3FFFFF));
 			$this->detectHiROM();
 			if ($this->isHiROM) {
-				if (($offset >= 0x300000) && ($offset < 0x3F0000) && (($offset&0xFFFF) >= 0x6000) && (($offset&0xFFFF) < 0x7FFF))
-					return array('sram', ($offset&0xDFFFFF));
+				if ((($offset > 0x200000) && ($offset < 0x3F0000) || (($offset > 0xA00000) && ($offset < 0xBF0000))) && (($offset&0xFFFF) >= 0x6000) && (($offset&0xFFFF) < 0x7FFF))
+					return array('sram', ($offset&0x1FFF) + (($offset&0x1F0000)>>3));
 				else if ($offset&0x8000)
 					return array('rom', ($offset&0x3FFFFF));
 				else
@@ -55,6 +53,7 @@ class snes extends platform {
 			debugvar($trueOffset, 'true offset');
 			return $this->dataSource[$source]->isInRange($trueOffset);
 		} catch (Exception $e) {
+			dprintf('caught exception: %s', $e->msg());
 		}
 		return false;
 	}

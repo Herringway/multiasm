@@ -27,6 +27,14 @@ class table_int implements table_data {
 			$output = uint($this->details['signed'], $this->details['size']*8);
 		if (isset($this->details['values'][$output]))
 			$output = $this->details['values'][$output];
+		if (isset($this->details['bitvalues'])) {
+			$val = $output;
+			$output = array();
+			$i = 0;
+			foreach ($this->details['bitvalues'] as $field) {
+				$output[$field] = ($val&(1<<($i++))) > 0;
+			}
+		}
 		return $output;
 	}
 }
@@ -119,8 +127,6 @@ class table_table implements table_data {
 			foreach ($this->details['entries'] as $entry) {
 				if ($i++ > 0x10000)
 					break 2;
-				if (isset($entry['size']))
-					$entry['size'] = eval('return '.str_replace(array_keys($ints), $ints, $entry['size']).';');
 				$size = isset($entry['size']) ? $entry['size'] : 0;
 				
 				$value = $this->getSubValue(isset($entry['type']) ? $entry['type'] : 'int', $entry, $size);
@@ -174,7 +180,7 @@ class table_bitfield implements table_data {
 		return $output;
 	}
 }
-class table_text implements table_data {
+class table_script implements table_data {
 	private $source;
 	private $details;
 	public function __construct(filter $source, $gamedetails, $entry) {
@@ -184,57 +190,77 @@ class table_text implements table_data {
 	}
 	public function getValue() {
 		$initialsize = (!isset($this->details['size']) || $this->details['size'] == 0) ? 0x100000 : $this->details['size'];
+		$terminator = null;
+		$terminatorcount = 1;
+		$terminatorsreached = 0;
+		if (isset($this->details['terminator']))
+			$terminator = $this->details['terminator'];
+		if (isset($this->details['terminator repeat']))
+			$terminatorcount = $this->details['terminator repeat'];
 		$hideccs = false;
 		static $chars = 0;
 		if (!isset($this->details['charset']))
-			$charset = $this->gamedetails['defaulttext'];
+			$charset = $this->gamedetails['defaultscript'];
 		else
 			$charset = $this->details['charset'];
 		$output = '';
 		for ($i = 0; $i < $initialsize; $i++) {
 			$length = 1;
 			$val = $this->source->getByte();
+			$vals = array($val);
 			if ($charset === 'ascii') {
 				$output .= chr($val);
 			} else if ($charset === 'utf16') {
-				$val = $val + ($this->source->getByte()<<8);
+				$newval = $this->source->getByte()<<8;
+				$val = $val + $newval;
+				$vals[] = $newval;
 				$output .= json_decode(sprintf('"\u%04X"',$val));
 			} else {
-				if (!isset($this->gamedetails['texttables'][$charset]))
+				if (!isset($this->gamedetails['scripttables'][$charset]))
 					throw new Exception('Unknown Text Format');
 				unset($replacement);
-				if (isset($this->gamedetails['texttables'][$charset]['replacements'][$val]))
-					$replacement = $this->gamedetails['texttables'][$charset]['replacements'][$val];
-				if (isset($this->gamedetails['texttables'][$charset]['lengths'][$val])) {
+				if (isset($this->gamedetails['scripttables'][$charset]['replacements'][$val]))
+					$replacement = $this->gamedetails['scripttables'][$charset]['replacements'][$val];
+				if (isset($this->gamedetails['scripttables'][$charset]['lengths'][$val])) {
 					$cval = 0;
-					$length = $entry = $this->gamedetails['texttables'][$charset]['lengths'][$val];
+					$length = $entry = $this->gamedetails['scripttables'][$charset]['lengths'][$val];
 					if (is_array($entry))
 						$length = $entry['default'];
 						
 					for ($j = 1; $j < $length; $j++) {
 						$cval = $this->source->getByte();
 						$val = ($val<<8) + $cval;
+						$vals[] = $cval;
 						if (isset($entry[$cval])) {
 							$length = $entry = $entry[$cval];
 							if (is_array($entry))
 								$length = $entry['default'];
 						}
-						if (isset($replacement[$cval]))
+						if (isset($replacement) && is_array($replacement) && isset($replacement[$cval]))
 							$replacement = $replacement[$cval];
-						else
-							unset($replacement);
+						//else
+						//	unset($replacement);
 						$i++;
 					}
 				}
 				if (isset($replacement))
-					$output .= $replacement;
+					$output .= $this->fillvalues($replacement, $val, $vals);
 				else if (!$hideccs)
 					$output .= sprintf('[%0'.(max($length,1)*2).'X]',$val);
 			}
-			if (isset($this->details['terminator']) && ($val === $this->details['terminator']))
+			if (($val === $terminator) && (++$terminatorsreached >= $terminatorcount))
 				break;
 		}
 		return trim($output);
+	}
+	private function fillvalues($str, $fval, $ivals) {
+		$needles = array('[VALUE]');
+		$newneedles = array($fval);
+		for ($i = 0; $i < count($ivals); $i++) {
+			$needles[] = sprintf('[%02X]', $i);
+			$newneedles[] = $ivals[$i];
+		}
+		return str_replace($needles, $newneedles, $str);
 	}
 }
 

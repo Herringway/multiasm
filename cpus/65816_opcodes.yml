@@ -78,6 +78,7 @@
   addressing: &absolutelong
     type: absolutelong
     addrformat: $%06X
+    target: y
     size: 3
 0x10: 
   Mnemonic: BPL
@@ -85,6 +86,7 @@
     type: relative
     addrformat: $%6$04X
     size: 1
+    target: y
     anchorformat: '%s#%s'
 0x11: 
   Mnemonic: ORA
@@ -175,6 +177,7 @@
     type: absolutejmp
     UsePBR: y
     addrformat: $%04X
+    target: y
     size: 2
     anchorformat: '%s#%s'
 0x21: 
@@ -184,6 +187,7 @@
   Mnemonic: JSL
   addressing: &absolutelongjmp
     type: absolutelongjmp
+    target: y
     addrformat: $%06X
     size: 3
 0x23: 
@@ -286,7 +290,6 @@
 0x42: 
   Mnemonic: WDM
   addressing: *none
-  undefined: y
 0x43: 
   Mnemonic: EOR
   addressing: *stackrelative
@@ -323,6 +326,8 @@
     type: absolutejmp
     addrformat: $%04X
     size: 2
+    target: y
+    UsePBR: y
     anchorformat: '%s#%s'
     jump: true
 0x4D: 
@@ -502,6 +507,7 @@
   addressing: &relativelong
     type: relativelong
     addrformat: $%6$04X
+    target: y
     size: 2
 0x83: 
   Mnemonic: STA

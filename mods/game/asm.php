@@ -12,27 +12,34 @@ class asm extends gamemod {
 		}
 		return $this->cpucore->getTemplate();
 	}
-	public function execute($arg) {
+	public function init($arg) {
 		$this->offset = $arg;
 		$this->initCPU($this->game['processor']);
 		if ($this->offset == -1)
 			$this->offset = $this->cpucore->getDefault();
-		if (isset($this->addresses[$this->offset]['size']))
-			$this->cpucore->setBreakPoint($this->offset + $this->addresses[$this->offset]['size']);
+		$this->source->seekTo($this->offset);
+		if (isset($this->address['size']))
+			$this->cpucore->setBreakPoint($this->offset + $this->address['size']);
+	}
+	public function execute($arg) {
 		$output = $this->cpucore->execute($this->offset);
 		$this->metadata['opcodes'] = $this->cpucore->getOpcodes();
 		
 		$this->metadata['addrformat'] = $this->cpucore->addressFormat();
 		$this->metadata['opcodeformat'] = $this->cpucore->opcodeFormat();
 			
-		if (isset($this->addresses[$this->offset]['arguments']))
-			$this->metadata['comments'] = $this->addresses[$this->offset]['arguments'];
+		if (isset($this->address['arguments']))
+			$this->metadata['comments'] = $this->address['arguments'];
+			
 
 		$i = 0;
-		foreach ($this->cpucore->getBranches() as $branch) {
+		$branches = $this->cpucore->getBranches();
+		sort($branches);
+		foreach ($branches as $branch) {
 			$label = 'UNKNOWN'.($i++);
-			if (isset($this->addresses[$this->offset]['labels'][$this->offset - $branch]))
-				$label = $this->addresses[$this->offset]['labels'][$this->offset - $branch];
+			if (isset($this->address['labels'][$this->offset - $branch]))
+				$label = $this->address['labels'][$this->offset - $branch];
+			$labels[] = $label;
 			foreach ($output as $k=>$v) {
 				if (isset($v['offset']) && ($v['offset'] == $branch)) {
 					array_splice($output, $k, 0, array(array('label' => $label)));
@@ -40,6 +47,25 @@ class asm extends gamemod {
 				}
 			}
 			$this->metadata['menuitems'][$label] = $label;
+		}
+		foreach($output as &$opcode) {
+			if (isset($opcode['target'])) {
+				$opcode['uri'] = sprintf($this->cpucore->addressFormat(), $opcode['target']);
+				if (isset($this->addresses[$opcode['target']]['name'])) {
+					$opcode['name'] = $this->addresses[$opcode['target']]['name'];
+					$opcode['uri'] = $this->addresses[$opcode['target']]['name'];
+				}
+				if (($opcode['target'] >= $arg) && ($opcode['target'] < $this->source->currentOffset())) {
+					$opcode['uri'] = $this->metadata['offsetname'].'#'.$labels[array_search($opcode['target'], $branches)];
+					$opcode['name'] = $labels[array_search($opcode['target'], $branches)];
+				}
+				$opcode['comments'] = array();
+				if(isset($this->addresses[$opcode['target']]['description']))
+					$opcode['comments']['description'] = $this->addresses[$opcode['target']]['description'];
+				if(isset($this->addresses[$opcode['target']]['arguments']))
+					$opcode['comments'] += $this->addresses[$opcode['target']]['arguments'];
+				
+			}
 		}
 		return array($output);
 	}

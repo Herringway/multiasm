@@ -1,12 +1,11 @@
 <?php
-class platform extends platform_base {
+class SPC700 extends platform {
 	const extension = 'spc';
 	
-	public function map_rom($offset) {
-		if ($offset < 0x10000)
-			return $offset+0x200;
-		else
-			throw new Exception("Supplied offset too large!");
+	public function map($offset) {
+		if (($offset >= 0x10000) || ($offset < 0))
+			throw new Exception("Out of range!");
+		return array('ram', $offset);
 	}
 }
 ?>

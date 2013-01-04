@@ -188,19 +188,28 @@ function defaultv($format) {
 }
 abstract class gamemod {
 	const title = '';
+	protected $address;
 	protected $addresses;
 	protected $source;
 	protected $game;
 	protected $metadata = array();
-	
+	public function setAddresses($addrs) {
+		$this->addresses = $addrs;
+	}
 	public function getMetadata() {
 		return $this->metadata;
 	}
 	public function getDescription() {
 		return '';
 	}
-	public function setAddresses($addr) {
-		$this->addresses = $addr;
+	public function init($arg) {
+	
+	}
+	public function setMetadata(&$metadata) {
+		$this->metadata = &$metadata;
+	}
+	public function setAddress($addr) {
+		$this->address = $addr;
 	}
 	public function setDataSource($platform) {
 		$this->source = $platform;
@@ -222,13 +231,14 @@ abstract class cpucore {
 	protected $branches = array();
 	protected $dataSource;
 	protected $platform;
+	protected $opcodes = array();
 	protected $breakpoints = array();
 	
 	public static function getTemplate() { return 'assembly'; }
 	public static function addressFormat() { return '%X'; }
 	public static function opcodeFormat() { return '%02X'; }
 	public static function getOptions() { return array(); }
-	public function getOpcodes() { return array(); }
+	public function getOpcodes() { return $this->opcodes; }
 	public function getCurrentOffset() { return $this->currentoffset; }
 	public function getInitialOffset() { return $this->initialoffset; }
 	public function getBranches() { ksort($this->branches); return $this->branches; }
@@ -240,7 +250,6 @@ abstract class cpucore {
 	protected function executeInstruction($instruction) { }
 	public function execute($addr) {
 		$this->initializeProcessor();
-		$this->dataSource->seekTo($addr);
 		$this->initialoffset = $this->currentoffset = $addr;
 		$this->setup($addr);
 		$output = array();

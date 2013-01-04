@@ -37,6 +37,9 @@ ob_start();
 $time_start = microtime(true);
 $settings = new settings('settings.yml');
 
+if ($settings['debug']) {
+	ini_set('xdebug.var_display_max_depth', -1);
+}
 $cache = new cache();
 
 require_once 'Twig/Autoloader.php';
@@ -100,7 +103,7 @@ $data = $mod->execute($argv);
 
 //Display stuff
 $displaydata = array_merge($metadata, $mod->getMetadata());
-switch($GLOBALS['format']) {
+switch($format) {
 case 'yml':
 		header('Content-Type: text/plain; charset=UTF-8');
 	if ($data !== null)
@@ -120,5 +123,5 @@ default:
 	break;
 }
 debugvar(sprintf('%f MB', memory_get_usage()/1024/1024), 'Total Memory usage');
-debugvar(sprintf('%f seconds', microtime(true) - $GLOBALS['time_start']), 'Total Execution time');
+debugvar(sprintf('%f seconds', microtime(true) - $time_start), 'Total Execution time');
 ?>
