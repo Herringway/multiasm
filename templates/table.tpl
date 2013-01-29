@@ -1,4 +1,4 @@
 {%extends "base.tpl"%}
 {%block content%}
-{{data[1]|yaml}}
+{{data|yaml}}
 {%endblock%}

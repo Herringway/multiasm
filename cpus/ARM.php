@@ -1,6 +1,5 @@
 <?php
 class cpu_ARM extends cpucore {
-	private $opcodes;
 	private $THUMB;
 	private $counter;
 	const opcodeformat = '%08X';
@@ -10,7 +9,7 @@ class cpu_ARM extends cpucore {
 		return ($this->dataSource->getLong()&0xFFFFFF) + 0x8000000;
 	}
 	protected function initializeProcessor() {
-		if (!isset($this->opcodes))
+		if ($this->opcodes === array())
 			$this->opcodes = yaml_parse_file('./cpus/ARM_opcodes.yml');
 		$this->THUMB = false;
 	}

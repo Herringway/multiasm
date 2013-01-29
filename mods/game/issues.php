@@ -8,23 +8,23 @@ class issues extends gamemod {
 		foreach ($this->addresses as $offset => $entry) {
 			if (!is_numeric($offset))
 				continue;
-			if ($this->platform->identifyArea($offset) != 'rom')
+			if ($this->source->identifyArea($offset) != 'rom')
 				continue;
-			if (isset($entry['ignore']) && ($entry['ignore'] == true))
+			if (isset($entry['Ignore']) && ($entry['Ignore'] == true))
 				continue;
 			$problems = array();
 			if ($prev > $offset)
 				$problems[] = 'Overlap detected';
 			if (!isset($entry['size']))
 				$problems[] = 'No size defined';
-			if (!isset($entry['type']))
+			if (!isset($entry['Type']))
 				$problems[] = 'No type defined';
-			if (!isset($entry['name']) && (!isset($entry['type']) || ($entry['type'] != 'empty')))
+			if (!isset($entry['name']) && (!isset($entry['Type']) || ($entry['Type'] != 'empty')))
 				$problems[] = 'No name defined';
-			if (!isset($entry['description']) && (!isset($entry['type']) || ($entry['type'] != 'empty')))
+			if (!isset($entry['description']) && (!isset($entry['Type']) || ($entry['Type'] != 'empty')))
 				$problems[] = 'No description defined';
 			if ($problems != array())
-				$allproblems[decimal_to_function($offset)] = $problems;
+				$allproblems[$offset] = $problems;
 			//if (isset($entry['size']) && !isset($this->addresses[$offset+$entry['size']]) && ($this->platform->map_rom($offset+$entry['size']) < $this->game['size']))
 			//	$allproblems[decimal_to_function($offset+$entry['size'])] = array('Undefined area!');
 			$prev = $offset+(isset($entry['size']) ? $entry['size'] : 0);

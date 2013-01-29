@@ -1,4 +1,12 @@
 <?php
+//ob_start();
+require_once 'libs/chromephp/ChromePhp.php';
+require_once 'libs/commonfunctions.php';
+require_once 'libs/cache.php';
+require_once 'libs/settings.php';
+require_once 'Twig/Autoloader.php';
+Twig_Autoloader::register();
+require_once 'libs/twigext.php';
 function loadModules($path, $mod) {
 	for ($dir = opendir($path); $file = readdir($dir); ) {
 		if (substr($file, -4) == ".php") {
@@ -23,18 +31,12 @@ if (count($_GET) > 0) {
 			if ($val == 'true')
 				$options[] = $key;
 			else if ($val != null)
-				$options[] = sprintf('%s=%s', urlencode($key), urlencode($val));
+				$options[] = sprintf('%s=%s', $key, $val);
 		}
-	header(sprintf('Location: http://%s/%s/',$_SERVER['HTTP_HOST'], implode('/', $options)));
+	header(sprintf('Location: http://%s/%s/',$_SERVER['HTTP_HOST'], urlencode(implode('/', $options))));
 	die();
 }
-require_once 'libs/chromephp/ChromePhp.php';
-require_once 'libs/commonfunctions.php';
-require_once 'libs/cache.php';
-require_once 'libs/settings.php';
-
-ob_start();
-$time_start = microtime(true);
+$metadata['time_start'] = microtime(true);
 $settings = new settings('settings.yml');
 
 if ($settings['debug']) {
@@ -42,9 +44,6 @@ if ($settings['debug']) {
 }
 $cache = new cache();
 
-require_once 'Twig/Autoloader.php';
-Twig_Autoloader::register();
-require_once 'libs/twigext.php';
 header('Content-Type: text/html; charset=utf-8');
 $loader = new Twig_Loader_Filesystem('templates');
 $twig = new Twig_Environment($loader, array('debug' => $settings['debug']));
@@ -53,15 +52,16 @@ $twig->addExtension(new Penguin_Twig_Extensions());
 
 $uristring = str_replace($_SERVER['SCRIPT_NAME'], '', $_SERVER['REQUEST_URI']);
 $argv = array_slice(explode('/', $uristring),1);
-if (strstr($argv[count($argv)-1], '.') !== FALSE)
-	$argv[count($argv)-1] = strstr($argv[count($argv)-1], '.', true);
-$opts = array();
+debugvar(substr($argv[count($argv)-1], 0, strrpos($argv[count($argv)-1], '.')), 'extension detection');
+if ((substr($argv[count($argv)-1], 0, strrpos($argv[count($argv)-1], '.')) != $argv[count($argv)-1]) && (substr($argv[count($argv)-1], 0, strrpos($argv[count($argv)-1], '.')) != ''))
+	$argv[count($argv)-1] = substr($argv[count($argv)-1], 0, strrpos($argv[count($argv)-1], '.'));
+$metadata['options'] = array();
 for ($i = 2; $i < count($argv); $i++) {
 	$v = explode('=', $argv[$i]);
 	if (isset($v[1]))
-		$opts[$v[0]] = $v[1];
+		$metadata['options'][$v[0]] = urldecode($v[1]);
 	else
-		$opts[$v[0]] = true;
+		$metadata['options'][$v[0]] = true;
 }
 
 $types = array();
@@ -81,9 +81,8 @@ else
 debugvar($_SERVER, 'Server');
 
 //Options!
-$metadata['options'] = $opts;
 debugvar($argv, 'args');
-debugvar($opts, 'options');
+debugvar($metadata['options'], 'options');
 debugmessage("Loading Core Modules", 'info');
 //Load Modules
 if ($settings['gamemenu']) {
@@ -98,8 +97,13 @@ if ($settings['gamemenu']) {
 $mainmod = loadModules('./mods/', $argv[0]);
 debugvar($mainmod, 'Main Module');
 $mod = new $mainmod();
-$data = $mod->execute($argv);
+$mod->setMetadata($metadata);
+//$query = '';
+//if (isset($metadata['options']['query']))
+//	$query = $metadata['options']['query'];
+$data = $mod->getData($argv);
 
+$rawdata = $mod->toBinaryData($argv, $data);
 
 //Display stuff
 $displaydata = array_merge($metadata, $mod->getMetadata());
@@ -107,9 +111,9 @@ switch($format) {
 case 'yml':
 		header('Content-Type: text/plain; charset=UTF-8');
 	if ($data !== null)
-		foreach ($data as $yamldoc)
-			if (!isset($yamldoc['hideme']) || !$yamldoc['hideme'])
-				echo yaml_emit($yamldoc, YAML_UTF8_ENCODING, YAML_ANY_BREAK);
+		//foreach ($data as $yamldoc)
+		//	if (!isset($yamldoc['hideme']) || !$yamldoc['hideme'])
+				echo yaml_emit($data, YAML_UTF8_ENCODING, YAML_ANY_BREAK);
 	break;
 case 'json':
 	header('Content-Type: application/json; charset=UTF-8');
@@ -119,9 +123,10 @@ default:
 	debugvar($mod->getMetadata()['template'], 'displaymode');
 	header('Content-Type: text/html; charset=UTF-8');
 	$displaydata['data'] = $data;
+	$displaydata['errors'] = $GLOBALS['ERRORS'];
 	echo $twig->render($displaydata['template'].'.tpl', $displaydata);
 	break;
 }
 debugvar(sprintf('%f MB', memory_get_usage()/1024/1024), 'Total Memory usage');
-debugvar(sprintf('%f seconds', microtime(true) - $time_start), 'Total Execution time');
+debugvar(sprintf('%f seconds', microtime(true) - $metadata['time_start']), 'Total Execution time');
 ?>

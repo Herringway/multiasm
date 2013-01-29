@@ -796,6 +796,7 @@
   Mnemonic: CALL
   PrintFormat: NZ, %s
   Address: "$%04X"
+  Target: y
   Jump: y
   Size: 2
 0xc5:
@@ -833,6 +834,7 @@
   Address: "$%04X"
   Fixaddr: 4
   Jump: y
+  Target: y
   Size: 2
 0xce:
   Mnemonic: ADC

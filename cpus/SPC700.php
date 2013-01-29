@@ -35,5 +35,4 @@ class cpu_SPC700 extends cpucore {
 		return $tmp;
 	}
 }
-
 ?>

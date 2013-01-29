@@ -4,18 +4,19 @@ class rammap extends gamemod {
 	const title = 'RAM Map';
 	public function execute() {
 		$output = array();
-		foreach ($this->addresses as $addr=>$data) {
+		foreach (addressFactory::getAddresses() as $addr=>$data) {
 			if (!is_numeric($addr))
 				continue;
 			try {
-				if (($this->platform->identifyArea($addr) == 'ram') && !isset($data['ignore']))
-					$output[] = array('address' => $addr, 'type' => isset($data['type']) ? $data['type'] : 'unknown', 'name' => !empty($data['name']) ? $data['name'] : '', 'description' => isset($data['description']) ? $data['description'] : '', 'size' => isset($data['size']) ? $data['size'] : 0);
+				if ($this->source->identifyArea($addr) == 'ram')
+					$output[$addr] = array('address' => $addr, 'type' => isset($data['Type']) ? $data['Type'] : 'unknown', 'name' => !empty($data['Name']) ? $data['Name'] : '', 'description' => isset($data['Description']) ? $data['Description'] : '', 'size' => isset($data['Size']) ? $data['Size'] : 0);
 			} catch (Exception $e) { }
 		}
-		return array($output);
+		ksort($output);
+		return $output;
 	}
 	public function getTemplate() {
-		return 'rammap';
+		return 'rommap';
 	}
 }
 ?>

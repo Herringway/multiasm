@@ -1,13 +1,12 @@
 <?php
 require 'platforms/platformFactory.php';
 require 'libs/addressFactory.php';
-class game {
+class game extends coremod {
 	const magic = '';
-	private $metadata;
-	public function getMetadata() {
-		return $this->metadata;
+	public function toBinaryData($argv, $data) {
+	
 	}
-	public function execute($argv) {
+	public function getData($argv, $query = '') {
 		global $settings;
 		//Determine which game to work with
 		$gameid = $settings['gameid'];
@@ -16,10 +15,11 @@ class game {
 			
 		debugmessage("Loading cached data", 'info');
 		//Load game data. from cache if possible
-		list($game, $addresses) = AddressFactory::getAddresses($gameid);
+		AddressFactory::loadGame($gameid);
+		$game = AddressFactory::getGameMetadata();
+		debugvar($game, 'game');
 		$game['id'] = $gameid;
-		
-		$platform = platformFactory::getPlatform($game['platform']);
+		$platform = platformFactory::getPlatform($game['Platform']);
 		for ($dir = opendir($settings['rompath']); $file = readdir($dir);) {
 			$d = explode('.', $file);
 			if ($d[0] == $gameid) {
@@ -61,26 +61,29 @@ class game {
 				}
 			}
 		}
-		$cpu = cpuFactory::getCPU($game['processor']);
+		$cpu = cpuFactory::getCPU($game['Processor']);
 		debugmessage("Determining location", 'info');
 		if (isset($argv[1]) && ($argv[1] != null)) {
 			if (in_array($argv[1], $magicvalues))
 				$offset = $argv[1];
 			else {
-				if (isset($addresses[$argv[1]]['offset']))
-					$offset = $addresses[$argv[1]]['offset'];
+				$offset = addressFactory::getAddressFromName($argv[1]);
 				if (is_numeric('0x'.$argv[1]) && $platform->isInRange(hexdec($argv[1])))
 					$offset = hexdec($argv[1]);
 				debugvar($offset, 'Location');
 			}
 		}
 		//What are we doing?
+		$addressEntry = addressFactory::getAddressEntryFromOffset($offset);
+		if ($addressEntry == null)
+			$addressEntry = array();
 		if (in_array($offset, $magicvalues, true))
 			$modname = $offset;
 		else
-			if (isset($addresses[$offset]['type']))
-				switch($addresses[$offset]['type']) {
-					case 'data': $modname = isset($addresses[$offset]['entries']) ? 'table' : 'hex'; break;
+			if (isset($addressEntry['Type']))
+				switch($addressEntry['Type']) {
+					case 'data': $modname = isset($addressEntry['Entries']) ? 'table' : 'hex'; break;
+					case 'empty': $modname = 'hex'; break;
 					default: $modname = 'asm'; break;
 				}
 			else
@@ -89,54 +92,51 @@ class game {
 			$modname = $omodname;
 		$module = new $modname();
 		$source = $platform;
+		$platform->init();
 		if (is_int($offset) && ($offset > 0)) {
 			$source->seekTo($offset);
-			if (isset($addresses[$offset]['filters']))
-				foreach ($addresses[$offset]['filters'] as $filter) {
+			if (isset($addressEntry['Filters']))
+				foreach ($addressEntry['Filters'] as $filter) {
 					require_once 'filters/'.$filter.'.php';
 					$source = new $filter($source);
 				}
 		}
 		$module->setDataSource($source);
-		if (!isset($addresses[$offset]))
-			$addresses[$offset] = array();
-		//var_dump($addresses[$offset]);
-		$module->setAddress($addresses[$offset]);
-		$module->setAddresses($addresses);
+		$module->setAddress($addressEntry);
 		$module->setMetadata($this->metadata);
 		$module->setGameData($game);
 		$module->init($offset);
-		if (isset($addresses[$offset]['name']) && ($addresses[$offset]['name'] != ""))
-			$this->metadata['offsetname'] = $addresses[$offset]['name'];
+		if (isset($addressEntry['Name']) && ($addressEntry['Name'] != ""))
+			$this->metadata['offsetname'] = $addressEntry['Name'];
 		else
 			$this->metadata['offsetname'] = sprintf($cpu->addressFormat(), $source->currentOffset());
 		$tmpdesc = $module->getDescription();
 		$this->metadata['addrformat'] = $cpu->addressformat();
 		if ($tmpdesc != '')
 			$this->metadata['description'] = $tmpdesc;
-		else if (isset($addresses[$source->currentOffset()]['description']))
-			$this->metadata['description'] = $addresses[$source->currentOffset()]['description'];
-		else if (isset($addresses[$source->currentOffset()]['name']))
-			$this->metadata['description'] = $addresses[$source->currentOffset()]['name'];
+		else if (isset($addressEntry['Description']))
+			$this->metadata['description'] = $addressEntry['Description'];
+		else if (isset($addressEntry['Name']))
+			$this->metadata['description'] = $addressEntry['Name'];
 		else {
 			$this->metadata['description'] = sprintf($cpu->addressformat(), $source->currentOffset());
 		}
 		$this->metadata['template'] = $module->getTemplate();
-		$output = $module->execute($offset);
+		$output = $module->execute($offset, $query);
 		$nextoffset = $source->currentOffset();
-		if (isset($addresses[$offset]['size']))
-			$nextoffset = $offset + $addresses[$offset]['size'];
-		if (isset($addresses[$nextoffset]['name']) && ($addresses[$nextoffset]['name'] != ""))
-			$this->metadata['nextoffset'] = $addresses[$nextoffset]['name'];
+		if (isset($addressEntry['Size']))
+			$nextoffset = $offset + $addressEntry['Size'];
+		$nextEntry = addressFactory::getAddressEntryFromOffset($nextoffset);
+		if ($nextEntry === null)
+			$nextEntry = array();
+		if (isset($nextEntry['Name']) && ($nextEntry['Name'] != ""))
+			$this->metadata['nextoffset'] = $nextEntry['Name'];
 		else {
-			$cpu = cpuFactory::getCPU($game['processor']);
+			$cpu = cpuFactory::getCPU($game['Processor']);
 			$this->metadata['nextoffset'] = sprintf($cpu->addressFormat(), $nextoffset);
 		}
 		//$this->metadata = array_merge($this->metadata, $module->getMetadata());
 		return $output;
-	}
-	private function decimal_to_function($input) {
-		return (isset($addresses[$input]['name']) && ($addresses[$input]['name'] != "")) ? $addresses[$input]['name'] : sprintf(core::addressformat, $input);
 	}
 }
 ?>

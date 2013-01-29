@@ -8,18 +8,18 @@ class asm extends gamemod {
 		if (!isset($this->cpucore)) {
 			if (!isset($this->game))
 				throw new Exception('cannot get template without loaded game data');
-			$this->initCPU($this->game['processor']);
+			$this->initCPU($this->game['Processor']);
 		}
 		return $this->cpucore->getTemplate();
 	}
 	public function init($arg) {
 		$this->offset = $arg;
-		$this->initCPU($this->game['processor']);
+		$this->initCPU($this->game['Processor']);
 		if ($this->offset == -1)
 			$this->offset = $this->cpucore->getDefault();
 		$this->source->seekTo($this->offset);
-		if (isset($this->address['size']))
-			$this->cpucore->setBreakPoint($this->offset + $this->address['size']);
+		if (isset($this->address['Size']))
+			$this->cpucore->setBreakPoint($this->offset + $this->address['Size']);
 	}
 	public function execute($arg) {
 		$output = $this->cpucore->execute($this->offset);
@@ -28,8 +28,8 @@ class asm extends gamemod {
 		$this->metadata['addrformat'] = $this->cpucore->addressFormat();
 		$this->metadata['opcodeformat'] = $this->cpucore->opcodeFormat();
 			
-		if (isset($this->address['arguments']))
-			$this->metadata['comments'] = $this->address['arguments'];
+		if (isset($this->address['Arguments']))
+			$this->metadata['comments'] = $this->address['Arguments'];
 			
 
 		$i = 0;
@@ -37,8 +37,8 @@ class asm extends gamemod {
 		sort($branches);
 		foreach ($branches as $branch) {
 			$label = 'UNKNOWN'.($i++);
-			if (isset($this->address['labels'][$this->offset - $branch]))
-				$label = $this->address['labels'][$this->offset - $branch];
+			if (isset($this->address['Labels'][$branch - $this->offset]))
+				$label = $this->address['Labels'][$branch - $this->offset];
 			$labels[] = $label;
 			foreach ($output as $k=>$v) {
 				if (isset($v['offset']) && ($v['offset'] == $branch)) {
@@ -49,21 +49,23 @@ class asm extends gamemod {
 			$this->metadata['menuitems'][$label] = $label;
 		}
 		foreach($output as &$opcode) {
-			if (isset($opcode['target'])) {
-				$opcode['uri'] = sprintf($this->cpucore->addressFormat(), $opcode['target']);
-				if (isset($this->addresses[$opcode['target']]['name'])) {
-					$opcode['name'] = $this->addresses[$opcode['target']]['name'];
-					$opcode['uri'] = $this->addresses[$opcode['target']]['name'];
+			if (isset($opcode['target']) || isset($opcode['destination'])) {
+				$addr = isset($opcode['target']) ? $opcode['target'] : $opcode['destination'];
+				$opcode['uri'] = sprintf($this->cpucore->addressFormat(), $addr);
+				$targEntry = addressFactory::getAddressEntryFromOffset($addr);
+				if (isset($targEntry['Name'])) {
+					$opcode['name'] = $targEntry['Name'];
+					$opcode['uri'] = $targEntry['Name'];
 				}
-				if (($opcode['target'] >= $arg) && ($opcode['target'] < $this->source->currentOffset())) {
-					$opcode['uri'] = $this->metadata['offsetname'].'#'.$labels[array_search($opcode['target'], $branches)];
-					$opcode['name'] = $labels[array_search($opcode['target'], $branches)];
+				if (($addr >= $this->offset) && ($addr < $this->source->currentOffset())) {
+					$opcode['uri'] = $this->metadata['offsetname'].'#'.$labels[array_search($addr, $branches)];
+					$opcode['name'] = $labels[array_search($addr, $branches)];
 				}
 				$opcode['comments'] = array();
-				if(isset($this->addresses[$opcode['target']]['description']))
-					$opcode['comments']['description'] = $this->addresses[$opcode['target']]['description'];
-				if(isset($this->addresses[$opcode['target']]['arguments']))
-					$opcode['comments'] += $this->addresses[$opcode['target']]['arguments'];
+				if(isset($targEntry['Description']))
+					$opcode['comments']['description'] = $targEntry['Description'];
+				if(isset($targEntry['Arguments']))
+					$opcode['comments'] += $targEntry['Arguments'];
 				
 			}
 		}

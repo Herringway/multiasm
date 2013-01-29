@@ -1,10 +1,8 @@
 <?php
 class cpu_65816 extends cpucore {
-	private $processorFlags;
 	private $DBR;
 	private $PBR;
 	private $farthestbranch;
-	private $lastOpcode;
 	public static function addressFormat() {
 		return '%06X';
 	}
@@ -38,46 +36,47 @@ class cpu_65816 extends cpucore {
 	protected function fetchInstruction() {
 		if (($this->farthestbranch < $this->currentoffset) && isset($this->opcodes[$this->lastOpcode]['addressing']['special']) && ($this->opcodes[$this->lastOpcode]['addressing']['special'] == 'return'))
 			throw new Exception ('Return reached');
-		$tmpoutput = array();
-		$this->lastOpcode = $tmpoutput['opcode'] = $this->dataSource->getByte();
-		$tmpoutput['args'] = array();
+		$output = array();
+		$output['opcode'] = $this->dataSource->getByte();
+		$output['args'] = array();
 		
-		if ($this->opcodes[$tmpoutput['opcode']]['addressing']['size'] === 'index')
+		if ($this->opcodes[$output['opcode']]['addressing']['size'] === 'index')
 			$size = !$this->processorFlags['8 Bit Index']+1;
-		else if ($this->opcodes[$tmpoutput['opcode']]['addressing']['size'] === 'accum')
+		else if ($this->opcodes[$output['opcode']]['addressing']['size'] === 'accum')
 			$size = !$this->processorFlags['8 Bit Accum']+1;
 		else
-			$size = $this->opcodes[$tmpoutput['opcode']]['addressing']['size'];
-		$tmpoutput['value'] = 0;
-		//debugvar($size, 'opcode size');
+			$size = $this->opcodes[$output['opcode']]['addressing']['size'];
+		$output['value'] = 0;
 		for($j = 0; $j < $size; $j++) {
 			$t = $this->dataSource->getByte();
-			$tmpoutput['args'][] = $t;
-			$tmpoutput['value'] += $t<<($j*8);
+			$output['args'][] = $t;
+			$output['value'] += $t<<($j*8);
 		}
-		if (($tmpoutput['opcode'] == 0xC2) | ($tmpoutput['opcode'] == 0xE2)) {
-			if ($tmpoutput['args'][0]&0x10)
-				$this->processorFlags['8 Bit Index'] = ($tmpoutput['opcode'] != 0xC2);
-			if ($tmpoutput['args'][0]&0x20)
-				$this->processorFlags['8 Bit Accum'] = ($tmpoutput['opcode'] != 0xC2);
+		if (($output['opcode'] == 0xC2) | ($output['opcode'] == 0xE2)) {
+			if ($output['args'][0]&0x10)
+				$this->processorFlags['8 Bit Index'] = ($output['opcode'] != 0xC2);
+			if ($output['args'][0]&0x20)
+				$this->processorFlags['8 Bit Accum'] = ($output['opcode'] != 0xC2);
 		}
 			
-		$fulladdr = $this->fix_addr($tmpoutput['opcode'], $tmpoutput['value']);
+		$fulladdr = $this->fix_addr($output['opcode'], $output['value']);
 		
-		if ($this->opcodes[$tmpoutput['opcode']]['addressing']['type'] == 'relative') {
+		if (($fulladdr > $this->initialoffset) && (($this->opcodes[$output['opcode']]['addressing']['type'] == 'relative') || ($this->opcodes[$output['opcode']]['addressing']['type'] == 'absolutejmp'))) {
 			$this->farthestbranch = max($this->farthestbranch, $fulladdr);
 			if (!in_array($fulladdr, $this->branches))
 				$this->branches[] = $fulladdr;
 		}
 		
-		if (isset($this->opcodes[$tmpoutput['opcode']]['addressing']['target']))
-			$tmpoutput['target'] = $fulladdr;
+		if (isset($this->opcodes[$output['opcode']]['addressing']['target']))
+			$output['target'] = $fulladdr;
+		if (isset($this->opcodes[$output['opcode']]['addressing']['destination']))
+			$output['destination'] = $fulladdr;
 			
-		if (isset($this->opcodes[$tmpoutput['opcode']]['addressing']['addrformat']))
-			$tmpoutput['value'] = sprintf($this->opcodes[$tmpoutput['opcode']]['addressing']['addrformat'], $tmpoutput['value'],isset($tmpoutput['args'][0]) ? $tmpoutput['args'][0] : 0,isset($tmpoutput['args'][1]) ? $tmpoutput['args'][1] : 0, isset($tmpoutput['args'][2]) ? $tmpoutput['args'][2] : 0, $this->currentoffset>>16, ($this->currentoffset+uint($tmpoutput['value']+$size+1,$size*8))&0xFFFF);
+		if (isset($this->opcodes[$output['opcode']]['addressing']['addrformat']))
+			$output['value'] = sprintf($this->opcodes[$output['opcode']]['addressing']['addrformat'], $output['value'],isset($output['args'][0]) ? $output['args'][0] : 0,isset($output['args'][1]) ? $output['args'][1] : 0, isset($output['args'][2]) ? $output['args'][2] : 0, $this->currentoffset>>16, ($this->currentoffset+uint($output['value']+$size+1,$size*8))&0xFFFF);
 
 		$this->currentoffset += $size+1;
-		return $tmpoutput;
+		return $output;
 	}
 }
 ?>

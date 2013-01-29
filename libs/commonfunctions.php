@@ -1,8 +1,9 @@
 <?php
+require_once 'evalmath.php';
 //register_shutdown_function('flagrant_system_error');
 date_default_timezone_set('America/Halifax');
 //set_exception_handler('print_exception');
-//set_error_handler('error_handling');
+set_error_handler('error_handling');
 ini_set('yaml.output_width', -1);
 define('BRANCH_LIMIT', 5000);
 function print_exception($exception) {
@@ -10,25 +11,16 @@ function print_exception($exception) {
 	$display->seterror();
 	$display->display(array('trace' => $exception->getTrace(), 'message' => $exception->getMessage()));
 }
-function error_handling($errno, $message, $file, $line) {
+function error_handling($errno, $message, $file, $line, $context) {
 	static $errors = 0;
-	//ini_set('display_errors', 'Off');
-	if ($errors++ < $GLOBALS['settings']['errorlimit']) {
-		if (!class_exists('display'))
-			printf("%s on %s:%d", $message, $file, $line);
-		else
-			debugmessage(sprintf("%s on %s:%d", $message, $file, $line));
-	}
+	if ($errors++ < (isset($GLOBALS['settings']['errorlimit']) ? $GLOBALS['settings']['errorlimit'] : 50))
+		$GLOBALS['ERRORS'][] = sprintf("%s on %s:%d", $message, $file, $line);
 	return true;
 }
 function flagrant_system_error() {
 	if (($error = error_get_last()) !== null) {
-		if ($error['type'] == 1) {
-			if (PHP_SAPI == 'cli')
-				printf('SERIOUS ERROR: %s in %s:%d', $error['message'], $error['file'], $error['line']);
-			else
-				display_error(array('trace' => debug_backtrace(), 'message' => $error['message']));
-		}
+		if ($error['type'] == 1)
+			display_error(array('trace' => debug_backtrace(), 'message' => $error['message']));
 	} else {
 		ob_end_flush();
 	}
@@ -100,6 +92,7 @@ abstract class platform extends filter implements seekable {
 	public function getShort() { $this->offset += 2; return $this->dataSource[$this->lastSource]->getShort(); }
 	public function getLong() { $this->offset += 4; return $this->dataSource[$this->lastSource]->getLong();	}
 	public function getString($size) { $this->offset += $size; return $this->dataSource[$this->lastSource]->getString($size);	}
+	public function init() { }
 	public function getVar($size) { 
 		$output = 0;
 		for ($i = 0; $i < $size; $i++)
@@ -189,13 +182,9 @@ function defaultv($format) {
 abstract class gamemod {
 	const title = '';
 	protected $address;
-	protected $addresses;
 	protected $source;
 	protected $game;
 	protected $metadata = array();
-	public function setAddresses($addrs) {
-		$this->addresses = $addrs;
-	}
 	public function getMetadata() {
 		return $this->metadata;
 	}
@@ -221,9 +210,50 @@ abstract class gamemod {
 		return $this::title;
 	}
 }
-interface table_data {
+abstract class coremod {
+	protected $metadata = array();
+
+	public function setMetadata(&$metadata) {
+		$this->metadata = &$metadata;
+	}
+	public function getMetadata() {
+		return $this->metadata;
+	}
+}
+interface __table_data {
 	public function __construct(filter $source, $gamedetails, $values);
 	public function getValue();
+}
+abstract class table_data implements __table_data {
+	protected $source;
+	protected $entry;
+	protected $gamedetails;
+	protected $metadata;
+	protected static $math = null;
+	public function __construct(filter $source, $gamedetails, $entry) {
+		if (self::$math === null) 
+			self::$math = new EvalMath();
+		$this->source = $source;
+		$this->details = $entry;
+		$evalstr = $this->details['Size'];
+		debugvar($evalstr, 'evaluating...');
+		$result = self::$math->evaluate($evalstr);
+		debugvar($result, 'newsize');
+		$this->details['Size'] = $result;
+		$this->gamedetails = $gamedetails;
+	}
+	public function setMetadata(&$input) {
+		$this->metadata = &$input;
+	}
+	public function getValue() {
+		$val = $this->__getValue();
+		if (is_int($val)) {
+			$set = sprintf('%s = %d', strtolower(str_replace(array('?', ' ', '"'), array('Q', '_', ''), $this->details['Name'])), $val);
+			debugvar($set, 'setting');
+			self::$math->evaluate($set);
+		}
+		return $val;
+	}
 }
 abstract class cpucore {
 	protected $initialoffset;
@@ -233,6 +263,8 @@ abstract class cpucore {
 	protected $platform;
 	protected $opcodes = array();
 	protected $breakpoints = array();
+	protected $lastOpcode;
+	protected $processorFlags;
 	
 	public static function getTemplate() { return 'assembly'; }
 	public static function addressFormat() { return '%X'; }
@@ -245,10 +277,12 @@ abstract class cpucore {
 	public function getDefault() { }
 	public function setPlatform($src) { $this->dataSource = $src; $this->platform = $src; }
 	public function setBreakPoint($addr) { $this->breakpoints[] = $addr; }
+	public function setState($flag, $state) { $this->processorFlags[$flag] = $state; }
 	protected function initializeProcessor() { }
 	protected function setup($addr) { }
 	protected function executeInstruction($instruction) { }
 	public function execute($addr) {
+		$thisentry = AddressFactory::getAddressEntryFromOffset($addr);
 		$this->initializeProcessor();
 		$this->initialoffset = $this->currentoffset = $addr;
 		$this->setup($addr);
@@ -263,6 +297,19 @@ abstract class cpucore {
 			$instruction['offset'] = $this->currentoffset;
 			try {
 				$instruction = array_merge($instruction, $this->fetchInstruction());
+				if (isset($instruction['destination'])) {
+					if (!in_array($instruction['destination'], $this->branches)) {
+						$jumpentry = AddressFactory::getAddressEntryFromOffset($instruction['destination']);
+						if (isset($jumpentry['Final State'])) {
+							foreach ($jumpentry['Final State'] as $flag=>$state)
+								$this->setState($flag, $state);
+						}
+					}
+				}
+				if (isset($thisentry['Label States'][$this->currentoffset - $this->initialoffset]))
+					foreach ($thisentry['Label States'][$this->currentoffset - $this->initialoffset] as $flag=>$state)
+						$this->setState($flag, $state);
+				$this->lastOpcode = $instruction['opcode'];
 				$output[] = $instruction;
 			} catch (Exception $e) {
 				$this->setBreakPoint($this->currentoffset);
@@ -275,16 +322,16 @@ abstract class cpucore {
 }
 function gametitle($game) {
 	$miscdata = array();
-	if (isset($game['country']))
-		$miscdata[] = $game['country'];
-	if (isset($game['version']))
-		$miscdata[] = 'v'.$game['version'];
-	return $game['title'].(($miscdata != array()) ? ' ('.implode(' ', $miscdata).')' : '');
+	if (isset($game['Country']))
+		$miscdata[] = $game['Country'];
+	if (isset($game['Version']))
+		$miscdata[] = 'v'.$game['Version'];
+	return $game['Title'].(($miscdata != array()) ? ' ('.implode(' ', $miscdata).')' : '');
 }
 function debugvar($var, $label) {
 	if (!$GLOBALS['settings']['debug'])
 		return;
-	static $limit = 100;
+	static $limit = 200;
 	if (headers_sent())
 		return;
 	if ($limit-- > 0)
@@ -295,7 +342,7 @@ function debugmessage($message, $level = 'error') {
 		return;
 	if (headers_sent())
 		return;
-	static $limit = 100;
+	static $limit = 200;
 	if ($limit-- > 0) {
 		if ($level === 'error')
 			ChromePhp::error($message);

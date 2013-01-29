@@ -1,81 +1,61 @@
 <?php
 
-class table_bytearray implements table_data {
-	private $source;
-	private $size;
-	public function __construct(filter $source, $gamedetails, $entry) {
-		$this->source = $source;
-		$this->size = $entry['size'];
-	}
-	public function getValue() {
+class table_bytearray extends table_data {
+	public function __getValue() {
 		$output = array();
-		for ($i = 0; $i < $this->size; $i++)
+		for ($i = 0; $i < $this->details['Size']; $i++)
 			$output[] = $this->source->getByte();
 		return $output;
 	}
 }
-class table_int implements table_data {
-	private $source;
-	private $details;
-	public function __construct(filter $source, $gamedetails, $entry) {
-		$this->source = $source;
-		$this->details = $entry;
-	}
-	public function getValue() {
-		$output = $this->source->getVar($this->details['size']);
-		if (isset($this->details['signed']) && ($this->details['signed']))
-			$output = uint($this->details['signed'], $this->details['size']*8);
-		if (isset($this->details['values'][$output]))
-			$output = $this->details['values'][$output];
-		if (isset($this->details['bitvalues'])) {
+class table_int extends table_data {
+	public function __getValue() {
+		$output = $this->source->getVar($this->details['Size']);
+		if (isset($this->details['Signed']) && ($this->details['Signed']))
+			$output = uint($this->details['Signed'], $this->details['Size']*8);
+		if (isset($this->details['Values'][$output]))
+			$output = $this->details['Values'][$output];
+		if (isset($this->details['Bit Values'])) {
 			$val = $output;
 			$output = array();
 			$i = 0;
-			foreach ($this->details['bitvalues'] as $field) {
+			foreach ($this->details['Bit Values'] as $field) {
+				if ($i > $this->details['Size']*8)
+					break;
 				$output[$field] = ($val&(1<<($i++))) > 0;
 			}
 		}
 		return $output;
 	}
 }
-class table_hexint implements table_data {
+class table_hexint extends table_data {
 	private $intmod;
-	private $details;
 	public function __construct(filter $source, $gamedetails, $entry) {
 		$this->intmod = new table_int($source, $gamedetails, $entry);
 		$this->details = $entry;
 	}
-	public function getValue() {
+	public function __getValue() {
 		$output = $this->intmod->getValue();
-		return is_int($output) ? sprintf('%0'.($this->details['size']*2).'X', $output) : $output;
+		return is_int($output) ? sprintf('%0'.($this->details['Size']*2).'X', $output) : $output;
 	}
 }
-class table_binint implements table_data {
+class table_binint extends table_data {
 	private $intmod;
-	private $details;
 	public function __construct(filter $source, $gamedetails, $entry) {
 		$this->intmod = new table_int($source, $gamedetails, $entry);
 		$this->details = $entry;
 	}
-	public function getValue() {
+	public function __getValue() {
 		$output = $this->intmod->getValue();
-		return is_int($output) ? sprintf('%0'.($this->details['size']*8).'b', $output) : $output;
+		return is_int($output) ? sprintf('%0'.($this->details['Size']*8).'b', $output) : $output;
 	}
 }
-class table_pointer implements table_data {
-	private $source;
-	private $details;
-	private $gamedetails;
-	public function __construct(filter $source, $gamedetails, $entry) {
-		$this->source = $source;
-		$this->details = $entry;
-		$this->gamedetails = $gamedetails;
-	}
-	public function getValue() {
+class table_pointer extends table_data {
+	public function __getValue() {
 		$base = 0;
-		if (isset($this->details['base']))
-			$base = $this->details['base'];
-		$offset = $this->source->getVar($this->details['size']) + $base;
+		if (isset($this->details['Base']))
+			$base = $this->details['Base'];
+		$offset = $this->source->getVar($this->details['Size']) + $base;
 		/*if (isset($this->pointerblocks[$offset]))
 			return $this->pointerblocks[$offset];
 		if ($this->platform->identifyArea($offset) != 'rom')
@@ -92,26 +72,13 @@ class table_pointer implements table_data {
 				return $this->pointerblocks[$offset] = sprintf('<a href="%s#%3$X">%1$s+%2$d (%3$X)</a>', decimal_to_function($datablock), $offset-$datablock, $offset);
 			return $this->pointerblocks[$offset] = sprintf('<a href="%s">%1$s</a>', decimal_to_function($datablock));
 		}*/
-		$cpu = cpuFactory::getCPU($this->gamedetails['processor']);
+		$cpu = cpuFactory::getCPU($this->gamedetails['Processor']);
 		return sprintf($cpu::addressFormat(), $offset);
 	}
 }
-class table_table implements table_data {
-	private $source;
-	private $details;
-	private $offsetkeys;
-	private $gamedetails;
-	public function __construct(filter $source, $gamedetails, $entry) {
-		$this->source = $source;
-		$this->details = $entry;
-		$this->gamedetails = $gamedetails;
-		$this->offsetkeys = false;
-	}
-	public function useOffsetKeys($option) {
-		$this->offsetkeys = $option;
-	}
-	public function getValue() {
-		debugvar($this->details, 'table details');
+class table_struct extends table_data {
+	public function __getValue() {
+		//debugvar($this->details, 'table details');
 		$output = array();
 		$offsets = array();
 		$initialoffset = $this->source->currentOffset();
@@ -119,33 +86,35 @@ class table_table implements table_data {
 		while (true) {
 			$tmpoffset = $this->source->currentOffset();
 			//debugvar($tmpoffset-$initialoffset, 'reloffset');
-			if (isset($this->details['size']) && ($this->details['size'] <= $tmpoffset-$initialoffset))
+			if (isset($this->details['Size']) && ($this->details['Size'] <= $tmpoffset-$initialoffset))
 				break;
 			//debugvar($this->details['size'], 'size');
 			$tmparray = array();
 			$ints = array();
-			foreach ($this->details['entries'] as $entry) {
+			foreach ($this->details['Entries'] as $entry) {
 				if ($i++ > 0x10000)
 					break 2;
-				$size = isset($entry['size']) ? $entry['size'] : 0;
+				$size = isset($entry['Size']) ? $entry['Size'] : 0;
+				$tmpoffsetkeys = $this->metadata['offsetkeys'];
+				$this->metadata['offsetkeys'] = false;
+				$value = $this->getSubValue(isset($entry['Type']) ? $entry['Type'] : 'int', $entry, $size);
+				$this->metadata['offsetkeys'] = $tmpoffsetkeys;
 				
-				$value = $this->getSubValue(isset($entry['type']) ? $entry['type'] : 'int', $entry, $size);
-				
-				if (isset($entry['name'])) {
-					if (!isset($entry['type']) || ($entry['type'] == 'int'))
-						$ints[$entry['name']] = $value;
-					$tmparray[$entry['name']] = $value;
+				if (isset($entry['Name'])) {
+					if (!isset($entry['Type']) || ($entry['Type'] == 'int'))
+						$ints[$entry['Name']] = $value;
+					$tmparray[$entry['Name']] = $value;
 					
 				} else {
 					$tmparray[] = $value;
 				}
-				if (isset($this->details['terminator']) && ($value == $this->details['terminator'])) {
-					debugvar($tmparray[$entry['name']], 'val');
-					debugvar($this->details['terminator'], 'terminator');
+				if (isset($this->details['Terminator']) && ($value == $this->details['Terminator'])) {
+					//debugvar($tmparray[$entry['Name']], 'val');
+					//debugvar($this->details['Terminator'], 'Terminator');
 					break 2;
 				}
 			}
-			if ($this->offsetkeys)
+			if (isset($this->metadata['offsetkeys']) && $this->metadata['offsetkeys'])
 				$output[$tmpoffset] = $tmparray;
 			else
 				$output[] = $tmparray;
@@ -159,50 +128,40 @@ class table_table implements table_data {
 			throw new Exception($type.' is unimplemented!');
 		$type = 'table_'.$type;
 		$valmod = new $type($this->source, $this->gamedetails, $entry);
+		$valmod->setMetadata($this->metadata);
 		if ($valmod instanceof table_data) { }
 		else
 			throw new Exception('Potential class name conflict');
 		return $valmod->getValue();
 	}
 }
-class table_bitfield implements table_data {
-	private $source;
-	private $details;
-	public function __construct(filter $source, $gamedetails, $entry) {
-		$this->source = $source;
-		$this->details = $entry;
-	}
-	public function getValue() {
-		$val = $this->source->getVar($this->details['size']);
+class table_bitfield extends table_data {
+	public function __getValue() {
+		$val = $this->source->getVar($this->details['Size']);
 		$output = array();
-		for ($i = 0; $i < count($this->details['bitvalues']); $i++)
-			$output[$this->details['bitvalues'][$i]] = ($val&pow(2,$i)) != 0;
+		for ($i = 0; $i < count($this->details['Bit Values']); $i++)
+			$output[$this->details['Bit Values'][$i]] = ($val&pow(2,$i)) != 0;
 		return $output;
 	}
 }
-class table_script implements table_data {
-	private $source;
-	private $details;
-	public function __construct(filter $source, $gamedetails, $entry) {
-		$this->source = $source;
-		$this->details = $entry;
-		$this->gamedetails = $gamedetails;
-	}
-	public function getValue() {
-		$initialsize = (!isset($this->details['size']) || $this->details['size'] == 0) ? 0x100000 : $this->details['size'];
+class table_script extends table_data {
+	public function __getValue() {
+		$initialsize = (!isset($this->details['Size']) || $this->details['Size'] == 0) ? 0x100000 : $this->details['Size'];
 		$terminator = null;
 		$terminatorcount = 1;
 		$terminatorsreached = 0;
-		if (isset($this->details['terminator']))
-			$terminator = $this->details['terminator'];
-		if (isset($this->details['terminator repeat']))
-			$terminatorcount = $this->details['terminator repeat'];
+		if (isset($this->details['Terminator']))
+			$terminator = $this->details['Terminator'];
+		if (isset($this->details['Terminator Repeat']))
+			$terminatorcount = $this->details['Terminator Repeat'];
 		$hideccs = false;
+		if (isset($this->metadata['options']['NoCCs']) && $this->metadata['options']['NoCCs'])
+			$hideccs = true;
 		static $chars = 0;
-		if (!isset($this->details['charset']))
-			$charset = $this->gamedetails['defaultscript'];
+		if (!isset($this->details['Charset']))
+			$charset = $this->gamedetails['Default Script'];
 		else
-			$charset = $this->details['charset'];
+			$charset = $this->details['Charset'];
 		$output = '';
 		for ($i = 0; $i < $initialsize; $i++) {
 			$length = 1;
@@ -216,14 +175,14 @@ class table_script implements table_data {
 				$vals[] = $newval;
 				$output .= json_decode(sprintf('"\u%04X"',$val));
 			} else {
-				if (!isset($this->gamedetails['scripttables'][$charset]))
+				if (!isset($this->gamedetails['Script Tables'][$charset]))
 					throw new Exception('Unknown Text Format');
 				unset($replacement);
-				if (isset($this->gamedetails['scripttables'][$charset]['replacements'][$val]))
-					$replacement = $this->gamedetails['scripttables'][$charset]['replacements'][$val];
-				if (isset($this->gamedetails['scripttables'][$charset]['lengths'][$val])) {
+				if (isset($this->gamedetails['Script Tables'][$charset]['Replacements'][$val]))
+					$replacement = $this->gamedetails['Script Tables'][$charset]['Replacements'][$val];
+				if (isset($this->gamedetails['Script Tables'][$charset]['Lengths'][$val])) {
 					$cval = 0;
-					$length = $entry = $this->gamedetails['scripttables'][$charset]['lengths'][$val];
+					$length = $entry = $this->gamedetails['Script Tables'][$charset]['Lengths'][$val];
 					if (is_array($entry))
 						$length = $entry['default'];
 						
@@ -264,16 +223,9 @@ class table_script implements table_data {
 	}
 }
 
-class table_tile implements table_data {
-	private $source;
-	private $details;
-	public function __construct(filter $source, $gamedetails, $entry) {
-		$this->source = $source;
-		$this->details = $entry;
-		$this->gamedetails = $gamedetails;
-	}
-	public function getValue() {
-		$data = $this->source->getString($this->details['size']);
+class table_tile extends table_data {
+	public function __getValue() {
+		$data = $this->source->getString($this->details['Size']);
 		$output = array();
 		//debugmessage('data:');
 		$colours = array(0, 0, 0x3933FF, 0xDCFFFF, 0x330086,  0xBF7300,  0x00CFFF, 0x330086,  0xEFEBB4, 0x930000, 0x51FF00, 0xFFAC00, 0xBC11A4, 0x63CF63, 0x598CF2, 0xB6009F, 0x83DC00, 0xB8DE3A);

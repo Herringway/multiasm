@@ -4,9 +4,9 @@ class hex extends gamemod {
 	public function getTemplate() { return 'hex'; }
 	public function execute($arg) {
 		require_once 'libs/hexview.php';
-		if (!isset($this->address['size']))
+		if (!isset($this->address['Size']))
 			die('Data has no size defined!');
-		$size = $this->address['size'];
+		$size = $this->address['Size'];
 		$this->offset = $arg;
 		if (isset($this->address['charset']))
 			$charset = $this->game['scripttables'][$this->address['charset']]['replacements'];

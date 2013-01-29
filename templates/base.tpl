@@ -28,6 +28,7 @@
 {%block menu%}{%for url,menuitem in menuitems%}		<a href="#{{url}}">{{menuitem}}</a><br />
 {%endfor%}{%endblock%}
 	</div></div>
+{%for error in errors %}<div class="minorerror">{{error}}</div><br />{%endfor%}
 	<span class="{%if error%}error{%else%}top{%endif%}" title="{%for key,comment in comments%}
 {{key}}:{{comment}} 
 {%endfor%}">{{title}}{%if description%} - {{description}}{%endif%}</span>

@@ -1,6 +1,5 @@
 <?php
 class cpu_6502 extends cpucore {
-	private $opcodes;
 	private $processorFlags;
 	private $DBR;
 	private $PBR;
@@ -11,15 +10,12 @@ class cpu_6502 extends cpucore {
 	}
 	protected function initializeProcessor() {
 		$this->farthestbranch = 0;
-		if (!isset($this->opcodes))
+		if ($this->opcodes === array())
 			$this->opcodes = yaml_parse_file('./cpus/6502_opcodes.yml');
 	}
 	public function getDefault() {
 		$this->dataSource->seekTo(0xFFFC);
 		return $this->dataSource->getShort();
-	}
-	public function getOpcodes() {
-		return $this->opcodes;
 	}
 	private function fix_addr($instruction, $val) {
 		if (($this->opcodes[$instruction]['addressing']['type'] == 'relative') || ($this->opcodes[$instruction]['addressing']['type'] == 'relativelong'))
