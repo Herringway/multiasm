@@ -1,6 +1,5 @@
 <?php
 class cpu_SPC700 extends cpucore {
-	private $lastOpcode;
 	
 	function __construct() {
 		$this->opcodes = yaml_parse_file('./cpus/SPC700_opcodes.yml');

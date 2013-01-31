@@ -1,7 +1,9 @@
 <?php
 class changes extends gamemod {
-	const magic = 'changes';
-	const title = 'Changelog';
+	public static function getMagicValue() { return 'changes'; }
+	public static function getMenuEntries($s) { return array('changes' => 'Changelog'); }
+	public function getDescription() { return 'Changelog'; }
+	public function getTemplate() { return 'changes'; }
 	public function execute() {
 		if (file_exists('games/' . $this->game['id'] . '/.git')) {
 			exec('git --git-dir ./games/'.$this->game['id'].'/.git log', $data);
@@ -27,9 +29,6 @@ class changes extends gamemod {
 		} else
 			$output = array('No changelog found');
 		return $output;
-	}
-	public function getTemplate() {
-		return 'changes';
 	}
 }
 ?>

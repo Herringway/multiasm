@@ -37,14 +37,16 @@ class game extends coremod {
 		
 		debugmessage("Loading Modules", 'info');
 		//Load Modules
+		$this->metadata['submods'] = array();
 		for ($dir = opendir('./mods/game/'); $file = readdir($dir); ) {
 			if (substr($file, -4) == ".php") {
 				require_once './mods/game/' . $file;
 				$modClass = substr($file,0, -4);
-				if (defined("$modClass::magic")) {
-					$magicvalues[] = $modClass::magic;
-					if (defined("$modClass::title"))
-						$this->metadata['submods'][$modClass::magic] = $modClass::title;
+				$magic = $modClass::getMagicValue();
+				if ($magic !== null) {
+					$magicvalues[] = $magic;
+					foreach ($modClass::getMenuEntries($platform) as $url=>$entrylabel)
+						$this->metadata['submods'][$url] = $entrylabel;
 				} else
 					$othermods[] = $modClass;
 			}
@@ -77,9 +79,11 @@ class game extends coremod {
 		$addressEntry = addressFactory::getAddressEntryFromOffset($offset);
 		if ($addressEntry == null)
 			$addressEntry = array();
-		if (in_array($offset, $magicvalues, true))
+		if (in_array($offset, $magicvalues, true)) {
 			$modname = $offset;
-		else
+			if (isset($argv[2]))
+				$offset = $argv[2];
+		} else
 			if (isset($addressEntry['Type']))
 				switch($addressEntry['Type']) {
 					case 'data': $modname = isset($addressEntry['Entries']) ? 'table' : 'hex'; break;
@@ -106,23 +110,25 @@ class game extends coremod {
 		$module->setMetadata($this->metadata);
 		$module->setGameData($game);
 		$module->init($offset);
+		$this->metadata['addrformat'] = $cpu->addressformat();
+		
 		if (isset($addressEntry['Name']) && ($addressEntry['Name'] != ""))
 			$this->metadata['offsetname'] = $addressEntry['Name'];
 		else
-			$this->metadata['offsetname'] = sprintf($cpu->addressFormat(), $source->currentOffset());
+			$this->metadata['offsetname'] = sprintf($this->metadata['addrformat'], $source->currentOffset());
 		$tmpdesc = $module->getDescription();
-		$this->metadata['addrformat'] = $cpu->addressformat();
+		
 		if ($tmpdesc != '')
 			$this->metadata['description'] = $tmpdesc;
 		else if (isset($addressEntry['Description']))
 			$this->metadata['description'] = $addressEntry['Description'];
 		else if (isset($addressEntry['Name']))
 			$this->metadata['description'] = $addressEntry['Name'];
-		else {
-			$this->metadata['description'] = sprintf($cpu->addressformat(), $source->currentOffset());
-		}
+		else
+			$this->metadata['description'] = sprintf($this->metadata['addrformat'], $source->currentOffset());
+			
 		$this->metadata['template'] = $module->getTemplate();
-		$output = $module->execute($offset, $query);
+		$output = $module->execute($offset);
 		$nextoffset = $source->currentOffset();
 		if (isset($addressEntry['Size']))
 			$nextoffset = $offset + $addressEntry['Size'];
@@ -131,10 +137,8 @@ class game extends coremod {
 			$nextEntry = array();
 		if (isset($nextEntry['Name']) && ($nextEntry['Name'] != ""))
 			$this->metadata['nextoffset'] = $nextEntry['Name'];
-		else {
-			$cpu = cpuFactory::getCPU($game['Processor']);
-			$this->metadata['nextoffset'] = sprintf($cpu->addressFormat(), $nextoffset);
-		}
+		else
+			$this->metadata['nextoffset'] = sprintf($this->metadata['addrformat'], $nextoffset);
 		//$this->metadata = array_merge($this->metadata, $module->getMetadata());
 		return $output;
 	}

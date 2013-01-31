@@ -69,6 +69,7 @@ abstract class filter implements filter_interface {
 	public function identifyArea($offset) { return 'data'; }
 	public function currentOffset() { return $this->dataSource->currentOffset(); }
 	public function setOption($option, $value) { $this->options[$option] = $value; }
+	public function getSources() { return array('data'); }
 }
 interface seekable {
 	public function seekTo($offset);
@@ -77,6 +78,7 @@ abstract class platform extends filter implements seekable {
 	protected $lastSource = 'rom';
 	protected $offset = 0;
 	public function setDataSource(filter $source, $where = 'rom') { $this->dataSource[$where] = $source; }
+	public function getSources() { return array_keys($this->dataSource); }
 	public function getMiscInfo() {
 		return array();
 	}
@@ -191,6 +193,8 @@ abstract class gamemod {
 	public function getDescription() {
 		return '';
 	}
+	public static function getMagicValue() { return null; }
+	public static function getMenuEntries($source) { return array(); }
 	public function init($arg) {
 	
 	}

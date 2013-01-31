@@ -40,19 +40,15 @@ class addressFactory {
 		return $v;
 	}
 	public static function getAddressEntryFromName($name) {
-		foreach (self::$addrs[self::$currentID][1] as $addr) {
-			if (isset($addr['Name']) && ($addr['Name'] == $name)) {
+		foreach (self::$addrs[self::$currentID][1] as $key=>$addr)
+			if ($key == $name) 
 				return $addr;
-			}
-		}
 		return null;
 	}
 	public static function getAddressEntryFromOffset($offset) {
-		foreach (self::$addrs[self::$currentID][1] as $addr) {
-			if (isset($addr['Offset']) && ($addr['Offset'] == $offset)) {
+		foreach (self::$addrs[self::$currentID][1] as $addr)
+			if (isset($addr['Offset']) && ($addr['Offset'] == $offset))
 				return $addr;
-			}
-		}
 		return null;
 	}
 }

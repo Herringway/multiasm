@@ -1,19 +1,17 @@
 <?php
 class issues extends gamemod {
-	const magic = 'issues';
-	const title = 'Issues';
+	public static function getMagicValue() { return 'issues'; }
+	public static function getMenuEntries($s) { return array('issues' => 'Issues'); }
+	public function getDescription() { return 'Issues'; }
+	public function getTemplate() { return 'issues'; }
 	public function execute() {
 		$allproblems = array();
 		$prev = 0;
-		foreach ($this->addresses as $offset => $entry) {
-			if (!is_numeric($offset))
-				continue;
-			if ($this->source->identifyArea($offset) != 'rom')
-				continue;
+		foreach (addressFactory::getAddresses() as $name => $entry) {
 			if (isset($entry['Ignore']) && ($entry['Ignore'] == true))
 				continue;
 			$problems = array();
-			if ($prev > $offset)
+			if ($prev > $entry['Offset'])
 				$problems[] = 'Overlap detected';
 			if (!isset($entry['size']))
 				$problems[] = 'No size defined';
@@ -24,15 +22,12 @@ class issues extends gamemod {
 			if (!isset($entry['description']) && (!isset($entry['Type']) || ($entry['Type'] != 'empty')))
 				$problems[] = 'No description defined';
 			if ($problems != array())
-				$allproblems[$offset] = $problems;
+				$allproblems[$name] = $problems;
 			//if (isset($entry['size']) && !isset($this->addresses[$offset+$entry['size']]) && ($this->platform->map_rom($offset+$entry['size']) < $this->game['size']))
 			//	$allproblems[decimal_to_function($offset+$entry['size'])] = array('Undefined area!');
-			$prev = $offset+(isset($entry['size']) ? $entry['size'] : 0);
+			$prev = $entry['Offset']+(isset($entry['Size']) ? $entry['Size'] : 0);
 		}
 		return array($allproblems);
-	}
-	public function getTemplate() {
-		return 'issues';
 	}
 }
 ?>

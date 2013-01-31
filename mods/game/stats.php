@@ -1,7 +1,9 @@
 <?php
 class stats extends gamemod {
-	const magic = 'stats';
-	const title = 'Stats';
+	public static function getMagicValue() { return 'stats'; }
+	public static function getMenuEntries($s) { return array('stats' => 'Stats'); }
+	public function getTemplate() { return 'stats'; }
+	public function getDescription() { return 'Game Stats'; }
 	
 	public function execute($arg) {
 		$stats = array();
@@ -11,10 +13,8 @@ class stats extends gamemod {
 		$divisions = array();
 		$routines = array();
 		$biggest = $biggestroutine = array('size' => 0, 'name' => 'undefined');
-		foreach (addressFactory::getAddresses() as $k => $entry) {
-			if (!is_numeric($k))
-				continue;
-			if ($this->source->identifyArea($k) != 'rom')
+		foreach (addressFactory::getAddresses() as $entry) {
+			if ($this->source->identifyArea($entry['Offset']) != 'rom')
 				continue;
 			if (isset($entry['Size'])) {
 				if (!isset($entry['Type']))
@@ -25,9 +25,9 @@ class stats extends gamemod {
 				if (($entry['Type'] == 'assembly') && isset($entry['Name']))
 					$routines[] = $entry['Name'];
 				if ($entry['Size'] > $biggest['size'])
-					$biggest = array('size' => $entry['Size'], 'name' => !empty($entry['Name']) ? $entry['Name'] : sprintf('%06X', $k));
+					$biggest = array('size' => $entry['Size'], 'name' => !empty($entry['Name']) ? $entry['Name'] : sprintf('%06X', $entry['Offset']));
 				if (($entry['Size'] > $biggestroutine['size']) && isset($entry['Type']) && ($entry['Type'] == 'assembly'))
-					$biggestroutine = array('size' => $entry['Size'], 'name' => !empty($entry['Name']) ? $entry['Name'] : sprintf('%06X', $k));
+					$biggestroutine = array('size' => $entry['Size'], 'name' => !empty($entry['Name']) ? $entry['Name'] : sprintf('%06X', $entry['Offset']));
 			}
 			if (isset($entry['Size']))
 				$counteddata += $entry['Size'];
@@ -40,9 +40,6 @@ class stats extends gamemod {
 		//	$divisions['Unknown'] = $game['size'] - $counteddata;
 		$stats['Size'] = $divisions;
 		return array($stats);
-	}
-	public function getTemplate() {
-		return 'stats';
 	}
 }
 ?>
