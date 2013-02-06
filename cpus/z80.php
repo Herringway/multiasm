@@ -35,6 +35,7 @@ class cpu_z80 extends cpucore {
 		if (isset($this->opcodes[$opcode]['branch'])) {
 			$val = $this->currentoffset+uint($val, 8)+$this->opcodes[$opcode]['Size']+1;
 			$this->branches[] = $val;
+			$tmp['target'] = $val;
 		}
 		if (isset($this->opcodes[$opcode]['Target']))
 			$tmp['target'] = $val;

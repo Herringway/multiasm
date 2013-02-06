@@ -75,6 +75,11 @@ class game extends coremod {
 				debugvar($offset, 'Location');
 			}
 		}
+		$source = $platform;
+		if ($offset == -1) {
+			$cpu->setPlatform($source);
+			$offset = $cpu->getDefault();
+		}
 		//What are we doing?
 		$addressEntry = addressFactory::getAddressEntryFromOffset($offset);
 		if ($addressEntry == null)
@@ -95,7 +100,6 @@ class game extends coremod {
 		if (isset($omodname))
 			$modname = $omodname;
 		$module = new $modname();
-		$source = $platform;
 		$platform->init();
 		if (is_int($offset) && ($offset > 0)) {
 			$source->seekTo($offset);
@@ -127,8 +131,8 @@ class game extends coremod {
 		else
 			$this->metadata['description'] = sprintf($this->metadata['addrformat'], $source->currentOffset());
 			
-		$this->metadata['template'] = $module->getTemplate();
 		$output = $module->execute($offset);
+		$this->metadata['template'] = $module->getTemplate();
 		$nextoffset = $source->currentOffset();
 		if (isset($addressEntry['Size']))
 			$nextoffset = $offset + $addressEntry['Size'];

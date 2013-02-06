@@ -12,7 +12,7 @@
 {%for gameval,game in gamelist%}			<option value="{{gameval}}"{%if title == game%} selected="yes"{%endif%}>{{game}}</option>
 {%endfor%}		</select>{%endif%}
 
-{%if nextoffset%}<a rel="next" accesskey="n" href="/{{coremod}}/{{nextoffset}}">Next Function</a>{%endif%}
+{%if nextoffset%}<a rel="next" accesskey="n" href="/{{coremod}}/{{nextoffset}}">Next Data</a>{%endif%}
 {%if form%}
 		<form action="/index.php">
 			<input type="hidden" name="coremod" value="{{coremod}}">

@@ -34,6 +34,11 @@ class asm extends gamemod {
 
 		$i = 0;
 		$branches = $this->cpucore->getBranches();
+		$labels = array();
+		if (isset($this->address['Labels']))
+			foreach ($this->address['Labels'] as $label => $name)
+				if (!in_array($label + $this->offset, $branches))
+					$branches[] = $label + $this->offset;
 		sort($branches);
 		foreach ($branches as $branch) {
 			$label = 'UNKNOWN'.($i++);
@@ -52,8 +57,11 @@ class asm extends gamemod {
 			if (isset($opcode['target']) || isset($opcode['destination'])) {
 				$addr = isset($opcode['target']) ? $opcode['target'] : $opcode['destination'];
 				$opcode['uri'] = sprintf($this->cpucore->addressFormat(), $addr);
-				$targEntry = addressFactory::getAddressEntryFromOffset($addr);
-				if (isset($targEntry['Name'])) {
+				$targEntry = addressFactory::getAddressSubentryFromOffset($addr);
+				if (isset($targEntry['Subname']) && isset($targEntry['Name'])) {
+					$opcode['name'] = $targEntry['Subname'];
+					$opcode['uri'] = $targEntry['Name'];
+				} else if (isset($targEntry['Name'])) {
 					$opcode['name'] = $targEntry['Name'];
 					$opcode['uri'] = $targEntry['Name'];
 				}

@@ -234,16 +234,31 @@ abstract class table_data implements __table_data {
 	protected $gamedetails;
 	protected $metadata;
 	protected static $math = null;
+	private $mathvars;
+	protected function setVar($var, $val) {
+		$this->mathvars[$var] = $val;
+	}
+	private function __setVars() {
+		foreach ($this->mathvars as $var=>$val)
+			self::$math->evaluate(sprintf('%s = %d', strtolower(str_replace(array('?', ' ', '"', '/','+', '-','*'), array('Q', '_', '','D','A','S','M'), $var)), $val));
+		$this->mathvars = array();
+	}
+	protected function evalString($str) {
+		if (is_int($str))
+			return $str;
+		$this->__setVars();
+		debugvar($str, 'evaluating');
+		$result = self::$math->evaluate($str);
+		debugvar($result, 'result');
+		return $result;
+	}
 	public function __construct(filter $source, $gamedetails, $entry) {
 		if (self::$math === null) 
 			self::$math = new EvalMath();
 		$this->source = $source;
 		$this->details = $entry;
-		$evalstr = $this->details['Size'];
-		debugvar($evalstr, 'evaluating...');
-		$result = self::$math->evaluate($evalstr);
-		debugvar($result, 'newsize');
-		$this->details['Size'] = $result;
+		if (isset($this->details['Size']))
+			$this->details['Size'] = $this->evalString($this->details['Size']);
 		$this->gamedetails = $gamedetails;
 	}
 	public function setMetadata(&$input) {
@@ -251,11 +266,8 @@ abstract class table_data implements __table_data {
 	}
 	public function getValue() {
 		$val = $this->__getValue();
-		if (is_int($val)) {
-			$set = sprintf('%s = %d', strtolower(str_replace(array('?', ' ', '"'), array('Q', '_', ''), $this->details['Name'])), $val);
-			debugvar($set, 'setting');
-			self::$math->evaluate($set);
-		}
+		if (is_int($val) && isset($this->details['Name']))
+			$this->setVar($this->details['Name'], $val);
 		return $val;
 	}
 }
@@ -290,6 +302,9 @@ abstract class cpucore {
 		$this->initializeProcessor();
 		$this->initialoffset = $this->currentoffset = $addr;
 		$this->setup($addr);
+		if (isset($thisentry['Initial State']))
+			foreach ($thisentry['Initial State'] as $flag=>$state)
+				$this->setState($flag, $state);
 		$output = array();
 		while (true) {
 			foreach ($this->breakpoints as $breakpoint)

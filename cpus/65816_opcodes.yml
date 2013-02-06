@@ -87,6 +87,7 @@
     type: relative
     addrformat: $%6$04X
     size: 1
+    jump: y
     destination: y
     anchorformat: '%s#%s'
 0x11: 
@@ -161,6 +162,7 @@
     printformat: "%s,X"
     UseDBR: y
     addrformat: $%04X
+    target: y
     size: 2
 0x1E: 
   Mnemonic: ASL

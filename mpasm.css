@@ -25,7 +25,8 @@ span.error	{ position: relative; top: -5px;  margin-left: auto; margin-right: au
 .address		{ color: green; }
 .instruction 	{ color: gray; }
 .interpargs		{ color: black; }
-.interpargs > a	{ color: blue;}
+.interpargs > a:link	{ color: blue;}
+.interpargs > a:visited { color: #880088; }
 .changelogentry	{width: 100%; min-height: 85px; outline: 1px inset lightgray; vertical-align: middle; }
 ::-webkit-scrollbar { width: 8px; margin: 0px; height: 8px; }
 ::-webkit-scrollbar-thumb { background: rgb(160,160,160); }

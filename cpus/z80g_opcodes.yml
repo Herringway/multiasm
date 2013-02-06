@@ -5,7 +5,7 @@
   Size: 0
 0x01:
   Mnemonic: LD
-  PrintFormat: BC, %s
+  printformat: BC, %s
   Address: $%04X
   Size: 2
 0x02:
@@ -26,7 +26,7 @@
   Size: 0
 0x06:
   Mnemonic: LD
-  PrintFormat: B, %s
+  printformat: B, %s
   Address: $%02X
   Size: 1
 0x07:
@@ -34,7 +34,7 @@
   Size: 0
 0x08:
   Mnemonic: LD
-  PrintFormat: (%s), SP
+  printformat: (%s), SP
   Address: $%04X
   Size: 2
 0x09:
@@ -128,13 +128,13 @@
   Size: 0
 0x20:
   Mnemonic: JR
-  PrintFormat: NZ, %s
+  printformat: NZ, %s
   Address: "%02X"
   branch: y
   Size: 1
 0x21:
   Mnemonic: LD
-  PrintFormat: HL, %s
+  printformat: HL, %s
   Address: $%04X
   Size: 2
 0x22:
@@ -162,7 +162,7 @@
   Size: 0
 0x28:
   Mnemonic: JR
-  PrintFormat: Z, %s
+  printformat: Z, %s
   Address: "%02X"
   branch: y
   Size: 1
@@ -195,13 +195,13 @@
   Size: 0
 0x30:
   Mnemonic: JR
-  PrintFormat: NC, %s
+  printformat: NC, %s
   Address: "%02X"
   branch: y
   Size: 1
 0x31:
   Mnemonic: LD
-  PrintFormat: SP, %s
+  printformat: SP, %s
   Address: $%04X
   Size: 2
 0x32:
@@ -222,7 +222,7 @@
   Size: 0
 0x36:
   Mnemonic: LD
-  PrintFormat: (HL), %s
+  printformat: (HL), %s
   Address: "%02X"
   Size: 1
 0x37:
@@ -230,7 +230,7 @@
   Size: 0
 0x38:
   Mnemonic: JR
-  PrintFormat: C, %s
+  printformat: C, %s
   Address: "%02X"
   branch: y
   Size: 1
@@ -256,7 +256,7 @@
   Size: 0
 0x3e:
   Mnemonic: LD
-  PrintFormat: A, %s
+  printformat: A, %s
   Address: "#$%02X"
   Size: 1
 0x3f:
@@ -782,19 +782,20 @@
   Size: 0
 0xc2:
   Mnemonic: JP
-  PrintFormat: NZ, %s
+  printformat: NZ, %s
   Address: $%04X
   Jump: y
   Size: 2
 0xc3:
   Mnemonic: JP
   Address: "$%04X"
+  Target: y
   Size: 2
   Fixaddr: 4
   Jump: y
 0xc4:
   Mnemonic: CALL
-  PrintFormat: NZ, %s
+  printformat: NZ, %s
   Address: "$%04X"
   Target: y
   Jump: y
@@ -819,13 +820,13 @@
   Size: 0
 0xca:
   Mnemonic: JP
-  PrintFormat: Z, %s
+  printformat: Z, %s
   Address: "$%04X"
   Jump: y
   Size: 2
 0xcc:
   Mnemonic: CALL
-  PrintFormat: Z, %s
+  printformat: Z, %s
   Address: $%04X
   Jump: y
   Size: 2
@@ -838,7 +839,7 @@
   Size: 2
 0xce:
   Mnemonic: ADC
-  PrintFormat: A, %s
+  printformat: A, %s
   Address: "%02X"
   Size: 1
 0xcf:
@@ -881,12 +882,12 @@
 0xda:
   Mnemonic: JP
   Address: "%04X"
-  PrintFormat: C, %s
+  printformat: C, %s
   Size: 2
 0xdc:
   Mnemonic: CALL
   Address: "%04X"
-  PrintFormat: C, %s
+  printformat: C, %s
   Size: 2
 0xdd:
   Mnemonic: DB
@@ -899,7 +900,7 @@
 0xe0:
   Mnemonic: LD
   Address: $FF%02X
-  PrintFormat: (%s), A
+  printformat: (%s), A
   Size: 1
 0xe1:
   Mnemonic: POP
@@ -924,7 +925,7 @@
 0xe8:
   Mnemonic: ADD
   Address: "#$%02X"
-  PrintFormat: SP, %s
+  printformat: SP, %s
   Size: 1
 0xe9:
   Mnemonic: JP
@@ -932,7 +933,9 @@
   Size: 0
 0xea:
   Mnemonic: LD
-  Address: (%04X), A
+  Address: "%04X"
+  Target: y
+  printformat: "($%s), A"
   Size: 2
 0xee:
   Mnemonic: XOR
@@ -945,7 +948,7 @@
 0xf0:
   Mnemonic: LD
   Address: $FF%02X
-  PrintFormat: A, (%s)
+  printformat: A, (%s)
   Size: 1
 0xf1:
   Mnemonic: POP
@@ -973,7 +976,7 @@
 0xf8:
   Mnemonic: LDHL
   Address: "$%02X"
-  PrintFormat: SP, %s
+  printformat: SP, %s
   Size: 1
 0xf9:
   Mnemonic: LD
@@ -982,7 +985,7 @@
 0xfa:
   Mnemonic: LD
   Address: "%04X"
-  PrintFormat: A, (%s)
+  printformat: A, (%s)
   Size: 2
 0xfb:
   Mnemonic: EI

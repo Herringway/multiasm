@@ -12,7 +12,7 @@ class table_int extends table_data {
 	public function __getValue() {
 		$output = $this->source->getVar($this->details['Size']);
 		if (isset($this->details['Signed']) && ($this->details['Signed']))
-			$output = uint($this->details['Signed'], $this->details['Size']*8);
+			$output = uint($output, $this->details['Size']*8);
 		if (isset($this->details['Values'][$output]))
 			$output = $this->details['Values'][$output];
 		if (isset($this->details['Bit Values'])) {
@@ -56,24 +56,17 @@ class table_pointer extends table_data {
 		if (isset($this->details['Base']))
 			$base = $this->details['Base'];
 		$offset = $this->source->getVar($this->details['Size']) + $base;
-		/*if (isset($this->pointerblocks[$offset]))
-			return $this->pointerblocks[$offset];
-		if ($this->platform->identifyArea($offset) != 'rom')
-			return $this->pointerblocks[$offset] = $offset;
-		$datablock = getDataBlock($offset);
-		if ($datablock == -1)
-			return $this->pointerblocks[$offset] = $offset;
-		if (!$html) {
-			if ($datablock != $offset)
-				return $this->pointerblocks[$offset] = sprintf('%s+%d ('.core::addressformat.')', decimal_to_function($datablock), $offset-$datablock, $offset);
-			return $this->pointerblocks[$offset] = decimal_to_function($datablock);
+		$target = addressFactory::getAddressSubentryFromOffset($offset);
+		if ($target !== null) {
+			if (isset($target['Subname']))
+				$name = $target['Subname'];
+			else if (isset($target['Name']))
+				$name = $target['Name'];
 		} else {
-			if ($datablock != $offset)
-				return $this->pointerblocks[$offset] = sprintf('<a href="%s#%3$X">%1$s+%2$d (%3$X)</a>', decimal_to_function($datablock), $offset-$datablock, $offset);
-			return $this->pointerblocks[$offset] = sprintf('<a href="%s">%1$s</a>', decimal_to_function($datablock));
-		}*/
-		$cpu = cpuFactory::getCPU($this->gamedetails['Processor']);
-		return sprintf($cpu::addressFormat(), $offset);
+			$cpu = cpuFactory::getCPU($this->gamedetails['Processor']);
+			$name = sprintf($cpu::addressFormat(), $offset);
+		}
+		return $name;
 	}
 }
 class table_struct extends table_data {
@@ -90,7 +83,6 @@ class table_struct extends table_data {
 				break;
 			//debugvar($this->details['size'], 'size');
 			$tmparray = array();
-			$ints = array();
 			foreach ($this->details['Entries'] as $entry) {
 				if ($i++ > 0x10000)
 					break 2;
@@ -99,20 +91,14 @@ class table_struct extends table_data {
 				$this->metadata['offsetkeys'] = false;
 				$value = $this->getSubValue(isset($entry['Type']) ? $entry['Type'] : 'int', $entry, $size);
 				$this->metadata['offsetkeys'] = $tmpoffsetkeys;
-				
-				if (isset($entry['Name'])) {
-					if (!isset($entry['Type']) || ($entry['Type'] == 'int'))
-						$ints[$entry['Name']] = $value;
+				if (isset($entry['Description']) && isset($this->metadata['Use Descriptions as Struct Names']) && $this->metadata['Use Descriptions as Struct Names'])
+					$tmparray[$entry['Description']] = $value;
+				else if (isset($entry['Name']))
 					$tmparray[$entry['Name']] = $value;
-					
-				} else {
+				else
 					$tmparray[] = $value;
-				}
-				if (isset($this->details['Terminator']) && ($value == $this->details['Terminator'])) {
-					//debugvar($tmparray[$entry['Name']], 'val');
-					//debugvar($this->details['Terminator'], 'Terminator');
+				if (isset($this->details['Terminator']) && ($value == $this->details['Terminator']))
 					break 2;
-				}
 			}
 			if (isset($this->metadata['offsetkeys']) && $this->metadata['offsetkeys'])
 				$output[$tmpoffset] = $tmparray;
@@ -129,8 +115,7 @@ class table_struct extends table_data {
 		$type = 'table_'.$type;
 		$valmod = new $type($this->source, $this->gamedetails, $entry);
 		$valmod->setMetadata($this->metadata);
-		if ($valmod instanceof table_data) { }
-		else
+		if (!($valmod instanceof table_data))
 			throw new Exception('Potential class name conflict');
 		return $valmod->getValue();
 	}
@@ -149,9 +134,12 @@ class table_script extends table_data {
 		$initialsize = (!isset($this->details['Size']) || $this->details['Size'] == 0) ? 0x100000 : $this->details['Size'];
 		$terminator = null;
 		$terminatorcount = 1;
+		$termtest = array();
 		$terminatorsreached = 0;
 		if (isset($this->details['Terminator']))
 			$terminator = $this->details['Terminator'];
+		if (isset($terminator) && !is_array($terminator))
+			$terminator = array($terminator);
 		if (isset($this->details['Terminator Repeat']))
 			$terminatorcount = $this->details['Terminator Repeat'];
 		$hideccs = false;
@@ -166,6 +154,8 @@ class table_script extends table_data {
 		for ($i = 0; $i < $initialsize; $i++) {
 			$length = 1;
 			$val = $this->source->getByte();
+			$ccstring = sprintf('%02X', $val);
+			$this->setVar('ARG_00', $val);
 			$vals = array($val);
 			if ($charset === 'ascii') {
 				$output .= chr($val);
@@ -182,33 +172,45 @@ class table_script extends table_data {
 					$replacement = $this->gamedetails['Script Tables'][$charset]['Replacements'][$val];
 				if (isset($this->gamedetails['Script Tables'][$charset]['Lengths'][$val])) {
 					$cval = 0;
-					$length = $entry = $this->gamedetails['Script Tables'][$charset]['Lengths'][$val];
+					$entry = $this->gamedetails['Script Tables'][$charset]['Lengths'][$val];
+					$curentry = $entry;
 					if (is_array($entry))
-						$length = $entry['default'];
+						$curentry = $entry['default'];
+					$length = $this->evalString($curentry);
 						
 					for ($j = 1; $j < $length; $j++) {
 						$cval = $this->source->getByte();
-						$val = ($val<<8) + $cval;
+						$this->setVar(sprintf('ARG_%02X', $j), $cval);
+						$ccstring .= sprintf('%02X', $cval);
 						$vals[] = $cval;
-						if (isset($entry[$cval])) {
-							$length = $entry = $entry[$cval];
+						if (is_array($entry) && isset($entry[$cval])) {
+							$entry = $entry[$cval];
+							$curentry = $entry;
 							if (is_array($entry))
-								$length = $entry['default'];
+								$curentry = $entry['default'];
 						}
+						$length = $this->evalString($curentry);
 						if (isset($replacement) && is_array($replacement) && isset($replacement[$cval]))
 							$replacement = $replacement[$cval];
 						//else
 						//	unset($replacement);
 						$i++;
 					}
+					for ($j = 0; $j < $length; $j++)
+						$this->setVar(sprintf('ARG_%02X', $j), 1);
 				}
 				if (isset($replacement))
 					$output .= $this->fillvalues($replacement, $val, $vals);
 				else if (!$hideccs)
-					$output .= sprintf('[%0'.(max($length,1)*2).'X]',$val);
+					$output .= sprintf('[%s]',$ccstring);
 			}
-			if (($val === $terminator) && (++$terminatorsreached >= $terminatorcount))
-				break;
+			if (isset($this->details['Terminator'])) {
+				$termtest[] = $val;
+				if (count($termtest) > count($terminator))
+					array_shift($termtest);
+				if (($termtest === $terminator) && (++$terminatorsreached >= $terminatorcount))
+					break;
+			}
 		}
 		return trim($output);
 	}
@@ -259,6 +261,23 @@ class table_tile extends table_data {
 					$output[$x][$y] = $tile;
 				}*/
 		return $output;
+	}
+}
+
+class table_palette extends table_data {
+	public function __getValue() {
+		$data = $this->source->getString($this->details['Size']);
+		$snespal = unpack('v*', $data);
+		if (isset($this->metadata['palette string']) && $this->metadata['palette string']) {
+			$palettes = '';
+			for ($i = 1; $i <= $this->details['Size']/2; $i++)
+				$palettes .= sprintf('<div style="display: inline; background-color: #%06X;">&nbsp;</div>',(($snespal[$i]&31)<<19)+(($snespal[$i]&0x3E0)<<6)+(($snespal[$i]&0x7C00)>>7));
+		} else {
+			$palettes = array();
+			for ($i = 1; $i <= $this->details['Size']/2; $i++)
+				$palettes[] = (($snespal[$i]&31)<<19)+(($snespal[$i]&0x3E0)<<6)+(($snespal[$i]&0x7C00)>>7);
+		}
+		return $palettes;
 	}
 }
 ?>

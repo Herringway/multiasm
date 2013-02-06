@@ -2,13 +2,22 @@
 class table extends gamemod {
 	private $offset;
 	private $pointerblocks = array();
-	public function getTemplate() { return 'table'; }
+	public function getTemplate() { 
+		if (isset($this->address['Graph'])) 
+			return 'graph';
+		return 'table';
+	}
 	public function execute($arg, $query = '') {
 		$this->offset = $arg;
 		
 		require_once 'mods/game/table/basetypes.php';
 		$tablemod = new table_struct($this->source, $this->game, $this->address);
-		$this->metadata['offsetkeys'] = true;
+		if (!isset($this->address['Graph'])) 
+			$this->metadata['offsetkeys'] = true;
+		else
+			$this->metadata['offsetkeys'] = false;
+		$this->metadata['palette string'] = true;
+		$this->metadata['Use Descriptions as Struct Names'] = true;
 		debugvar($this->metadata['options'], 'metadata');
 		$tablemod->setMetadata($this->metadata);
 		$entries = $tablemod->getValue();

@@ -41,14 +41,42 @@ class addressFactory {
 	}
 	public static function getAddressEntryFromName($name) {
 		foreach (self::$addrs[self::$currentID][1] as $key=>$addr)
-			if ($key == $name) 
+			if ($key == $name) {
+				$addr['Name'] = $key;
 				return $addr;
+			}
 		return null;
 	}
 	public static function getAddressEntryFromOffset($offset) {
-		foreach (self::$addrs[self::$currentID][1] as $addr)
-			if (isset($addr['Offset']) && ($addr['Offset'] == $offset))
+		foreach (self::$addrs[self::$currentID][1] as $k=>$addr)
+			if (isset($addr['Offset']) && ($addr['Offset'] == $offset)) {
+				$addr['Name'] = $k;
 				return $addr;
+			}
+		return null;
+	}
+	public static function getAddressSubnameFromOffset($offset) {
+		foreach (self::$addrs[self::$currentID][1] as $k=>$addr)
+			if (isset($addr['Offset']) && ($addr['Offset']-$offset <= $addr['Size'])) {
+				$addr['Name'] = $k;
+				return $k;
+			}
+		return null;
+	}
+	public static function getAddressSubentryFromOffset($offset) {
+		foreach (self::$addrs[self::$currentID][1] as $k=>$addr) {
+			if (isset($addr['Offset']) && isset($addr['Size']) && ($offset-$addr['Offset'] <= $addr['Size']-1) && ($offset-$addr['Offset'] > 0)) {
+				$subentry = $offset-$addr['Offset'];
+				if (isset($addr['Labels'][$subentry]))
+					$subentry = $addr['Labels'][$subentry];
+				$addr['Subname'] = sprintf('%s[%s]', $k, $subentry);
+				$addr['Name'] = $k;
+				return $addr;
+			} else if (isset($addr['Offset']) && ($addr['Offset'] == $offset)) {
+				$addr['Name'] = $k;
+				return $addr;
+			}
+		}
 		return null;
 	}
 }

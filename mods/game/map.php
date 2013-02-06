@@ -6,6 +6,8 @@ class map extends gamemod {
 		$output = array();
 		foreach (addressFactory::getAddresses() as $name=>$data) {
 			try {
+				if (!isset($data['Offset']))
+					continue;
 				if ($this->source->identifyArea($data['Offset']) == $type)
 					$output[$data['Offset']] = array('address' => $data['Offset'], 'type' => isset($data['Type']) ? $data['Type'] : 'unknown', 'name' => $name, 'description' => isset($data['Description']) ? $data['Description'] : '', 'size' => isset($data['Size']) ? $data['Size'] : 0);
 			} catch (Exception $e) {}

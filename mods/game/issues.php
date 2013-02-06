@@ -12,15 +12,25 @@ class issues extends gamemod {
 				continue;
 			$problems = array();
 			if ($prev > $entry['Offset'])
-				$problems[] = 'Overlap detected';
-			if (!isset($entry['size']))
+				$problems[] = 'Overlap detected ('.dechex($prev).')';
+			if (!isset($entry['Size']))
 				$problems[] = 'No size defined';
 			if (!isset($entry['Type']))
 				$problems[] = 'No type defined';
-			if (!isset($entry['name']) && (!isset($entry['Type']) || ($entry['Type'] != 'empty')))
-				$problems[] = 'No name defined';
-			if (!isset($entry['description']) && (!isset($entry['Type']) || ($entry['Type'] != 'empty')))
+			if (!isset($entry['Offset']))
+				$problems[] = 'No Offset defined';
+			if (!isset($entry['Description']) && (!isset($entry['Type']) || ($entry['Type'] != 'empty')))
 				$problems[] = 'No description defined';
+			if (isset($entry['labels']))
+				$problems[] = 'Using old label format';
+			if (isset($entry['accumSize']))
+				$problems[] = 'Using old accum format';
+			if (isset($entry['indexSize']))
+				$problems[] = 'Using old index format';
+			if (isset($entry['name']))
+				$problems[] = 'Using old pre-capitalized name';
+			if (isset($entry['description']))
+				$problems[] = 'Using old pre-capitalized description';
 			if ($problems != array())
 				$allproblems[$name] = $problems;
 			//if (isset($entry['size']) && !isset($this->addresses[$offset+$entry['size']]) && ($this->platform->map_rom($offset+$entry['size']) < $this->game['size']))
