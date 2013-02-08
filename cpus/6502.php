@@ -1,17 +1,18 @@
 <?php
 class cpu_6502 extends cpucore {
-	private $processorFlags;
-	private $DBR;
-	private $PBR;
 	private $farthestbranch;
-	private $lastOpcode;
 	public static function addressFormat() {
-		return '%06X';
+		return '%04X';
 	}
 	protected function initializeProcessor() {
 		$this->farthestbranch = 0;
-		if ($this->opcodes === array())
+		if ($this->opcodes === array()) {
 			$this->opcodes = yaml_parse_file('./cpus/6502_opcodes.yml');
+			foreach ($this->opcodes as &$entry) {
+				$entry = array_merge($entry, $entry['addressing']);
+				unset($entry['addressing']);
+			}
+		}
 	}
 	public function getDefault() {
 		$this->dataSource->seekTo(0xFFFC);
@@ -40,8 +41,6 @@ class cpu_6502 extends cpucore {
 			$tmpoutput['args'][] = $t;
 			$tmpoutput['value'] += $t<<($j*8);
 		}
-		//if (isset($this->opcodes[$tmpoutput['opcode']]['undefined']))
-		//	throw new Exception("Undefined opcode encountered.");
 			
 		$fulladdr = $this->fix_addr($tmpoutput['opcode'], $tmpoutput['value']);
 		

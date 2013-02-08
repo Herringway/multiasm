@@ -11,25 +11,32 @@
 		<script type="text/javascript">
 			$(document).ready(function(){
 {%if data[0][0] is not iterable%}
-			  var plot1 = $.jqplot ('chart1', [[{%for entry in data%}{{entry[0]}}{%if not loop.last%},{%endif%}{%endfor%}]], {
-			  highlighter: {
-				show: true
-			  }
-			  });
+			  var plot1 = $.jqplot ('chart', [[{%for entry in data%}{{entry[0]}}{%if not loop.last%},{%endif%}{%endfor%}]], {
 {%else%}
-{%for i in range(1,data|length)%}
-			  var plot1 = $.jqplot ('chart{{i}}', [[{%for entry in data[i-1][0]%}{{entry[0]}}{%if not loop.last%},{%endif%}{%endfor%}]], {
-			  highlighter: {
-				show: true
-			  }
-			  });
-{%endfor%}
+			  var plot1 = $.jqplot ('chart', [{%for list in data%}[{%for entry in list[0]%}{{entry[0]}}{%if not loop.last%},{%endif%}{%endfor%}]{%if not loop.last%},{%endif%}{%endfor%}], {
 {%endif%}
+					seriesDefaults: {
+						markerOptions: {
+							size: 6
+						}
+					},
+					highlighter: {
+						show: true
+					},
+					cursor: {
+						show: true,
+						showTooltip: false,
+						zoom: true
+					},
+					legend: {
+						show: true,
+						location: 'se'
+					}
+				});
 			});
 		</script>
 {%endblock%}
-{%block menu%}{%if data[0][0] is iterable%}{%for i in range(1,data|length)%}<a href="#chart{{i}}">Graph {{i}}</a><br />{%endfor%}{%endif%}{%endblock%}
+{%block menu%}{%endblock%}
 {%block content%}
-{%if data[0][0] is not iterable%}<div id="chart1" style="height:400px;width:100%;"></div>{%else%}
-{%for i in range(1,data|length)%}<div id="chart{{i}}" style="height:400px;width:100%;"></div>{%endfor%}{%endif%}
+<div id="chart" style="height:400px;width:100%;"></div>
 {%endblock%}

@@ -1,4 +1,5 @@
 <?php
+require_once 'libs/platformFactory.php';
 class addressFactory {
 	private static $addrs = array();
 	private static $currentID;
@@ -18,6 +19,8 @@ class addressFactory {
 			$output = array($game,$addresses);
 		} else 
 			$output = yaml_parse_file(sprintf('games/%1$s/%1$s.yml', $id), -1);
+		$platform = platformFactory::getPlatform($output[0]['Platform']);
+		$output[1] += $platform->getPlatformAddresses();
 		self::$addrs[$id] = $output;
 		//return $output;
 	}

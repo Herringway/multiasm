@@ -172,6 +172,7 @@
   addressing: &absolutelongindexed
     type: absolutelongindexed
     printformat: "%s,X"
+    target: y
     addrformat: $%06X
     size: 3
 0x20: 

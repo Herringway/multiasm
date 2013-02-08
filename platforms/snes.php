@@ -1,14 +1,12 @@
 <?php
 class snes extends platform {
 	private $isHiROM;
-	private $registers;
 	
-	function __construct() {
-		if (!isset($this->registers))
-			$this->registers = array();
-		$this->registers += yaml_parse_file('platforms/snes_registers.yml');
+	public function getPlatformAddresses() {
+		$registers = yaml_parse_file('platforms/snes_registers.yml');
 		if (isset($this->game['superfx']) && ($this->game['superfx'] == true))
-			$this->registers += yaml_parse_file('platforms/snes_superfx.yml');
+			$registers += yaml_parse_file('platforms/snes_superfx.yml');
+		return $registers;
 	}
 	public function map($offset) {
 			if (($offset > 0xFFFFFF) || ($offset < 0))
@@ -45,17 +43,6 @@ class snes extends platform {
 		$checksum = $this->dataSource['rom']->getShort();
 		$checksumcomplement = $this->dataSource['rom']->getShort();
 		$this->isHiROM = (($checksum^$checksumcomplement) == 0xFFFF);
-	}
-	public function setDataSource(filter $source, $type = 'rom') { $this->dataSource[$type] = $source; }
-	public function isInRange($offset) {
-		try {
-			list($source, $trueOffset) = $this->map($offset);
-			debugvar($trueOffset, 'true offset');
-			return $this->dataSource[$source]->isInRange($trueOffset);
-		} catch (Exception $e) {
-			dprintf('caught exception: %s', $e->msg());
-		}
-		return false;
 	}
 }
 ?>

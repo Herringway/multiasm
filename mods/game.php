@@ -1,5 +1,5 @@
 <?php
-require 'platforms/platformFactory.php';
+require 'libs/platformFactory.php';
 require 'libs/addressFactory.php';
 class game extends coremod {
 	const magic = '';

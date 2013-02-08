@@ -1,499 +1,452 @@
 ---
-0x2100: 
-  description: Screen display register
-  name: INIDISP
-0x2101: 
-  description: OAM size register
-  name: OBSEL
-0x2102: 
-  description: OAM address register Low
-  name: OAMADDL
-0x2103: 
-  description: OAM address register High
-  name: OAMADDH
-0x2104: 
-  description: OAM data register
-  name: OAMDATA
-0x2105: 
-  description: Screen mode register
-  name: BGMODE
-0x2106: 
-  description: Screen pixelation register
-  name: MOSAIC
-0x2107: 
-  description: BG1 VRAM location register
-  name: BG1SC
-0x2108: 
-  description: BG2 VRAM location register
-  name: BG2SC
-0x2109: 
-  description: BG3 VRAM location register
-  name: BG3SC
-0x210a: 
-  description: BG4 VRAM location register
-  name: BG4SC
-0x210b: 
-  description: BG1 & BG2 VRAM location register
-  name: BG12NBA
-0x210c: 
-  description: BG3 & BG4 VRAM location register
-  name: BG34NBA
-0x210d: 
-  description: BG1 horizontal scroll register
-  name: BG1HOFS
-0x210e: 
-  description: BG1 vertical scroll register
-  name: BG1VOFS
-0x210f: 
-  description: BG2 horizontal scroll register
-  name: BG2HOFS
-0x2110: 
-  description: BG2 vertical scroll register
-  name: BG2VOFS
-0x2111: 
-  description: BG3 horizontal scroll register
-  name: BG3HOFS
-0x2112: 
-  description: BG3 vertical scroll register
-  name: BG3VOFS
-0x2113: 
-  description: BG4 horizontal scroll register
-  name: BG4HOFS
-0x2114: 
-  description: BG4 vertical scroll register
-  name: BG4VOFS
-0x2115: 
-  description: Video port control
-  name: VMAIN
-0x2116: 
-  description: Video port address Low
-  name: VMADDL
-0x2117: 
-  description: Video port address High
-  name: VMADDH
-0x2118: 
-  description: Video port data Low
-  name: VMDATAL
-0x2119: 
-  description: Video port data High
-  name: VMDATAH
-0x211a: 
-  description: MODE7 settings register
-  name: M7SEL
-0x211b: 
-  description: COS (COSINE) rotate angle / X Expansion
-  name: M7A
-0x211c: 
-  description: 'SIN (SIN)    rotate angle / X Expansion'
-  name: M7B
-0x211d: 
-  description: 'SIN (SIN)    rotate angle / Y Expansion'
-  name: M7C
-0x211e: 
-  description: COS (COSINE) rotate angle / Y Expansion
-  name: M7D
-0x211f: 
-  description: Center position X (13-bit data only)
-  name: M7X
-0x2120: 
-  description: Center position Y (13-bit data only)
-  name: M7Y
-0x2121: 
-  description: 'Colour # (or palette) selection register'
-  name: CGADD
-0x2122: 
-  description: Colour data register
-  name: CGDATA
-0x2123: 
-  description: Window mask settings register (BG1+2)
-  name: W12SEL
-0x2124: 
-  description: Window mask settings register (BG3+4)
-  name: W34SEL
-0x2125: 
-  description: Window mask settings register (OBJ)
-  name: WOBJSEL
-0x2126: 
-  description: Window 1 left position register
-  name: WH0
-0x2127: 
-  description: Window 1 right position register
-  name: WH1
-0x2128: 
-  description: Window 2 left position register
-  name: WH2
-0x2129: 
-  description: Window 2 right position register
-  name: WH3
-0x212a: 
-  description: >
-    Mask logic settings for Window 1 & 2 per
-    screen
-  name: WBGLOG
-0x212b: 
-  description: >
-    Mask logic settings for Colour Windows &
-    OBJ Windows
-  name: WOBJLOG
-0x212c: 
-  description: Main screen designation
-  name: TM
-0x212d: 
-  description: Sub-screen designation
-  name: TD
-0x212e: 
-  description: >
-    Window mask main screen designation
-    register
-  name: TMW
-0x212f: 
-  description: >
-    Window mask sub screen designation
-    register
-  name: TSW
-0x2130: 
-  description: >
-    Fixed color addition or screen addition
-    register
-  name: CGWSEL
-0x2131: 
-  description: >
-    Addition/subtraction for screens, BGs, &
-    OBJs
-  name: CGADSUB
-0x2132: 
+INIDISP:
+  Offset: 0x2100
+  Description: Screen display register
+OBSEL:
+  Offset: 0x2101
+  Description: OAM size register
+OAMADDL:
+  Offset: 0x2102
+  Description: OAM address register Low
+OAMADDH:
+  Offset: 0x2103
+  Description: OAM address register High
+OAMDATA:
+  Offset: 0x2104
+  Description: OAM data register
+BGMODE:
+  Offset: 0x2105
+  Description: Screen mode register
+MOSAIC:
+  Offset: 0x2106
+  Description: Screen pixelation register
+BG1SC:
+  Offset: 0x2107
+  Description: BG1 VRAM location register
+BG2SC:
+  Offset: 0x2108
+  Description: BG2 VRAM location register
+BG3SC:
+  Offset: 0x2109
+  Description: BG3 VRAM location register
+BG4SC:
+  Offset: 0x210a
+  Description: BG4 VRAM location register
+BG12NBA:
+  Offset: 0x210b
+  Description: BG1 & BG2 VRAM location register
+BG34NBA:
+  Offset: 0x210c
+  Description: BG3 & BG4 VRAM location register
+BG1HOFS:
+  Offset: 0x210d
+  Description: BG1 horizontal scroll register
+BG1VOFS:
+  Offset: 0x210e
+  Description: BG1 vertical scroll register
+BG2HOFS:
+  Offset: 0x210f
+  Description: BG2 horizontal scroll register
+BG2VOFS:
+  Offset: 0x2110
+  Description: BG2 vertical scroll register
+BG3HOFS:
+  Offset: 0x2111
+  Description: BG3 horizontal scroll register
+BG3VOFS:
+  Offset: 0x2112
+  Description: BG3 vertical scroll register
+BG4HOFS:
+  Offset: 0x2113
+  Description: BG4 horizontal scroll register
+BG4VOFS:
+  Offset: 0x2114
+  Description: BG4 vertical scroll register
+VMAIN:
+  Offset: 0x2115
+  Description: Video port control
+VMADDL:
+  Offset: 0x2116
+  Description: Video port address Low
+VMADDH:
+  Offset: 0x2117
+  Description: Video port address High
+VMDATAL:
+  Offset: 0x2118
+  Description: Video port data Low
+VMDATAH:
+  Offset: 0x2119
+  Description: Video port data High
+M7SEL:
+  Offset: 0x211a
+  Description: MODE7 settings register
+M7A:
+  Offset: 0x211b
+  Description: COS (COSINE) rotate angle / X Expansion
+M7B:
+  Offset: 0x211c
+  Description: 'SIN (SIN)    rotate angle / X Expansion'
+M7C:
+  Offset: 0x211d
+  Description: 'SIN (SIN)    rotate angle / Y Expansion'
+M7D:
+  Offset: 0x211e
+  Description: COS (COSINE) rotate angle / Y Expansion
+M7X:
+  Offset: 0x211f
+  Description: Center position X (13-bit data only)
+M7Y:
+  Offset: 0x2120
+  Description: Center position Y (13-bit data only)
+CGADD:
+  Offset: 0x2121
+  Description: 'Colour # (or palette) selection register'
+CGDATA:
+  Offset: 0x2122
+  Description: Colour data register
+W12SEL:
+  Offset: 0x2123
+  Description: Window mask settings register (BG1+2)
+W34SEL:
+  Offset: 0x2124
+  Description: Window mask settings register (BG3+4)
+WOBJSEL:
+  Offset: 0x2125
+  Description: Window mask settings register (OBJ)
+WH0:
+  Offset: 0x2126
+  Description: Window 1 left position register
+WH1:
+  Offset: 0x2127
+  Description: Window 1 right position register
+WH2:
+  Offset: 0x2128
+  Description: Window 2 left position register
+WH3:
+  Offset: 0x2129
+  Description: Window 2 right position register
+WBGLOG:
+  Offset: 0x212a
+  Description: Mask logic settings for Window 1 & 2 per screen
+WOBJLOG:
+  Offset: 0x212b
+  Description: Mask logic settings for Colour Windows & OBJ Windows
+TM:
+  Offset: 0x212c
+  Description: Main screen designation
+TD:
+  Offset: 0x212d
+  Description: Sub-screen designation
+TMW:
+  Offset: 0x212e
+  Description: Window mask main screen designation register
+TSW:
+  Offset: 0x212f
+  Description: Window mask sub screen designation register
+CGWSEL:
+  Offset: 0x2130
+  Description: Fixed color addition or screen addition register
+CGADSUB:
+  Offset: 0x2131
+  Description: Addition/subtraction for screens, BGs, & OBJs
+0x2132:
   name: COLDATA
   description: Fixed colour data for fixed colour +/-
-0x2133: 
-  description: Screen mode/video select register
-  name: SETINI
-0x2134: 
-  description: Multiplication result register Low
-  name: MPYL
-0x2135: 
-  description: Multiplication result register Mid
-  name: MPYM
-0x2136: 
-  description: Multiplication result register High
-  name: MPYH
-0x2137: 
-  description: >
-    Software latch for horizontal/vertical
-    counter
-  name: SLHV
-0x2138: 
-  description: Read data from OAM
-  name: OAMDATAREAD
-0x2139: 
-  description: Read data from VRAM Low
-  name: VMDATALREAD
-0x213a: 
-  description: Read data from VRAM High
-  name: VMDATAHREAD
-0x213b: 
-  description: Read data from CG-RAM
-  name: CGDATAREAD
-0x213c: 
-  description: Horizontal scanline location
-  name: OPHCT
-0x213d: 
-  description: Vertical scanline location
-  name: OPVCT
-0x213e: 
-  description: PPU status flag & version number
-  name: STAT77
-0x213f: 
-  description: PPU status flag & version number 2
-  name: STAT78
-0x2140: 
-  description: SPC-700 I/O Register 0
-  name: APUI00
-0x2141: 
-  description: SPC-700 I/O Register 1
-  name: APUI01
-0x2142: 
-  description: SPC-700 I/O Register 2
-  name: APUI02
-0x2143: 
-  description: SPC-700 I/O Register 3
-  name: APUI03
-0x2180:
-  description: Read/write WRAM register
-  name: WMDATA
-0x2181:
-  description: WRAM data register Low
-  name: WMADDL
-0x2182:
-  description: WRAM data register Mid
-  name: WMADDM
-0x2183:
-  description: WRAM data register High
-  name: WMADDH
-0x4200: 
-  description: NMI, V/H COUNT, AND JOYPAD ENABLE
-  name: NMITIMEN
-0x4201: 
-  description: Programmable I/O port (out-port)
-  name: WRIO
-0x4202: 
-  description: Multiplicand A
-  name: WRMPYA
-0x4203: 
-  description: Multiplier B
-  name: WRMPYB
-0x4204: 
-  description: Dividend C Low
-  name: WRDIVL
-0x4205: 
+SETINI:
+  Offset: 0x2133
+  Description: Screen mode/video select register
+MPYL:
+  Offset: 0x2134
+  Description: Multiplication result register Low
+MPYM:
+  Offset: 0x2135
+  Description: Multiplication result register Mid
+MPYH:
+  Offset: 0x2136
+  Description: Multiplication result register High
+SLHV:
+  Offset: 0x2137
+  Description: Software latch for horizontal/vertical counter
+OAMDATAREAD:
+  Offset: 0x2138
+  Description: Read data from OAM
+VMDATALREAD:
+  Offset: 0x2139
+  Description: Read data from VRAM Low
+VMDATAHREAD:
+  Offset: 0x213a
+  Description: Read data from VRAM High
+CGDATAREAD:
+  Offset: 0x213b
+  Description: Read data from CG-RAM
+OPHCT:
+  Offset: 0x213c
+  Description: Horizontal scanline location
+OPVCT:
+  Offset: 0x213d
+  Description: Vertical scanline location
+STAT77:
+  Offset: 0x213e
+  Description: PPU status flag & version number
+STAT78:
+  Offset: 0x213f
+  Description: PPU status flag & version number 2
+APUI00:
+  Offset: 0x2140
+  Description: SPC-700 I/O Register 0
+APUI01:
+  Offset: 0x2141
+  Description: SPC-700 I/O Register 1
+APUI02:
+  Offset: 0x2142
+  Description: SPC-700 I/O Register 2
+APUI03:
+  Offset: 0x2143
+  Description: SPC-700 I/O Register 3
+WMDATA:
+  Offset: 0x2180
+  Description: Read/write WRAM register
+WMADDL:
+  Offset: 0x2181
+  Description: WRAM data register Low
+WMADDM:
+  Offset: 0x2182
+  Description: WRAM data register Mid
+WMADDH:
+  Offset: 0x2183
+  Description: WRAM data register High
+NMITIMEN:
+  Offset: 0x4200
+  Description: NMI, V/H COUNT, AND JOYPAD ENABLE
+WRIO:
+  Offset: 0x4201
+  Description: Programmable I/O port (out-port)
+WRMPYA:
+  Offset: 0x4202
+  Description: Multiplicand A
+WRMPYB:
+  Description: Multiplier B
+  Offset: 0x4203
+WRDIVL:
+  Description: Dividend C Low
+  Offset: 0x4204
+WRDIVH:
   description: Dividend C High
-  name: WRDIVH
-0x4206: 
-  description: Divisor B
-  name: WRDIVB
-0x4207: 
-  description: >
-    Video horizontal IRQ beam
-    position/pointer Low
-  name: HTIMEL
-0x4208: 
-  description: >
-    Video horizontal IRQ beam
-    position/pointer High
-  name: HTIMEH
-0x4209: 
-  description: >
-    Video vertical IRQ beam position/pointer
-    Low
-  name: VTIMEL
-0x420a: 
-  description: >
-    Video vertical IRQ beam position/pointer
-    High
-  name: VTIMEH
-0x420b: 
-  description: DMA enable register
-  name: MDMAEN
-0x420c: 
-  description: HDMA enable register
-  name: HDMAEN
-0x420d: 
-  description: Cycle speed register
-  name: MEMSEL
-0x4210: 
-  description: NMI register
-  name: RDNMI
-0x4211: 
-  description: Video IRQ register
-  name: TIMEUP
-0x4212: 
-  description: Status Register
-  name: HVBJOY
-  bits:
-    - Joypad ready
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-    - In HBlank
-    - In VBlank
-0x4213: 
-  description: Programmable I/O port (in-port)
-  name: RDIO
-0x4214: 
-  description: Quotient of Divide Result Low
-  name: RDDIVL
-0x4215: 
-  description: Quotient of Divide Result High
-  name: RDDIVH
-0x4216: 
-  description: Multiplication/Division Result Low
-  name: RDMPYL
-0x4217: 
-  description: Multiplication/Division Result High
-  name: RDMPYH
-0x4218: 
-  description: 'Joypad #1 Status Low'
-  name: JOY1L
-0x4219: 
-  description: 'Joypad #1 Status High'
-  name: JOY1H
-0x421a: 
-  description: 'Joypad #2 Status Low'
-  name: JOY2L
-0x421b: 
-  description: 'Joypad #2 Status High'
-  name: JOY2H
-0x421c: 
-  description: 'Joypad #3 Status Low'
-  name: JOY3L
-0x421d: 
-  description: 'Joypad #3 Status High'
-  name: JOY3H
-0x421e: 
-  description: 'Joypad #4 Status Low'
-  name: JOY4L
-0x421f: 
-  description: 'Joypad #4 Status High'
-  name: JOY4H
-0x4300: 
-  description: DMA Channel 0 Control register
-  name: DMAP0
-0x4301: 
-  description: DMA Channel 0 Destination register
-  name: BBAD0
-0x4302: 
-  description: DMA Channel 0 Source address Low
-  name: A1T0L
-0x4303: 
-  description: DMA Channel 0 Source address High
-  name: A1T0H
-0x4304: 
-  description: DMA Channel 0 Source Bank address
-  name: A1B0
-0x4305: 
-  description: >
-    DMA Channel 0 transfer size & HDMA
-    address register
-  name: DAS0L
-0x4310: 
-  description: DMA Channel 1 Control register
-  name: DMAP1
-0x4311: 
-  description: DMA Channel 1 Destination register
-  name: BBAD1
-0x4312: 
-  description: DMA Channel 1 Source address Low
-  name: A1T1L
-0x4313: 
-  description: DMA Channel 1 Source address High
-  name: A1T1H
-0x4314: 
-  description: DMA Channel 1 Source Bank address
-  name: A1B1
-0x4315: 
-  description: >
-    DMA Channel 1 transfer size & HDMA
-    address register
-  name: DAS1L
-0x4320: 
-  description: DMA Channel 2 Control register
-  name: DMAP2
-0x4321: 
-  description: DMA Channel 2 Destination register
-  name: BBAD2
-0x4322: 
-  description: DMA Channel 2 Source address Low
-  name: A1T2L
-0x4323: 
-  description: DMA Channel 2 Source address High
-  name: A1T2H
-0x4324: 
-  description: DMA Channel 2 Source Bank address
-  name: A1B2
-0x4325: 
-  description: >
-    DMA Channel 2 transfer size & HDMA
-    address register
-  name: DAS2L
-0x4330: 
-  description: DMA Channel 3 Control register
-  name: DMAP3
-0x4331: 
-  description: DMA Channel 3 Destination register
-  name: BBAD3
-0x4332: 
-  description: DMA Channel 3 Source address Low
-  name: A1T3L
-0x4333: 
-  description: DMA Channel 3 Source address High
-  name: A1T3H
-0x4334: 
-  description: DMA Channel 3 Source Bank address
-  name: A1B3
-0x4335: 
-  description: >
-    DMA Channel 3 transfer size & HDMA
-    address register
-  name: DAS3L
-0x4340: 
-  description: DMA Channel 4 Control register
-  name: DMAP4
-0x4341: 
-  description: DMA Channel 4 Destination register
-  name: BBAD4
-0x4342: 
-  description: DMA Channel 4 Source address Low
-  name: A1T4L
-0x4343: 
-  description: DMA Channel 4 Source address High
-  name: A1T4H
-0x4344: 
-  description: DMA Channel 4 Source Bank address
-  name: A1B4
-0x4345: 
-  description: >
-    DMA Channel 4 transfer size & HDMA
-    address register
-  name: DAS4L
-0x4350: 
-  description: DMA Channel 5 Control register
-  name: DMAP5
-0x4351: 
-  description: DMA Channel 5 Destination register
-  name: BBAD5
-0x4352: 
-  description: DMA Channel 5 Source address Low
-  name: A1T5L
-0x4353: 
-  description: DMA Channel 5 Source address High
-  name: A1T5H
-0x4354: 
-  description: DMA Channel 5 Source Bank address
-  name: A1B5
-0x4355: 
-  description: >
-    DMA Channel 5 transfer size & HDMA
-    address register
-  name: DAS5L
-0x4360: 
-  description: DMA Channel 6 Control register
-  name: DMAP6
-0x4361: 
-  description: DMA Channel 6 Destination register
-  name: BBAD6
-0x4362: 
-  description: DMA Channel 6 Source address Low
-  name: A1T6L
-0x4363: 
-  description: DMA Channel 6 Source address High
-  name: A1T6H
-0x4364: 
-  description: DMA Channel 6 Source Bank address
-  name: A1B6
-0x4365: 
-  description: >
-    DMA Channel 6 transfer size & HDMA
-    address register
-  name: DAS6L
-0x4370: 
-  description: DMA Channel 7 Control register
-  name: DMAP7
-0x4371: 
-  description: DMA Channel 7 Destination register
-  name: BBAD7
-0x4372: 
-  description: DMA Channel 7 Source address Low
-  name: A1T7L
-0x4373: 
-  description: DMA Channel 7 Source address High
-  name: A1T7H
-0x4374: 
-  description: DMA Channel 7 Source Bank address
-  name: A1B7
-0x4375: 
-  description: >
-    DMA Channel 7 transfer size & HDMA
-    address register
-  name: DAS7L
+  Offset: 0x4205
+WRDIVB:
+  Description: Divisor B
+  Offset: 0x4206
+HTIMEL:
+  Offset: 0x4207
+  Description: Video horizontal IRQ beam position/pointer Low
+HTIMEH:
+  Offset: 0x4208
+  Description: Video horizontal IRQ beam position/pointer High
+VTIMEL:
+  Offset: 0x4209
+  Description: Video vertical IRQ beam position/pointer Low
+VTIMEH:
+  Offset: 0x420a
+  Description: Video vertical IRQ beam position/pointer High
+MDMAEN:
+  Offset: 0x420b
+  Description: DMA enable register
+HDMAEN:
+  Offset: 0x420c
+  Description: HDMA enable register
+MEMSEL:
+  Offset: 0x420d
+  Description: Cycle speed register
+RDNMI:
+  Offset: 0x4210
+  Description: NMI register
+TIMEUP:
+  Offset: 0x4211
+  Description: Video IRQ register
+HVBJOY:
+  Offset: 0x4212
+  Description: Status Register
+RDIO:
+  Offset: 0x4213
+  Description: Programmable I/O port (in-port)
+RDDIVL:
+  Offset: 0x4214
+  Description: Quotient of Divide Result Low
+RDDIVH:
+  Offset: 0x4215
+  Description: Quotient of Divide Result High
+RDMPYL:
+  Offset: 0x4216
+  Description: Multiplication/Division Result Low
+RDMPYH:
+  Offset: 0x4217
+  Description: Multiplication/Division Result High
+JOY1L:
+  Offset: 0x4218
+  Description: 'Joypad #1 Status Low'
+JOY1H:
+  Offset: 0x4219
+  Description: 'Joypad #1 Status High'
+JOY2L:
+  Offset: 0x421a
+  Description: 'Joypad #2 Status Low'
+JOY2H:
+  Offset: 0x421b
+  Description: 'Joypad #2 Status High'
+JOY3L:
+  Offset: 0x421c
+  Description: 'Joypad #3 Status Low'
+JOY3H:
+  Offset: 0x421d
+  Description: 'Joypad #3 Status High'
+JOY4L:
+  Offset: 0x421e
+  Description: 'Joypad #4 Status Low'
+JOY4H:
+  Offset: 0x421f
+  Description: 'Joypad #4 Status High'
+DMAP0:
+  Offset: 0x4300
+  Description: DMA Channel 0 Control register
+BBAD0:
+  Offset: 0x4301
+  Description: DMA Channel 0 Destination register
+A1T0L:
+  Offset: 0x4302
+  Description: DMA Channel 0 Source address Low
+A1T0H:
+  Offset: 0x4303
+  Description: DMA Channel 0 Source address High
+A1B0:
+  Offset: 0x4304
+  Description: DMA Channel 0 Source Bank address
+DAS0L:
+  Offset: 0x4305
+  Description: DMA Channel 0 transfer size & HDMA address register
+DMAP1:
+  Offset: 0x4310
+  Description: DMA Channel 1 Control register
+BBAD1:
+  Offset: 0x4311
+  Description: DMA Channel 1 Destination register
+A1T1L:
+  Offset: 0x4312
+  Description: DMA Channel 1 Source address Low
+A1T1H:
+  Offset: 0x4313
+  Description: DMA Channel 1 Source address High
+A1B1:
+  Offset: 0x4314
+  Description: DMA Channel 1 Source Bank address
+DAS1L:
+  Offset: 0x4315
+  Description: DMA Channel 1 transfer size & HDMA address register
+DMAP2:
+  Offset: 0x4320
+  Description: DMA Channel 2 Control register
+BBAD2:
+  Offset: 0x4321
+  Description: DMA Channel 2 Destination register
+A1T2L:
+  Offset: 0x4322
+  Description: DMA Channel 2 Source address Low
+A1T2H:
+  Offset: 0x4323
+  Description: DMA Channel 2 Source address High
+A1B2:
+  Offset: 0x4324
+  Description: DMA Channel 2 Source Bank address
+DAS2L:
+  Offset: 0x4325
+  Description: DMA Channel 2 transfer size & HDMA address register
+DMAP3:
+  Offset: 0x4330
+  Description: DMA Channel 3 Control register
+BBAD3:
+  Offset: 0x4331
+  Description: DMA Channel 3 Destination register
+A1T3L:
+  Offset: 0x4332
+  Description: DMA Channel 3 Source address Low
+A1T3H:
+  Offset: 0x4333
+  Description: DMA Channel 3 Source address High
+A1B3:
+  Offset: 0x4334
+  Description: DMA Channel 3 Source Bank address
+DAS3L:
+  Offset: 0x4335
+  Description: DMA Channel 3 transfer size & HDMA address register
+DMAP4:
+  Offset: 0x4340
+  Description: DMA Channel 4 Control register
+BBAD4:
+  Offset: 0x4341
+  Description: DMA Channel 4 Destination register
+A1T4L:
+  Offset: 0x4342
+  Description: DMA Channel 4 Source address Low
+A1T4H:
+  Offset: 0x4343
+  Description: DMA Channel 4 Source address High
+A1B4:
+  Offset: 0x4344
+  Description: DMA Channel 4 Source Bank address
+DAS4L:
+  Offset: 0x4345
+  Description: DMA Channel 4 transfer size & HDMA address register
+DMAP5:
+  Offset: 0x4350
+  Description: DMA Channel 5 Control register
+BBAD5:
+  Offset: 0x4351
+  Description: DMA Channel 5 Destination register
+A1T5L:
+  Offset: 0x4352
+  Description: DMA Channel 5 Source address Low
+A1T5H:
+  Offset: 0x4353
+  Description: DMA Channel 5 Source address High
+A1B5:
+  Offset: 0x4354
+  Description: DMA Channel 5 Source Bank address
+DAS5L:
+  Offset: 0x4355
+  Description: DMA Channel 5 transfer size & HDMA address register
+DMAP6:
+  Offset: 0x4360
+  Description: DMA Channel 6 Control register
+BBAD6:
+  Offset: 0x4361
+  Description: DMA Channel 6 Destination register
+A1T6L:
+  Offset: 0x4362
+  Description: DMA Channel 6 Source address Low
+A1T6H:
+  Offset: 0x4363
+  Description: DMA Channel 6 Source address High
+A1B6:
+  Offset: 0x4364
+  Description: DMA Channel 6 Source Bank address
+DAS6L:
+  Offset: 0x4365
+  Description: DMA Channel 6 transfer size & HDMA address register
+DMAP7:
+  Offset: 0x4370
+  Description: DMA Channel 7 Control register
+BBAD7:
+  Offset: 0x4371
+  Description: DMA Channel 7 Destination register
+A1T7L:
+  Offset: 0x4372
+  Description: DMA Channel 7 Source address Low
+A1T7H:
+  Offset: 0x4373
+  Description: DMA Channel 7 Source address High
+A1B7:
+  Offset: 0x4374
+  Description: DMA Channel 7 Source Bank address
+DAS7L:
+  Offset: 0x4375
+  Description: DMA Channel 7 transfer size & HDMA address register
 ...

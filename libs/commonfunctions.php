@@ -82,6 +82,7 @@ abstract class platform extends filter implements seekable {
 	public function getMiscInfo() {
 		return array();
 	}
+	public function getPlatformAddresses() { return array(); }
 	public function seekTo($offset) {
 		list($source, $trueOffset) = $this->map($offset);
 		debugvar($source, 'seeking into:');
@@ -89,7 +90,16 @@ abstract class platform extends filter implements seekable {
 		$this->dataSource[$source]->seekTo($trueOffset);
 		$this->offset = $offset;
 	}
-	public function isInRange($offset) { return true; }
+	public function isInRange($offset) {
+		try {
+			list($source, $trueOffset) = $this->map($offset);
+			debugvar($trueOffset, 'true offset');
+			return $this->dataSource[$source]->isInRange($trueOffset);
+		} catch (Exception $e) {
+			dprintf('caught exception: %s', $e->msg());
+		}
+		return false;
+	}
 	public function getByte() { $this->offset++; return $this->dataSource[$this->lastSource]->getByte(); }
 	public function getShort() { $this->offset += 2; return $this->dataSource[$this->lastSource]->getShort(); }
 	public function getLong() { $this->offset += 4; return $this->dataSource[$this->lastSource]->getLong();	}
@@ -280,7 +290,7 @@ abstract class cpucore {
 	protected $opcodes = array();
 	protected $breakpoints = array();
 	protected $lastOpcode;
-	protected $processorFlags;
+	protected $processorState;
 	
 	public static function getTemplate() { return 'assembly'; }
 	public static function addressFormat() { return '%X'; }
@@ -293,7 +303,8 @@ abstract class cpucore {
 	public function getDefault() { }
 	public function setPlatform($src) { $this->dataSource = $src; $this->platform = $src; }
 	public function setBreakPoint($addr) { $this->breakpoints[] = $addr; }
-	public function setState($flag, $state) { $this->processorFlags[$flag] = $state; }
+	public function setState($flag, $state) { $this->processorState[$flag] = $state; }
+	public function getState($flag) { return $this->processorState[$flag]; }
 	protected function initializeProcessor() { }
 	protected function setup($addr) { }
 	protected function executeInstruction($instruction) { }
