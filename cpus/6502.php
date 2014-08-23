@@ -23,10 +23,6 @@ class cpu_6502 extends cpucore {
 			return ($this->currentoffset+uint($val+2,8 * $this->opcodes[$instruction]['addressing']['size']))&0xFFFF;
 		return $val;
 	}
-	protected function setup($addr) { 
-		$this->setBreakPoint(($addr&0xFF0000) + 0x10000); //Break at bank boundary
-		$this->PBR = $addr>>16;
-	}
 	protected function fetchInstruction() {
 		if (($this->farthestbranch < $this->currentoffset) && isset($this->opcodes[$this->lastOpcode]['addressing']['special']) && ($this->opcodes[$this->lastOpcode]['addressing']['special'] == 'return'))
 			throw new Exception ('Return reached');

@@ -1,9 +1,10 @@
 <?php
 class cpu_z80 extends cpucore {
 	const addressformat = '%06X';
+	private $format = 'Zilog';
 	protected function initializeProcessor() {
 		if ($this->opcodes === array())
-			$this->opcodes = yaml_parse_file('./cpus/z80g_opcodes.yml');
+			$this->opcodes = $this->filterMnemonics(yaml_parse_file('./cpus/z80g_opcodes.yml'));
 	}
 	public function getDefault() {
 		return 0x100;
@@ -47,6 +48,17 @@ class cpu_z80 extends cpucore {
 	
 	public function getOpcodes() {
 		return $this->opcodes;
+	}
+	private function filterMnemonics($data) {
+		foreach ($data as $entry=>&$opcode) {
+			if (isset($opcode[$this->format]))
+				$opcode = array_merge($opcode, $opcode[$this->format]);
+			if (isset($opcode['Intel']))
+				unset($opcode['Intel']);
+			if (isset($opcode['Zilog']))
+				unset($opcode['Zilog']);
+		}
+		return $data;
 	}
 }
 ?>

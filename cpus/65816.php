@@ -10,6 +10,7 @@ class cpu_65816 extends cpucore {
 		$this->setState('8 Bit Accum', true);
 		$this->setState('8 Bit Index', true);
 		$this->setState('Emulation', true);
+		$this->setState('DP', -1);
 		$this->farthestbranch = 0;
 		if ($this->opcodes === array()) {
 			$this->opcodes = yaml_parse_file('./cpus/65816_opcodes.yml');
@@ -24,6 +25,8 @@ class cpu_65816 extends cpucore {
 		return $this->dataSource->getShort();
 	}
 	private function fix_addr($instruction, $val) {
+		if (($this->getState('DP') >= 0) && isset($this->opcodes[$instruction]['stack']) && ($this->opcodes[$instruction]['stack'] == 'directpage'))
+			return ($this->getState('DP')  << 8 ) + $val;
 		if (isset($this->opcodes[$instruction]['UseDBR']))
 			return ($this->getState('DBR') << 16) + $val;
 		if (($this->opcodes[$instruction]['type'] == 'relative') || ($this->opcodes[$instruction]['type'] == 'relativelong'))
@@ -33,7 +36,7 @@ class cpu_65816 extends cpucore {
 		return $val;
 	}
 	protected function setup($addr) { 
-		$this->setBreakPoint(($addr&0xFF0000) + 0x10000); //Break at bank boundary
+		$this->setBreakPoint(($addr&0xFF0000) + 0x10000, 'bankboundary'); //Break at bank boundary
 		$this->setState('PBR', $addr>>16);
 	}
 	protected function fetchInstruction() {
@@ -72,6 +75,10 @@ class cpu_65816 extends cpucore {
 		
 		if (isset($this->opcodes[$output['opcode']]['target']))
 			$output['target'] = $fulladdr;
+		if (($this->opcodes[$output['opcode']]['type'] == 'directpage') && ($this->getState('DP') >= 0))
+			$output['target'] = $fulladdr;
+		if (isset($this->opcodes[$output['opcode']]['stack']) && ($this->opcodes[$output['opcode']]['stack'] === $this->getState('Localvars')))
+			$output['stack'] = $fulladdr;
 		if (isset($this->opcodes[$output['opcode']]['destination']))
 			$output['destination'] = $fulladdr;
 			

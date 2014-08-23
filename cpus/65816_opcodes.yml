@@ -11,7 +11,7 @@
     type: dpindexedindirectx
     printformat: (%s,X)
     addrformat: $%02X
-    directpage: y
+    stack: directpage
     size: 1
 0x02: 
   Mnemonic: COP
@@ -28,7 +28,7 @@
   addressing: &directpage
     type: directpage
     addrformat: $%02X
-    directpage: y
+    stack: directpage
     size: 1
 0x05: 
   Mnemonic: ORA
@@ -42,7 +42,7 @@
     type: dpindirectlong
     printformat: "[%s]"
     addrformat: "$%02X"
-    directpage: y
+    stack: directpage
     size: 1
 0x08: 
   Mnemonic: PHP
@@ -96,7 +96,7 @@
     type: dpindirectindexedy
     printformat: (%s),Y
     addrformat: $%02X
-    directpage: y
+    stack: directpage
     size: 1
 0x12: 
   Mnemonic: ORA
@@ -104,7 +104,7 @@
     type: dpindirect
     printformat: (%s)
     addrformat: $%02X
-    directpage: y
+    stack: directpage
     size: 1
 0x13: 
   Mnemonic: ORA
@@ -122,7 +122,7 @@
     type: dpindexedx
     printformat: "%s,X"
     addrformat: $%02X
-    directpage: y
+    stack: directpage
     size: 1
 0x16: 
   Mnemonic: ASL
@@ -133,7 +133,7 @@
     type: dpindirectlongindexedy
     printformat: '[%s],Y'
     addrformat: $%02X
-    directpage: y
+    stack: directpage
     size: 1
 0x18: 
   Mnemonic: CLC
@@ -142,6 +142,7 @@
   Mnemonic: ORA
   addressing: &absoluteindexedy
     type: absoluteindexedy
+    target: y
     printformat: "%s,Y"
     UseDBR: y
     addrformat: $%04X
@@ -576,7 +577,7 @@
     type: dpindexedy
     printformat: "%s,Y"
     addrformat: $%02X
-    directpage: y
+    stack: directpage
     size: 1
 0x97: 
   Mnemonic: STA
