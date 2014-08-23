@@ -13,3 +13,9 @@
 [submodule "libs/lightopenid"]
 	path = libs/lightopenid
 	url = git://gitorious.org/lightopenid/lightopenid.git
+[submodule "libs/analog"]
+	path = libs/analog
+	url = https://github.com/jbroadway/analog.git
+[submodule "libs/monolog"]
+	path = libs/monolog
+	url = https://github.com/Seldaek/monolog.git

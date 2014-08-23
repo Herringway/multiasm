@@ -13,6 +13,7 @@
 {%endfor%}		</select>{%endif%}
 
 {%if nextoffset%}<a rel="next" accesskey="n" href="/{{coremod}}/{{nextoffset}}">Next Data</a>{%endif%}
+{%if notes%}<br /><h3>notes</h3>{{notes|replace({"\n":"<br />"})|raw}}{%endif%}
 {%if form%}
 		<form action="/index.php">
 			<input type="hidden" name="coremod" value="{{coremod}}">
