@@ -7,6 +7,6 @@
 {%endfor%}{%endif%}
 
 {%endfor%}
-"{%endif%}>{%if instruction.uri%}<a href="/{{coremod}}/{{instruction.uri}}">{%endif%}{%if instruction.name%}{%if opcodes[instruction.opcode].printformat is defined %}{{opcodes[instruction.opcode].printformat|format(instruction.name)}}{%else%}{{instruction.name}}{%endif%}{%else%}{%if instruction.value%}{%if opcodes[instruction.opcode].printformat is defined %}{{opcodes[instruction.opcode].printformat|format(instruction.value)}}{%else%}{{instruction.value}}{%endif%}{%endif%}{%endif%}{%if instruction.uri%}</a>{%endif%}</span>
+"{%endif%}>{%if instruction.uri%}<a href="{{rootdir}}/{{coremod}}/{{instruction.uri}}">{%endif%}{%if instruction.name%}{%if opcodes[instruction.opcode].printformat is defined %}{{opcodes[instruction.opcode].printformat|format(instruction.name)}}{%else%}{{instruction.name}}{%endif%}{%else%}{%if instruction.value%}{%if opcodes[instruction.opcode].printformat is defined %}{{opcodes[instruction.opcode].printformat|format(instruction.value)}}{%else%}{{instruction.value}}{%endif%}{%endif%}{%endif%}{%if instruction.uri%}</a>{%endif%}</span>
 {%endif%}
 {%endfor%}{%endblock%}

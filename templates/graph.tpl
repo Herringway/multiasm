@@ -1,13 +1,13 @@
 {%extends "base.tpl"%}
 {%block header%}
-		<!--[if lt IE 9]><script language="javascript" type="text/javascript" src="/js/excanvas.min.js"></script><![endif]-->
+		<!--[if lt IE 9]><script language="javascript" type="text/javascript" src="{{rootdir}}/js/excanvas.min.js"></script><![endif]-->
 		<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
 		<script src="http://code.jquery.com/jquery-migrate-1.1.0.min.js"></script>
-		<script type="text/javascript" src="/js/jquery.jqplot.min.js"></script>
-		<script type="text/javascript" src="/js/plugins/jqplot.cursor.min.js"></script>
-		<script type="text/javascript" src="/js/plugins/jqplot.pointLabels.min.js"></script>
-		<script type="text/javascript" src="/js/plugins/jqplot.highlighter.min.js"></script>
-		<link rel="stylesheet" type="text/css" href="/js/jquery.jqplot.min.css" />
+		<script type="text/javascript" src="{{rootdir}}/js/jquery.jqplot.min.js"></script>
+		<script type="text/javascript" src="{{rootdir}}/js/plugins/jqplot.cursor.min.js"></script>
+		<script type="text/javascript" src="{{rootdir}}/js/plugins/jqplot.pointLabels.min.js"></script>
+		<script type="text/javascript" src="{{rootdir}}/js/plugins/jqplot.highlighter.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="{{rootdir}}/js/jquery.jqplot.min.css" />
 		<script type="text/javascript">
 			$(document).ready(function(){
 {%if data[0][0] is not iterable%}

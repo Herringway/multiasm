@@ -3,16 +3,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
 		<title>{%block title%}MPASM{%endblock%}{%if description%} - {{description}}{%endif%}</title>
-		<link rel="stylesheet" type="text/css" href="/mpasm.css"/>
+		<link rel="stylesheet" type="text/css" href="{{rootdir}}/mpasm.css"/>
 		{%block header%}{%endblock%}
 	</head>
 <body>
 	{%if hideright != true%}<div class="right">
-		{%if gamelist is not empty%}<select onchange="top.location.href = '/' + this.options[this.selectedIndex].value">
+		{%if gamelist is not empty%}<select onchange="top.location.href = '{{rootdir}}/' + this.options[this.selectedIndex].value">
 {%for gameval,game in gamelist%}			<option value="{{gameval}}"{%if title == game%} selected="yes"{%endif%}>{{game}}</option>
 {%endfor%}		</select>{%endif%}
 
-{%if nextoffset%}<a rel="next" accesskey="n" href="/{{coremod}}/{{nextoffset}}">Next Data</a>{%endif%}
+{%if nextoffset%}<a rel="next" accesskey="n" href="{{rootdir}}/{{coremod}}/{{nextoffset}}">Next Data</a>{%endif%}
 {%if notes%}<br /><h3>notes</h3>{{notes|replace({"\n":"<br />"})|raw}}{%endif%}
 {%if form%}
 		<form action="/index.php">
@@ -35,6 +35,6 @@
 {%endfor%}">{{title}}{%if description%} - {{description}}{%endif%}</span>
 	<pre{%if error%} class="error"{%endif%}>
 {%block content%}{%endblock%}	</pre>
-	<small>{%for url,submod in submods%}<a href="/{{coremod}}/{{url}}">{{submod}}</a> {%endfor%}</small>
+	<small>{%for url,submod in submods%}<a href="{{rootdir}}/{{coremod}}/{{url}}">{{submod}}</a> {%endfor%}</small>
 </body>
 </html>
