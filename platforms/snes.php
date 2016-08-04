@@ -2,6 +2,9 @@
 class snes extends platform {
 	private $isHiROM;
 	
+	public function getSize() {
+		return pow(2,24)+1;
+	}
 	public function getPlatformAddresses() {
 		$registers = yaml_parse_file('platforms/snes_registers.yml');
 		if (isset($this->game['superfx']) && ($this->game['superfx'] == true))
@@ -9,6 +12,8 @@ class snes extends platform {
 		return $registers;
 	}
 	public function map($offset) {
+			if (($offset&0x40E000) == 0)
+				return array('ram', $offset&0x1FFF);
 			if (($offset > 0xFFFFFF) || ($offset < 0))
 				throw new Exception('Out of range');
 			if (($offset >= 0x7E0000) && ($offset < 0x800000))
@@ -21,6 +26,8 @@ class snes extends platform {
 					return array('sram', ($offset&0x1FFF) + (($offset&0x1F0000)>>3));
 				else if ($offset&0x8000)
 					return array('rom', ($offset&0x3FFFFF));
+				else if (($offset >= 0x2000) && ($offset <= 0x4FFF))
+					return array('registers', $offset&0x6FFF);
 				else
 					throw new Exception('Unknown: '.dechex($offset));
 			} else {
