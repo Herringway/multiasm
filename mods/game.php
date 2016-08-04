@@ -92,6 +92,16 @@ class game extends coremod {
 			if (isset($addressEntry['Type']))
 				switch($addressEntry['Type']) {
 					case 'data': $modname = isset($addressEntry['Entries']) ? 'table' : 'hex'; break;
+					case 'int': $modname = isset($addressEntry['Entries']) ? 'table' : 'hex'; break;
+					case 'array': $modname = isset($addressEntry['Item Type']) ? 'table' : 'hex'; break;
+					case 'struct': $modname = isset($addressEntry['Entries']) ? 'table' : 'hex'; break;
+					case 'script': $modname = isset($addressEntry['Entries']) ? 'table' : 'hex'; break;
+					case 'palette': $modname = isset($addressEntry['Entries']) ? 'table' : 'hex'; break;
+					case 'color': $modname = isset($addressEntry['Entries']) ? 'table' : 'hex'; break;
+					case 'unknown': $modname = isset($addressEntry['Entries']) ? 'table' : 'hex'; break;
+					case 'pointer': $modname = isset($addressEntry['Entries']) ? 'table' : 'hex'; break;
+					case 'bytearray': $modname = isset($addressEntry['Entries']) ? 'table' : 'hex'; break;
+					case 'bitfield': $modname = isset($addressEntry['Entries']) ? 'table' : 'hex'; break;
 					case 'empty': $modname = 'hex'; break;
 					default: $modname = 'asm'; break;
 				}
