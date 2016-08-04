@@ -1,5 +1,4 @@
 <?php
-//ob_start();
 require_once 'libs/chromephp/ChromePhp.php';
 require_once 'libs/commonfunctions.php';
 require_once 'libs/cache.php';
@@ -100,12 +99,7 @@ $mainmod = loadModules('./mods/', $argv[0]);
 debugvar($mainmod, 'Main Module');
 $mod = new $mainmod();
 $mod->setMetadata($metadata);
-//$query = '';
-//if (isset($metadata['options']['query']))
-//	$query = $metadata['options']['query'];
 $data = $mod->getData($argv);
-
-$rawdata = $mod->toBinaryData($argv, $data);
 
 //Display stuff
 $displaydata = array_merge($metadata, $mod->getMetadata());
@@ -129,6 +123,4 @@ default:
 	echo $twig->render($displaydata['template'].'.tpl', $displaydata);
 	break;
 }
-debugvar(sprintf('%f MB', memory_get_usage()/1024/1024), 'Total Memory usage');
-debugvar(sprintf('%f seconds', microtime(true) - $metadata['time_start']), 'Total Execution time');
 ?>
