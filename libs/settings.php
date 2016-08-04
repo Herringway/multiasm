@@ -9,8 +9,12 @@ class settings implements arrayaccess {
 		'debug' => false,
 		'gamemenu' => false,
 		'cache' => true,
+		'cacheclear' => false,
 		'admins' => array(),
 		'errorlimit' => 40,
+		'Struct Addresses' => false,
+		'Resolve Addresses' => true,
+		'Prepend Offset' => true,
 		'localvar format' => '.%s');
 	public function __construct($filename = 'settings.yml') {
 		$this->writefile = $filename;
