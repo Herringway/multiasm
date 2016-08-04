@@ -7,7 +7,7 @@ class gbc extends platform {
 		if (($offset&0xFFFF) >= 0x8000)
 			throw new Exception('Not ROM');
 		else if (($offset&0xFFFF) < 0x4000)
-			return array('rom', $offset&0xFFFF);
+			return array('rom', ($offset&0xFFFF) + (($offset>>16)*0x4000));
 		else
 			return array('rom', ($offset&0xFFFF) + (($offset>>16)*0x4000));
 	}
