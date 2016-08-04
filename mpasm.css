@@ -3,7 +3,7 @@ a		{ text-decoration: none; }
 small a		{ text-decoration: underline; }
 .palette { text-shadow: 0 0 0.5em white; text-align: center; }
 a[title] { text-decoration: underline; }
-div.right	{ text-align: left; position: fixed; background: white; border: none; right: 0px; width: 14%; }
+div.right	{ text-align: left; position: fixed; background: white; border: none; right: 0px; width: 14%; height: 100%; overflow: auto;}
 div.right > select	{ width: 100%; }
 div.right input	{ position: absolute; right: 0px; }
 div.right input[type="text"] { width: 70%;}
