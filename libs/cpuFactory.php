@@ -6,13 +6,17 @@ class cpuFactory {
 		$name = strtolower($name);
 		$subcpu = '';
 		switch ($name) {
+			case 'snes':
 			case '65c816':
 			case '65816':
 				$cpu = '65816';
 				break;
+			case 'nes':
 			case '6502':
 				$cpu = '6502';
 				break;
+			case 'gbc':
+			case 'gb':
 			case 'z80g':
 				$subcpu = 'z80g';
 			case 'z80':
