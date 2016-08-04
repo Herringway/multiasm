@@ -2,9 +2,24 @@
 INIDISP:
   Offset: 0x2100
   Description: Screen display register
+  Notes: |
+    x000bbbb
+    x: 0 = Screen on, 1 = Screen off
+    b: Brightness
 OBSEL:
   Offset: 0x2101
   Description: OAM size register
+  Notes: |
+    sssnnbbb
+    s: Size select
+      000: 8x8/16x16
+      001: 8x8/32x32
+      010: 8x8/64x64
+      011: 16x16/32x32
+      100: 16x16/64x64
+      101: 32x32/64x64
+    n: Name selection
+    b: Base address
 OAMADDL:
   Offset: 0x2102
   Description: OAM address register Low
@@ -20,6 +35,13 @@ BGMODE:
 MOSAIC:
   Offset: 0x2106
   Description: Screen pixelation register
+  Notes: |
+    xxxxabcd
+    x: Pixel size (0: smallest; 0xF: largest)
+    a: BG4
+    b: BG3
+    c: BG2
+    d: BG1
 BG1SC:
   Offset: 0x2107
   Description: BG1 VRAM location register
@@ -146,6 +168,17 @@ TSW:
 CGWSEL:
   Offset: 0x2130
   Description: Fixed color addition or screen addition register
+  Notes: |
+    aabb00cd
+    a: Main
+    b: Sub
+    a/b:
+      00: Always
+      01: Inside window only
+      10: Outside window only
+      11: Always
+    c: 0 = Fixed colour, 1 = Sub screen
+    d: Direct colour data
 CGADSUB:
   Offset: 0x2131
   Description: Addition/subtraction for screens, BGs, & OBJs
@@ -263,6 +296,9 @@ RDNMI:
 TIMEUP:
   Offset: 0x4211
   Description: Video IRQ register
+  Notes: |
+    i0000000
+    i: 0 = IRQ disabled, 1 = IRQ enabled
 HVBJOY:
   Offset: 0x4212
   Description: Status Register
@@ -308,6 +344,18 @@ JOY4H:
 DMAP0:
   Offset: 0x4300
   Description: DMA Channel 0 Control register
+  Notes: &DMAP |
+    vh0cbaaa
+    v: Direction. 0 for CPU->PPU, 1 for PPU->CPU
+    h: 0 for absolute addressing, 1 for indirect. HDMA only.
+    c: 0 for auto address increment, 1 for fixed address
+    b: 0 for automatic increment, 1 for automatic decrement
+    a: Transfer type
+      000 - one address, write twice
+      001 - two addresses
+      010 - one address, write once
+      011 - two addresses, write twice
+      100 - four addresses
 BBAD0:
   Offset: 0x4301
   Description: DMA Channel 0 Destination register
@@ -326,6 +374,7 @@ DAS0L:
 DMAP1:
   Offset: 0x4310
   Description: DMA Channel 1 Control register
+  Notes: *DMAP
 BBAD1:
   Offset: 0x4311
   Description: DMA Channel 1 Destination register
@@ -344,6 +393,7 @@ DAS1L:
 DMAP2:
   Offset: 0x4320
   Description: DMA Channel 2 Control register
+  Notes: *DMAP
 BBAD2:
   Offset: 0x4321
   Description: DMA Channel 2 Destination register
@@ -362,6 +412,7 @@ DAS2L:
 DMAP3:
   Offset: 0x4330
   Description: DMA Channel 3 Control register
+  Notes: *DMAP
 BBAD3:
   Offset: 0x4331
   Description: DMA Channel 3 Destination register
@@ -380,6 +431,7 @@ DAS3L:
 DMAP4:
   Offset: 0x4340
   Description: DMA Channel 4 Control register
+  Notes: *DMAP
 BBAD4:
   Offset: 0x4341
   Description: DMA Channel 4 Destination register
@@ -416,6 +468,7 @@ DAS5L:
 DMAP6:
   Offset: 0x4360
   Description: DMA Channel 6 Control register
+  Notes: *DMAP
 BBAD6:
   Offset: 0x4361
   Description: DMA Channel 6 Destination register
@@ -434,6 +487,7 @@ DAS6L:
 DMAP7:
   Offset: 0x4370
   Description: DMA Channel 7 Control register
+  Notes: *DMAP
 BBAD7:
   Offset: 0x4371
   Description: DMA Channel 7 Destination register
