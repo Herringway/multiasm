@@ -6,6 +6,7 @@ class Penguin_Twig_Extensions extends Twig_Extension
         return array(
             'gravatar' => new Twig_Filter_Method($this, 'gravatar'),
 			'yaml' => new Twig_Filter_Method($this, 'yaml', array('is_safe' => array('html'))),
+			'yamlhtml' => new Twig_Filter_Method($this, 'yaml2html', array('is_safe' => array('html'))),
         );
     }
 	public function getName() {
@@ -16,9 +17,10 @@ class Penguin_Twig_Extensions extends Twig_Extension
 		return sprintf("http://www.gravatar.com/avatar/%s?d=%s&s=%s&r=%s", md5(strtolower(trim($email))),urlencode($default),$size, $rating);
 	}
 	public function yaml($data) {
-		$output = yaml_emit($data, YAML_UTF8_ENCODING);
-		$output = preg_replace_callback('/^(\d+):/m', array($this, 'hexafixer_human'), $output);
-		return $output;
+		return yaml_emit($data, YAML_UTF8_ENCODING);
+	}
+	public function yaml2html($data) {
+		return preg_replace_callback('/^(\d+):/m', array($this, 'hexafixer_human'), $data);
 	}
 	private function hexafixer_human($matches) {
 		static $i = 0;
