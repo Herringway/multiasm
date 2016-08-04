@@ -1,52 +1,43 @@
 <?php
 require_once 'evalmath.php';
-//register_shutdown_function('flagrant_system_error');
+require_once 'libs/exceptions.php';
+require_once 'libs/psr/psr.php';
+require_once 'libs/monolog/src/Monolog/Logger.php';
+require_once 'libs/monolog/src/Monolog/Handler/HandlerInterface.php';
+require_once 'libs/monolog/src/Monolog/Handler/AbstractHandler.php';
+require_once 'libs/monolog/src/Monolog/Handler/AbstractProcessingHandler.php';
+require_once 'libs/monolog/src/Monolog/Formatter/FormatterInterface.php';
+require_once 'libs/monolog/src/Monolog/Formatter/NormalizerFormatter.php';
+require_once 'libs/monolog/src/Monolog/Formatter/LineFormatter.php';
+require_once 'libs/monolog/src/Monolog/Formatter/WildfireFormatter.php';
+require_once 'libs/monolog/src/Monolog/Formatter/ChromePHPFormatter.php';
+require_once 'libs/monolog/src/Monolog/Handler/ChromePHPHandler.php';
+require_once 'libs/monolog/src/Monolog/Handler/FirePHPHandler.php';
+require_once 'libs/monolog/src/Monolog/Handler/StreamHandler.php';
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+use Monolog\Handler\ChromePHPHandler;
+use Monolog\Handler\FirePHPHandler;
+$log = new Logger('MPASM');
+$log->pushHandler(new StreamHandler('error.log', Logger::WARNING));
+$log->pushHandler(new StreamHandler('debug.log', Logger::DEBUG));
+$log->pushHandler(new FirePHPHandler(Logger::DEBUG));
+$log->pushHandler(new ChromePHPHandler(Logger::DEBUG));
+/*Analog::handler (\Analog\Handler\FirePHP::init ());
+Analog::handler (\Analog\Handler\ChromeLogger::init ());
+Analog::handler (\Analog\Handler\File::init ('log.txt'));*/
 date_default_timezone_set('America/Halifax');
-//set_exception_handler('print_exception');
 set_error_handler('error_handling');
 ini_set('yaml.output_width', -1);
 define('BRANCH_LIMIT', 5000);
-function print_exception($exception) {
-	$display->mode = 'error';
-	$display->seterror();
-	$display->display(array('trace' => $exception->getTrace(), 'message' => $exception->getMessage()));
-}
 function error_handling($errno, $message, $file, $line, $context) {
 	static $errors = 0;
 	if ($errors++ < (isset($GLOBALS['settings']['errorlimit']) ? $GLOBALS['settings']['errorlimit'] : 50))
 		$GLOBALS['ERRORS'][] = sprintf("%s on %s:%d", $message, $file, $line);
 	return true;
 }
-function flagrant_system_error() {
-	if (($error = error_get_last()) !== null) {
-		if ($error['type'] == 1)
-			display_error(array('trace' => debug_backtrace(), 'message' => $error['message']));
-	} else {
-		ob_end_flush();
-	}
-}
-function display_error($error) {
-	$twig = new Twig_Environment(new Twig_Loader_Filesystem('templates'), array('debug' => $settings['debug']));
-	$twig->addExtension(new Twig_Extension_Debug());
-	$twig->addExtension(new Penguin_Twig_Extensions());
-	echo $this->twig->render('error.tpl', array('routinename' => '', 'hideright' => true, 'title' => 'FLAGRANT SYSTEM ERROR', 'nextoffset' => '', 'game' => '', 'data' => $error, 'thisoffset' => '', 'options' => '', 'offsetname' => '', 'addrformat' => '', 'menuitems' => '', 'opcodeformat' => '', 'gamelist' => '', 'error' => 1));
-}
-function hexafixer($matches) {
-	//if ($matches[0][0] === ' ')
-	//	return sprintf(' 0x%04X:', $matches[1]);
-	return sprintf('0x%06X:', $matches[1]);
-}
-function json($obj) {
-	return json_encode($obj, JSON_UNESCAPED_UNICODE | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_TAG);
-}
 function uint($i, $bits) {
 	return $i < pow(2,$bits-1) ? $i : 0-(pow(2,$bits)-$i);
-}
-function asprintf($string, $haystack) {
-	$output = array();
-	foreach ($haystack as $needle)
-		$output[] = vsprintf($string, $needle);
-	return $output;
 }
 interface filter_interface {
 	public function getByte();
