@@ -4,8 +4,7 @@ require_once 'libs/chromephp/ChromePhp.php';
 require_once 'libs/commonfunctions.php';
 require_once 'libs/cache.php';
 require_once 'libs/settings.php';
-require_once 'Twig/Autoloader.php';
-Twig_Autoloader::register();
+require_once 'vendor/autoload.php';
 require_once 'libs/twigext.php';
 function loadModules($path, $mod) {
 	for ($dir = opendir($path); $file = readdir($dir); ) {
