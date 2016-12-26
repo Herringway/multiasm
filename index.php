@@ -50,9 +50,15 @@ $loader = new Twig_Loader_Filesystem('templates');
 $twig = new Twig_Environment($loader, array('debug' => $settings['debug']));
 $twig->addExtension(new Twig_Extension_Debug());
 $twig->addExtension(new Penguin_Twig_Extensions());
-
-$uristring = str_replace($_SERVER['SCRIPT_NAME'], '', $_SERVER['REQUEST_URI']);
-$argv = array_slice(explode('/', $uristring),1);
+if (!isset($argv)) {
+	$console = false;
+	if ($metadata['rootdir'] != '/')
+		$uristring = str_replace($metadata['rootdir'], '', $_SERVER['REQUEST_URI']);
+	$argv = array_slice(explode('/', $uristring),1);
+} else {
+	$console = true;
+	array_shift($argv);
+}
 debugvar(substr($argv[count($argv)-1], 0, strrpos($argv[count($argv)-1], '.')), 'extension detection');
 if ((substr($argv[count($argv)-1], 0, strrpos($argv[count($argv)-1], '.')) != $argv[count($argv)-1]) && (substr($argv[count($argv)-1], 0, strrpos($argv[count($argv)-1], '.')) != ''))
 	$argv[count($argv)-1] = substr($argv[count($argv)-1], 0, strrpos($argv[count($argv)-1], '.'));
@@ -72,12 +78,16 @@ if (function_exists('yaml_emit')) {
 }
 if (function_exists('json_encode'))
 	$types['json'] = 'json';
-$v = substr(strrchr($_SERVER['REQUEST_URI'], '.'),1);
-if (!isset($types[$v]))
-	$format = 'html';
-else
-	$format = $types[$v];
 
+if ($console)
+	$format = 'console';
+else {
+	$v = substr(strrchr($_SERVER['REQUEST_URI'], '.'),1);
+	if (!isset($types[$v]))
+		$format = 'html';
+	else
+		$format = $types[$v];
+}
 //Some debug output
 debugvar($_SERVER, 'Server');
 
@@ -114,6 +124,11 @@ case 'yml':
 case 'json':
 	header('Content-Type: application/json; charset=UTF-8');
 	echo json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_FORCE_OBJECT);
+	break;
+case 'console':
+	debugvar($mod->getMetadata()['template'], 'displaymode');
+	$displaydata['data'] = $data;
+	echo $twig->render($displaydata['template'].'_console.tpl', $displaydata);
 	break;
 default:
 	debugvar($mod->getMetadata()['template'], 'displaymode');
