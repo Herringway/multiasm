@@ -46,9 +46,15 @@ class snes extends platform {
 	private function detectHiROM() {
 		if (isset($this->isHiROM))
 			return;
-		$this->dataSource['rom']->seekTo(0x00FFDC);
-		$checksum = $this->dataSource['rom']->getShort();
-		$checksumcomplement = $this->dataSource['rom']->getShort();
+		$previous = -1;
+		if (!$this->firstseek)
+			$previous = $this->currentOffset();
+		$this->isHiROM = true;
+		$this->seekTo(0x00FFDC);
+		$checksum = $this->getShort();
+		$checksumcomplement = $this->getShort();
+		if ($previous > 0)
+			$this->seekTo($previous);
 		$this->isHiROM = (($checksum^$checksumcomplement) == 0xFFFF);
 	}
 }
