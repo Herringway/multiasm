@@ -8,13 +8,13 @@ class asm extends gamemod {
 		if (!isset($this->cpucore)) {
 			if (!isset($this->game))
 				throw new Exception('cannot get template without loaded game data');
-			$this->initCPU($this->game['Processor']);
+			$this->initCPU($this->game['CPU'], $this->game['Platform']);
 		}
 		return $this->cpucore->getTemplate();
 	}
 	public function init($arg) {
 		$this->offset = $arg;
-		$this->initCPU($this->game['Processor']);
+		$this->initCPU($this->game['CPU'], $this->game['Platform']);
 		if ($this->offset == -1)
 			$this->offset = $this->cpucore->getDefault();
 		$this->source->seekTo($this->offset);
@@ -57,31 +57,56 @@ class asm extends gamemod {
 			if (isset($opcode['target']) || isset($opcode['destination'])) {
 				$addr = isset($opcode['target']) ? $opcode['target'] : $opcode['destination'];
 				$opcode['uri'] = sprintf($this->cpucore->addressFormat(), $addr);
-				$targEntry = addressFactory::getAddressSubentryFromOffset($addr);
-				if (isset($targEntry['Subname']) && isset($targEntry['Name'])) {
-					$opcode['name'] = $targEntry['Subname'];
-					$opcode['uri'] = $targEntry['Name'];
-				} else if (isset($targEntry['Name'])) {
-					$opcode['name'] = $targEntry['Name'];
-					$opcode['uri'] = $targEntry['Name'];
+				$targEntry = addressFactory::getAddressSubentryFromOffset($addr, $this->source, $this->game);
+				$opcode['name'] = $targEntry['Name'];
+				$opcode['uri'] = $targEntry['Name'];
+				if (isset($targEntry['Type']) && ($targEntry['Type'] != 'assembly')) {
+					if (isset($targEntry['Subname']) || isset($targEntry['Index']))
+						$opcode['uri'] .= '#';
+					if (isset($targEntry['Count']))
+						$opcode['name'] .= '['.$targEntry['Count'].']';
+					if (isset($targEntry['Subname'])) {
+						$opcode['name'] .= '.'.$targEntry['Subname'];
+						$opcode['uri'] .= $targEntry['Subname'];
+					}
+					if (isset($targEntry['Index'])) {
+						$opcode['name'] .= '['.$targEntry['Index'].']';
+						$opcode['uri'] .= $targEntry['Index'];
+					}
+				} else if (!isset($targEntry['Type']) || ($targEntry['Type'] == 'assembly')) {
+					if (isset($targEntry['Subname'])) {
+						$opcode['name'] .= '#'.$targEntry['Subname'];
+						$opcode['uri'] .= '#'.$targEntry['Subname'];
+					}
 				}
-				if (($addr >= $this->offset) && ($addr < $this->source->currentOffset())) {
+				if (isset($targEntry['Count']))
+					$opcode['uri'] = sprintf('%s#'.$this->cpucore->addressFormat(), $targEntry['Name'], $targEntry['Count']);
+				if (($addr >= $this->offset) && ($addr < $ioffs)) {
 					$opcode['uri'] = $this->metadata['offsetname'].'#'.$labels[array_search($addr, $branches)];
 					$opcode['name'] = $labels[array_search($addr, $branches)];
 				}
 				$opcode['comments'] = array();
+				$opcode['comments']['Offset'] = sprintf('0x'.$this->cpucore->addressFormat(), $addr);
 				if(isset($targEntry['Description']))
 					$opcode['comments']['description'] = $targEntry['Description'];
+				if(isset($targEntry['Notes']))
+					$opcode['comments']['Note'] = $targEntry['Notes'];
+				if(isset($targEntry['Values']))
+					$opcode['comments']['Values'] = $targEntry['Values'];
 				if(isset($targEntry['Arguments']))
-					$opcode['comments'] += $targEntry['Arguments'];
+					$opcode['comments']['Arguments'] = $targEntry['Arguments'];
+				if(isset($targEntry['Return Values']))
+					$opcode['comments']['Returns'] = $targEntry['Return Values'];
 				
 			}
 		}
 		return array($output);
 	}
-	private function initCPU($proc) {
+	private function initCPU($proc, $platform) {
 		if (!isset($this->cpucore)) {
-			$this->cpucore = cpuFactory::getCPU($proc);
+			$this->cpucore = cpuFactory::getCPU($platform);
+			foreach ($proc as $opt=>$val)
+				$this->cpucore->setState($opt, $val);
 			$this->cpucore->setPlatform($this->source);
 		}
 	}

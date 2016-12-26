@@ -22,7 +22,7 @@ class hex extends gamemod {
 		if (isset($this->address['filter_size']))
 			$size = $this->address['filter_size'];
 		dprintf('reading %d bytes', $size);
-		return hexview($this->source->getString($size), isset($this->address['width']) ? $this->address['width'] : 16, $arg, $charset);
+		return hexview($this->source->getString($size), isset($this->address['Width']) ? $this->address['Width'] : 16, $arg, $charset);
 	}
 }
 ?>

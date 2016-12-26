@@ -63,7 +63,9 @@ class game extends coremod {
 				}
 			}
 		}
-		$cpu = cpuFactory::getCPU($game['Processor']);
+		$cpu = cpuFactory::getCPU($game['Platform']);
+		$source = $platform;
+		$cpu->setPlatform($source);
 		debugmessage("Determining location", 'info');
 		if (isset($argv[1]) && ($argv[1] != null)) {
 			if (in_array($argv[1], $magicvalues))

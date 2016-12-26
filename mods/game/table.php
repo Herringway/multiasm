@@ -11,7 +11,12 @@ class table extends gamemod {
 		$this->offset = $arg;
 		
 		require_once 'mods/game/table/basetypes.php';
-		$tablemod = new table_struct($this->source, $this->game, $this->address);
+		$mod = 'table_'.$this->address['Type'];
+		switch ($mod) {
+			case 'table_data': $mod = 'table_struct'; break;
+			default: break;
+		}
+		$tablemod = new $mod($this->source, $this->game, $this->address);
 		if (!isset($this->address['Graph'])) 
 			$this->metadata['offsetkeys'] = true;
 		else
@@ -24,7 +29,7 @@ class table extends gamemod {
 		
 		$i = 0;
 		$branchformat = 'UNKNOWN%0'.ceil(log(count($entries),10)).'d';
-		$cpucore = cpuFactory::getCPU($this->game['Processor']);
+		$cpucore = cpuFactory::getCPU($this->game['Platform']);
 		foreach ($entries as $key => $branch) {
 			if (isset($this->address['Labels'][$this->offset - $key]))
 				$label = $this->address['Labels'][$this->offset - $key];
@@ -34,13 +39,6 @@ class table extends gamemod {
 				$label = sprintf($branchformat, $i++);
 			$this->metadata['menuitems'][sprintf($cpucore->addressformat(), $key)] = $label;
 		}
-		/*$entries = array($this->address['Name'] => $entries);
-		if (!empty($query)) {
-			require_once 'libs/jsonpath-0.8.1.php';
-			debugmessage($query, 'info');
-			$entries = jsonPath($entries, $query);
-		}*/
-		//return array($this->address['entries'], $entries);
 		return $entries;
 	}
 }

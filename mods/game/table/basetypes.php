@@ -1,6 +1,64 @@
 <?php
-
-class table_bytearray extends table_data {
+interface __table_data {
+	public function __construct(filter &$source, $gamedetails, $values);
+	public function getValue();
+}
+abstract class table_data implements __table_data {
+	protected $source;
+	protected $entry;
+	protected $offsets;
+	protected $gamedetails;
+	protected $metadata;
+	private $result;
+	protected static $math = null;
+	private static $mathvars = array();
+	protected function setVar($var, $val) {
+		self::$mathvars[$var] = $val;
+	}
+	private function __setVars() {
+		foreach (self::$mathvars as $var=>$val) {
+			debugvar($var.'='.$val, 'setting');
+			self::$math->evaluate(sprintf('%s = %d', strtolower(str_replace(array('?', ' ', '"', '/','+', '-','*'), array('Q', '_', '','D','A','S','M'), $var)), $val));
+		}
+		//$this->mathvars = array();
+	}
+	protected function evalString($str) {
+		if (is_int($str))
+			return $str;
+		$this->__setVars();
+		debugvar($str, 'evaluating');
+		$result = self::$math->evaluate($str);
+		debugvar($result, 'result');
+		return $result;
+	}
+	public function __construct(filter &$source, $gamedetails, $entry) {
+		if (self::$math === null) {
+			debugmessage('generating new math');
+			self::$math = new EvalMath();
+		}
+		$this->source = $source;
+		$this->details = $entry;
+		if (isset($this->details['Size']))
+			$this->details['Size'] = $this->evalString($this->details['Size']);
+		$this->gamedetails = $gamedetails;
+	}
+	public function getOffsets() {
+		return $this->offsets;
+	}
+	public function setMetadata(&$input) {
+		$this->metadata = &$input;
+	}
+	public function getValue() {
+		if (isset($this->result))
+			return $this->result;
+		$val = $this->__getValue();
+		if (is_int($val) && isset($this->details['Name']))
+			$this->setVar($this->details['Name'], $val);
+		$this->result = $val;
+		return $val;
+	}
+}
+class table_unknown extends table_data {
 	public function __getValue() {
 		$output = array();
 		for ($i = 0; $i < $this->details['Size']; $i++)
@@ -13,6 +71,11 @@ class table_int extends table_data {
 		$output = $this->source->getVar($this->details['Size']);
 		if (isset($this->details['Signed']) && ($this->details['Signed']))
 			$output = uint($output, $this->details['Size']*8);
+		if (isset($this->details['Base'])) {
+			if (intval($this->details['Base']) < 2)
+				throw new Exception('Impossible number base!');
+			$output = strtoupper(base_convert($output, 10, $this->details['Base']));
+		}
 		if (isset($this->details['Values'][$output]))
 			$output = $this->details['Values'][$output];
 		if (isset($this->details['Bit Values'])) {
@@ -28,42 +91,20 @@ class table_int extends table_data {
 		return $output;
 	}
 }
-class table_hexint extends table_data {
-	private $intmod;
-	public function __construct(filter $source, $gamedetails, $entry) {
-		$this->intmod = new table_int($source, $gamedetails, $entry);
-		$this->details = $entry;
-	}
-	public function __getValue() {
-		$output = $this->intmod->getValue();
-		return is_int($output) ? sprintf('%0'.($this->details['Size']*2).'X', $output) : $output;
-	}
-}
-class table_binint extends table_data {
-	private $intmod;
-	public function __construct(filter $source, $gamedetails, $entry) {
-		$this->intmod = new table_int($source, $gamedetails, $entry);
-		$this->details = $entry;
-	}
-	public function __getValue() {
-		$output = $this->intmod->getValue();
-		return is_int($output) ? sprintf('%0'.($this->details['Size']*8).'b', $output) : $output;
-	}
-}
 class table_pointer extends table_data {
 	public function __getValue() {
 		$base = 0;
 		if (isset($this->details['Base']))
 			$base = $this->details['Base'];
 		$offset = $this->source->getVar($this->details['Size']) + $base;
-		$target = addressFactory::getAddressSubentryFromOffset($offset);
-		if ($target !== null) {
+		$target = addressFactory::getAddressSubentryFromOffset($offset, $this->source, $this->gamedetails);
+		if ((!isset($this->metadata['nonamereplacement']) || !$this->metadata['nonamereplacement']) && ($target !== null)) {
 			if (isset($target['Subname']))
-				$name = $target['Subname'];
+				$name = sprintf('%s[%s]', $target['Name'], $target['Subname']);
 			else if (isset($target['Name']))
 				$name = $target['Name'];
 		} else {
-			$cpu = cpuFactory::getCPU($this->gamedetails['Processor']);
+			$cpu = cpuFactory::getCPU($this->gamedetails['Platform']);
 			$name = sprintf($cpu::addressFormat(), $offset);
 		}
 		return $name;
@@ -71,25 +112,91 @@ class table_pointer extends table_data {
 }
 class table_struct extends table_data {
 	public function __getValue() {
-		//debugvar($this->details, 'table details');
+		if (isset($this->details['Size'])) {
+			$v = new table_array($this->source, $this->gamedetails, ['Size' => $this->details['Size'], 'Type' => 'array', 'Item Type' => ['Type' => 'struct', 'Entries' => $this->details['Entries']]]);
+			$v->setMetadata($this->metadata);
+			return $v->getValue();
+		}
 		$output = array();
 		$offsets = array();
 		$initialoffset = $this->source->currentOffset();
+		$tmpoffset = $this->source->currentOffset();
+		$tmparray = array();
+		foreach ($this->details['Entries'] as $name=>$entry) {
+			$coffs = $this->source->currentOffset();
+			$size = isset($entry['Size']) ? $entry['Size'] : 0;
+			$type = isset($entry['Type']) ? $entry['Type'] : 'int';
+			if (isset($entry['Name']))
+				$name = $entry['Name'];
+			else
+				$entry['Name'] = $name;
+			if (file_exists('mods/game/table/'.$type.'.php') && !class_exists('table_'.$type))
+				require_once 'mods/game/table/'.$type.'.php';
+			if (!class_exists('table_'.$type))
+				throw new Exception($type.' is unimplemented!');
+			$typeclass = 'table_'.$type;
+			$valmod = new $typeclass($this->source, $this->gamedetails, $entry);
+			$valmod->setMetadata($this->metadata);
+			if (!($valmod instanceof table_data))
+				throw new Exception('Potential class name conflict');
+			$tentry = $entry;
+			$tentry['Count'] = 0;
+			$this->offsets[$this->source->currentOffset()-$initialoffset] = $tentry;
+			$value = $valmod->getValue();
+			
+			if (isset($this->details['Options']['Skip Blank Entries']) && $this->details['Options']['Skip Blank Entries'] && $valmod->isEmpty())
+				continue;
+			if (isset($entry['Pretty Name']))
+				$name = $entry['Pretty Name'];
+			else if (isset($entry['Description']) && isset($this->details['Options']['Use Descriptions as Struct Names']) && $this->details['Options']['Use Descriptions as Struct Names'])
+				$name = $entry['Description'];
+			if (isset($this->details['Options']['Prepend Offset']) && $this->details['Options']['Prepend Offset'])
+				$name = sprintf('[%02X] ', $coffs-$tmpoffset).$name;
+			$tmparray[$name] = $value;
+			if (isset($this->details['Terminator']) && ($value == $this->details['Terminator']))
+				break;
+		}
+//		if (isset($this->details['Options']['Skip Blank Entries']) && $this->details['Options']['Skip Blank Entries'] && ($tmparray === array()))
+//			continue;
+		if (isset($this->details['Options']['Use Offset as Key']) && !$this->details['Options']['Use Offset as Key'])
+			$output[] = $tmparray;
+		else
+			$output[$tmpoffset] = $tmparray;
+		return $output;
+	}
+	private function getSubValue($type, $entry, $size) {
+		if (file_exists('mods/game/table/'.$type.'.php') && !class_exists('table_'.$type))
+			require_once 'mods/game/table/'.$type.'.php';
+		if (!class_exists('table_'.$type))
+			throw new Exception($type.' is unimplemented!');
+		$type = 'table_'.$type;
+		$valmod = new $type($this->source, $this->gamedetails, $entry);
+		$valmod->setMetadata($this->metadata);
+		if (!($valmod instanceof table_data))
+			throw new Exception('Potential class name conflict');
+		return $valmod->getValue();
+	}
+}
+class table_bitstruct extends table_data {
+	public function __getValue() {
+		$output = array();
+		$offsets = array();
+		$initialoffset = $this->source->currentOffset();
+		$bitoffset = 0;
 		$i = 0;
 		while (true) {
 			$tmpoffset = $this->source->currentOffset();
-			//debugvar($tmpoffset-$initialoffset, 'reloffset');
 			if (isset($this->details['Size']) && ($this->details['Size'] <= $tmpoffset-$initialoffset))
 				break;
-			//debugvar($this->details['size'], 'size');
 			$tmparray = array();
-			foreach ($this->details['Entries'] as $entry) {
+			foreach ($this->details['Entries'] as $name=>$entry) {
 				if ($i++ > 0x10000)
 					break 2;
 				$size = isset($entry['Size']) ? $entry['Size'] : 0;
 				$tmpoffsetkeys = $this->metadata['offsetkeys'];
 				$this->metadata['offsetkeys'] = false;
-				$value = $this->getSubValue(isset($entry['Type']) ? $entry['Type'] : 'int', $entry, $size);
+				$value = $this->getSubValue(isset($entry['Type']) ? $entry['Type'] : 'int', $entry, $size, $bitoffset);
+				$bitoffset += $entry['Size'];
 				$this->metadata['offsetkeys'] = $tmpoffsetkeys;
 				if (isset($entry['Description']) && isset($this->metadata['Use Descriptions as Struct Names']) && $this->metadata['Use Descriptions as Struct Names'])
 					$tmparray[$entry['Description']] = $value;
@@ -107,13 +214,16 @@ class table_struct extends table_data {
 		}
 		return $output;
 	}
-	private function getSubValue($type, $entry, $size) {
-		if (file_exists($type.'.php'))
+	private function getSubValue($type, $entry, $size, $bitoffset) {
+		if (file_exists('mods/game/table/'.$type.'.php') && !class_exists('table_'.$type))
 			require_once 'mods/game/table/'.$type.'.php';
 		if (!class_exists('table_'.$type))
 			throw new Exception($type.' is unimplemented!');
 		$type = 'table_'.$type;
-		$valmod = new $type($this->source, $this->gamedetails, $entry);
+		$this->source->getByte();
+		$memsrc = new memoryData();
+		$memsrc->setData(array(0));
+		$valmod = new $type($memsrc, $this->gamedetails, $entry);
 		$valmod->setMetadata($this->metadata);
 		if (!($valmod instanceof table_data))
 			throw new Exception('Potential class name conflict');
@@ -129,102 +239,50 @@ class table_bitfield extends table_data {
 		return $output;
 	}
 }
-class table_script extends table_data {
+class table_array extends table_data {
 	public function __getValue() {
-		$initialsize = (!isset($this->details['Size']) || $this->details['Size'] == 0) ? 0x100000 : $this->details['Size'];
-		$terminator = null;
-		$terminatorcount = 1;
-		$termtest = array();
-		$terminatorsreached = 0;
-		if (isset($this->details['Terminator']))
-			$terminator = $this->details['Terminator'];
-		if (isset($terminator) && !is_array($terminator))
-			$terminator = array($terminator);
-		if (isset($this->details['Terminator Repeat']))
-			$terminatorcount = $this->details['Terminator Repeat'];
-		$hideccs = false;
-		if (isset($this->metadata['options']['NoCCs']) && $this->metadata['options']['NoCCs'])
-			$hideccs = true;
-		static $chars = 0;
-		if (!isset($this->details['Charset']))
-			$charset = $this->gamedetails['Default Script'];
-		else
-			$charset = $this->details['Charset'];
-		$output = '';
-		for ($i = 0; $i < $initialsize; $i++) {
-			$length = 1;
-			$val = $this->source->getByte();
-			$ccstring = sprintf('%02X', $val);
-			$this->setVar('ARG_00', $val);
-			$vals = array($val);
-			if ($charset === 'ascii') {
-				$output .= chr($val);
-			} else if ($charset === 'utf16') {
-				$newval = $this->source->getByte()<<8;
-				$val = $val + $newval;
-				$vals[] = $newval;
-				$output .= json_decode(sprintf('"\u%04X"',$val));
-			} else {
-				if (!isset($this->gamedetails['Script Tables'][$charset]))
-					throw new Exception('Unknown Text Format');
-				unset($replacement);
-				if (isset($this->gamedetails['Script Tables'][$charset]['Replacements'][$val]))
-					$replacement = $this->gamedetails['Script Tables'][$charset]['Replacements'][$val];
-				if (isset($this->gamedetails['Script Tables'][$charset]['Lengths'][$val])) {
-					$cval = 0;
-					$entry = $this->gamedetails['Script Tables'][$charset]['Lengths'][$val];
-					$curentry = $entry;
-					if (is_array($entry))
-						$curentry = $entry['default'];
-					$length = $this->evalString($curentry);
-						
-					for ($j = 1; $j < $length; $j++) {
-						$cval = $this->source->getByte();
-						$this->setVar(sprintf('ARG_%02X', $j), $cval);
-						$ccstring .= sprintf('%02X', $cval);
-						$vals[] = $cval;
-						if (is_array($entry) && isset($entry[$cval])) {
-							$entry = $entry[$cval];
-							$curentry = $entry;
-							if (is_array($entry))
-								$curentry = $entry['default'];
-						}
-						$length = $this->evalString($curentry);
-						if (isset($replacement) && is_array($replacement) && isset($replacement[$cval]))
-							$replacement = $replacement[$cval];
-						//else
-						//	unset($replacement);
-						$i++;
-					}
-					for ($j = 0; $j < $length; $j++)
-						$this->setVar(sprintf('ARG_%02X', $j), 1);
-				}
-				if (isset($replacement))
-					$output .= $this->fillvalues($replacement, $val, $vals);
-				else if (!$hideccs)
-					$output .= sprintf('[%s]',$ccstring);
-			}
-			if (isset($this->details['Terminator'])) {
-				$termtest[] = $val;
-				if (count($termtest) > count($terminator))
-					array_shift($termtest);
-				if (($termtest === $terminator) && (++$terminatorsreached >= $terminatorcount))
-					break;
-			}
+		$output = array();
+		$offsets = array();
+		$initialoffset = $this->source->currentOffset();
+		$i = 0;
+		$count = 0;
+		while (true) {
+			$tmpoffset = $this->source->currentOffset();
+			if (isset($this->details['Size']) && ($this->details['Size'] <= $tmpoffset-$initialoffset))
+				break;
+			if ($i++ > 0x10000)
+				break;
+			$type = isset($this->details['Item Type']['Type']) ? $this->details['Item Type']['Type'] : 'int';
+			
+			if (file_exists('mods/game/table/'.$type.'.php') && !class_exists('table_'.$type))
+				require_once 'mods/game/table/'.$type.'.php';
+			if (!class_exists('table_'.$type))
+				throw new Exception($type.' is unimplemented!');
+			$typeclass = 'table_'.$type;
+			$valmod = new $typeclass($this->source, $this->gamedetails, $this->details['Item Type']);
+			$valmod->setMetadata($this->metadata);
+			if (!($valmod instanceof table_data))
+				throw new Exception('Potential class name conflict');
+			$tentry = $this->details['Item Type'];
+			$tentry['Count'] = $count;
+			$this->offsets[$tmpoffset-$initialoffset] = $tentry;
+			$value = $valmod->getValue();
+			if (isset($this->details['Terminator']) && ($value == $this->details['Terminator']))
+				break;
+			$output[$tmpoffset] = $value;
+			$count++;
 		}
-		return trim($output);
-	}
-	private function fillvalues($str, $fval, $ivals) {
-		$needles = array('[VALUE]');
-		$newneedles = array($fval);
-		for ($i = 0; $i < count($ivals); $i++) {
-			$needles[] = sprintf('[%02X]', $i);
-			$newneedles[] = $ivals[$i];
-		}
-		return str_replace($needles, $newneedles, $str);
+		return $output;
 	}
 }
-
+class table_bytearray extends table_data {
+	public function __getValue() {
+		$this->details['Item Type'] = ['Type' => 'int', 'Size' => 1];
+		$v = new table_array($this->source, $this->gamedetails, $this->details);
+		$v->setMetadata($this->metadata);
+		return $v->getValue();
+	}
+}
 class table_tile extends table_data {
 	public function __getValue() {
 		$data = $this->source->getString($this->details['Size']);
@@ -264,9 +322,18 @@ class table_tile extends table_data {
 	}
 }
 
+class table_color extends table_data {
+	public function __getValue() {
+		$color = $this->source->getShort();
+		if (isset($this->metadata['palette string']) && $this->metadata['palette string'])
+			return sprintf('<div style="display: inline; background-color: #%06X;">&nbsp;</div>',(($color&31)<<19)+(($color&0x3E0)<<6)+(($color&0x7C00)>>7));
+		else
+			return (($color&31)<<19)+(($color&0x3E0)<<6)+(($color&0x7C00)>>7);
+	}
+}
 class table_palette extends table_data {
 	public function __getValue() {
-		$data = $this->source->getString($this->details['Size']);
+		/*$data = $this->source->getString($this->details['Size']);
 		$snespal = unpack('v*', $data);
 		if (isset($this->metadata['palette string']) && $this->metadata['palette string']) {
 			$palettes = '';
@@ -277,7 +344,11 @@ class table_palette extends table_data {
 			for ($i = 1; $i <= $this->details['Size']/2; $i++)
 				$palettes[] = (($snespal[$i]&31)<<19)+(($snespal[$i]&0x3E0)<<6)+(($snespal[$i]&0x7C00)>>7);
 		}
-		return $palettes;
+		return $palettes;*/
+		$this->details['Item Type'] = ['Type' => 'color', 'Size' => 2];
+		$v = new table_array($this->source, $this->gamedetails, $this->details);
+		$v->setMetadata($this->metadata);
+		return $v->getValue();
 	}
 }
 ?>

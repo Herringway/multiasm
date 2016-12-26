@@ -343,6 +343,8 @@ abstract class cpucore {
 }
 function gametitle($game) {
 	$miscdata = array();
+	if (!isset($game['Title']))
+		throw new InvalidArgumentException('No title available');
 	if (isset($game['Country']))
 		$miscdata[] = $game['Country'];
 	if (isset($game['Version']))
