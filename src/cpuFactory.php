@@ -32,7 +32,7 @@ class cpuFactory {
 				throw new Exception('Unrecognized CPU!');
 		
 		}
-		require_once 'cpus/'.$cpu.'.php';
+		require_once 'src/cpus/'.$cpu.'.php';
 		$name = 'cpu_'.$cpu;
 		if (!isset(self::$cpus[$name])) {
 			debugmessage('Getting new CPU...'.$name, 'info');

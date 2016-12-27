@@ -10,7 +10,7 @@ class cpu_ARM extends cpucore {
 	}
 	protected function initializeProcessor() {
 		if ($this->opcodes === array())
-			$this->opcodes = yaml_parse_file('./cpus/ARM_opcodes.yml');
+			$this->opcodes = yaml_parse_file('./src/cpus/ARM_opcodes.yml');
 		$this->THUMB = false;
 	}
 	protected function setup($addr) {

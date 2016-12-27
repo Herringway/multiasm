@@ -4,7 +4,7 @@ class cpu_z80 extends cpucore {
 	private $format = 'Zilog';
 	protected function initializeProcessor() {
 		if ($this->opcodes === array())
-			$this->opcodes = $this->filterMnemonics(yaml_parse_file('./cpus/z80g_opcodes.yml'));
+			$this->opcodes = $this->filterMnemonics(yaml_parse_file('./src/cpus/z80g_opcodes.yml'));
 	}
 	public function getDefault() {
 		return 0x100;

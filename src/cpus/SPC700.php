@@ -2,7 +2,7 @@
 class cpu_SPC700 extends cpucore {
 	
 	function __construct() {
-		$this->opcodes = yaml_parse_file('./cpus/SPC700_opcodes.yml');
+		$this->opcodes = yaml_parse_file('./src/cpus/SPC700_opcodes.yml');
 	}
 	public function getDefault() {
 		return 0x500;

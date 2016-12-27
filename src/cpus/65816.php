@@ -13,7 +13,7 @@ class cpu_65816 extends cpucore {
 		$this->setState('DP', -1);
 		$this->farthestbranch = 0;
 		if ($this->opcodes === array()) {
-			$this->opcodes = yaml_parse_file('./cpus/65816_opcodes.yml');
+			$this->opcodes = yaml_parse_file('./src/cpus/65816_opcodes.yml');
 			foreach ($this->opcodes as &$entry) {
 				$entry = array_merge($entry, $entry['addressing']);
 				unset($entry['addressing']);

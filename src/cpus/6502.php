@@ -7,7 +7,7 @@ class cpu_6502 extends cpucore {
 	protected function initializeProcessor() {
 		$this->farthestbranch = 0;
 		if ($this->opcodes === array()) {
-			$this->opcodes = yaml_parse_file('./cpus/6502_opcodes.yml');
+			$this->opcodes = yaml_parse_file('./src/cpus/6502_opcodes.yml');
 			foreach ($this->opcodes as &$entry) {
 				$entry = array_merge($entry, $entry['addressing']);
 				unset($entry['addressing']);
