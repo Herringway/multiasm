@@ -77,7 +77,7 @@ class cpu_65816 extends cpucore {
 			$output['target'] = $fulladdr;
 		if (($this->opcodes[$output['opcode']]['type'] == 'directpage') && ($this->getState('DP') >= 0))
 			$output['target'] = $fulladdr;
-		if (isset($this->opcodes[$output['opcode']]['stack']) && ($this->opcodes[$output['opcode']]['stack'] === $this->getState('Localvars')))
+		if (isset($this->opcodes[$output['opcode']]['stack']))
 			$output['stack'] = $fulladdr;
 		if (isset($this->opcodes[$output['opcode']]['destination']))
 			$output['destination'] = $fulladdr;
