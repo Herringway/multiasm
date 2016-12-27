@@ -118,9 +118,7 @@ switch($format) {
 case 'yml':
 		header('Content-Type: text/plain; charset=UTF-8');
 	if ($data !== null)
-		//foreach ($data as $yamldoc)
-		//	if (!isset($yamldoc['hideme']) || !$yamldoc['hideme'])
-				echo yaml_emit($data, YAML_UTF8_ENCODING, YAML_ANY_BREAK);
+		echo yaml_emit($data, YAML_UTF8_ENCODING, YAML_ANY_BREAK);
 	break;
 case 'json':
 	header('Content-Type: application/json; charset=UTF-8');
