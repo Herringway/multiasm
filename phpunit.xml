@@ -1,0 +1,5 @@
+<testsuites>
+  <testsuite name="multiasm tests">
+    <directory suffix="test.php" phpVersion="5.3.0">./tests</directory>
+  </testsuite>
+</testsuites>
