@@ -34,7 +34,7 @@ abstract class table_data implements __table_data {
 	public function __construct(filter &$source, $gamedetails, $entry) {
 		if (self::$math === null) {
 			debugmessage('generating new math');
-			self::$math = new EvalMath();
+			self::$math = new Webit\Util\EvalMath\EvalMath();
 		}
 		$this->source = $source;
 		$this->details = $entry;

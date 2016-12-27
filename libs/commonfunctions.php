@@ -1,19 +1,6 @@
 <?php
-require_once 'evalmath.php';
 require_once 'libs/exceptions.php';
-require_once 'libs/psr/psr.php';
-require_once 'libs/monolog/src/Monolog/Logger.php';
-require_once 'libs/monolog/src/Monolog/Handler/HandlerInterface.php';
-require_once 'libs/monolog/src/Monolog/Handler/AbstractHandler.php';
-require_once 'libs/monolog/src/Monolog/Handler/AbstractProcessingHandler.php';
-require_once 'libs/monolog/src/Monolog/Formatter/FormatterInterface.php';
-require_once 'libs/monolog/src/Monolog/Formatter/NormalizerFormatter.php';
-require_once 'libs/monolog/src/Monolog/Formatter/LineFormatter.php';
-require_once 'libs/monolog/src/Monolog/Formatter/WildfireFormatter.php';
-require_once 'libs/monolog/src/Monolog/Formatter/ChromePHPFormatter.php';
-require_once 'libs/monolog/src/Monolog/Handler/ChromePHPHandler.php';
-require_once 'libs/monolog/src/Monolog/Handler/FirePHPHandler.php';
-require_once 'libs/monolog/src/Monolog/Handler/StreamHandler.php';
+require_once 'vendor/autoload.php';
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\ChromePHPHandler;
@@ -23,9 +10,6 @@ $log->pushHandler(new StreamHandler('error.log', Logger::WARNING));
 $log->pushHandler(new StreamHandler('debug.log', Logger::DEBUG));
 $log->pushHandler(new FirePHPHandler(Logger::DEBUG));
 $log->pushHandler(new ChromePHPHandler(Logger::DEBUG));
-/*Analog::handler (\Analog\Handler\FirePHP::init ());
-Analog::handler (\Analog\Handler\ChromeLogger::init ());
-Analog::handler (\Analog\Handler\File::init ('log.txt'));*/
 date_default_timezone_set('America/Halifax');
 set_error_handler('error_handling');
 ini_set('yaml.output_width', -1);
@@ -354,26 +338,22 @@ function gametitle($game) {
 function debugvar($var, $label) {
 	if (!$GLOBALS['settings']['debug'])
 		return;
-	static $limit = 200;
-	if (headers_sent())
-		return;
-	if ($limit-- > 0)
-		ChromePhp::log($label, $var);
+	global $log;
+	debugmessage($label.' '.var_export($var, true));
 }
 function debugmessage($message, $level = 'error') {
 	if (!$GLOBALS['settings']['debug'])
 		return;
-	if (headers_sent())
+	static $count = 0;
+	if ($count++ > 100)
 		return;
-	static $limit = 200;
-	if ($limit-- > 0) {
-		if ($level === 'error')
-			ChromePhp::error($message);
-		else if ($level === 'warn')
-			ChromePhp::warn($message);
-		else
-			ChromePhp::log($message);
-	}
+	global $log;
+	if ($level === 'error')
+		$log->error($message);
+	else if ($level === 'warn')
+		$log->warning($message);
+	else
+		$log->debug($message);
 }
 function dprintf($message) {
 	$args = func_get_args();

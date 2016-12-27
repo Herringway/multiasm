@@ -1,5 +1,8 @@
 {
     "require": {
-        "twig/twig": "~1.0"
+        "twig/twig": "~1.0",
+        "monolog/monolog": "^1.22",
+        "webit/eval-math": "^1.0",
+        "ccampbell/chromephp": "^4.1"
     }
 }

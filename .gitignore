@@ -1,6 +1,5 @@
 settings.yml
 games/
-rms/
 vendor/
 composer.lock
 *.txt
