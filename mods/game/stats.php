@@ -13,7 +13,7 @@ class stats extends gamemod {
 		$divisions = array();
 		$routines = array();
 		$biggest = $biggestroutine = array('size' => 0, 'name' => 'undefined');
-		foreach (addressFactory::getAddresses() as $entry) {
+		foreach (addressFactory::getAddresses() as $name=>$entry) {
 			if ($this->source->identifyArea($entry['Offset']) != 'rom')
 				continue;
 			if (isset($entry['Size'])) {
@@ -22,12 +22,12 @@ class stats extends gamemod {
 				if (!isset($divisions[$entry['Type']]))
 					$divisions[$entry['Type']] = 0;
 				$divisions[$entry['Type']] += $entry['Size'];
-				if (($entry['Type'] == 'assembly') && isset($entry['Name']))
-					$routines[] = $entry['Name'];
+				if ($entry['Type'] == 'assembly')
+					$routines[] = $name;
 				if ($entry['Size'] > $biggest['size'])
-					$biggest = array('size' => $entry['Size'], 'name' => !empty($entry['Name']) ? $entry['Name'] : sprintf('%06X', $entry['Offset']));
+					$biggest = array('size' => $entry['Size'], 'name' => $name);
 				if (($entry['Size'] > $biggestroutine['size']) && isset($entry['Type']) && ($entry['Type'] == 'assembly'))
-					$biggestroutine = array('size' => $entry['Size'], 'name' => !empty($entry['Name']) ? $entry['Name'] : sprintf('%06X', $entry['Offset']));
+					$biggestroutine = array('size' => $entry['Size'], 'name' => $name);
 			}
 			if (isset($entry['Size']))
 				$counteddata += $entry['Size'];
@@ -36,8 +36,6 @@ class stats extends gamemod {
 		$stats['Biggest'] = $biggest;
 		$stats['Biggest_Routine'] = $biggestroutine;
 		$stats['miscdata'] = $this->source->getMiscInfo();
-		//if ($counteddata < $game['size'])
-		//	$divisions['Unknown'] = $game['size'] - $counteddata;
 		$stats['Size'] = $divisions;
 		return array($stats);
 	}

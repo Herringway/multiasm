@@ -17,7 +17,6 @@ class game extends coremod {
 		//Load game data. from cache if possible
 		AddressFactory::loadGame($gameid);
 		$game = AddressFactory::getGameMetadata();
-		debugvar($game, 'game');
 		$game['id'] = $gameid;
 		$platform = platformFactory::getPlatform($game['Platform']);
 		for ($dir = opendir($settings['rompath']); $file = readdir($dir);) {
@@ -67,25 +66,27 @@ class game extends coremod {
 		$source = $platform;
 		$cpu->setPlatform($source);
 		debugmessage("Determining location", 'info');
+		$magic = false;
 		if (isset($argv[1]) && ($argv[1] != null)) {
-			if (in_array($argv[1], $magicvalues))
+			if (in_array($argv[1], $magicvalues)) {
 				$offset = $argv[1];
-			else {
+				$magic = true;
+			} else {
 				$offset = addressFactory::getAddressFromName($argv[1]);
 				if (is_numeric('0x'.$argv[1]) && $platform->isInRange(hexdec($argv[1])))
 					$offset = hexdec($argv[1]);
 				debugvar($offset, 'Location');
 			}
 		}
-		$source = $platform;
-		if ($offset == -1) {
-			$cpu->setPlatform($source);
+		if ($offset == -1)
 			$offset = $cpu->getDefault();
-		}
 		//What are we doing?
-		$addressEntry = addressFactory::getAddressEntryFromOffset($offset);
-		if ($addressEntry == null)
-			$addressEntry = array();
+		$addressEntry = array();
+		if (!$magic) {
+			$addressEntry = addressFactory::getAddressEntryFromOffset($offset);
+			if ($addressEntry == null)
+				$addressEntry = array();
+		}
 		if (in_array($offset, $magicvalues, true)) {
 			$modname = $offset;
 			if (isset($argv[2]))
@@ -132,6 +133,7 @@ class game extends coremod {
 			$this->metadata['offsetname'] = $addressEntry['Name'];
 		else
 			$this->metadata['offsetname'] = sprintf($this->metadata['addrformat'], $source->currentOffset());
+		$output = $module->execute($offset);
 		$tmpdesc = $module->getDescription();
 		
 		if ($tmpdesc != '')
@@ -142,15 +144,17 @@ class game extends coremod {
 			$this->metadata['description'] = $addressEntry['Name'];
 		else
 			$this->metadata['description'] = sprintf($this->metadata['addrformat'], $source->currentOffset());
-			
-		$output = $module->execute($offset);
+		if (isset($addressEntry['Notes']))
+			$this->metadata['notes'] = $addressEntry['Notes'];
 		$this->metadata['template'] = $module->getTemplate();
 		$nextoffset = $source->currentOffset();
 		if (isset($addressEntry['Size']))
 			$nextoffset = $offset + $addressEntry['Size'];
-		$nextEntry = addressFactory::getAddressEntryFromOffset($nextoffset);
-		if ($nextEntry === null)
-			$nextEntry = array();
+		if (!$magic) {
+			$nextEntry = addressFactory::getAddressEntryFromOffset($nextoffset);
+			if ($nextEntry === null)
+				$nextEntry = array();
+		}
 		if (isset($nextEntry['Name']) && ($nextEntry['Name'] != ""))
 			$this->metadata['nextoffset'] = $nextEntry['Name'];
 		else

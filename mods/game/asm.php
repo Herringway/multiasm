@@ -19,7 +19,8 @@ class asm extends gamemod {
 			$this->offset = $this->cpucore->getDefault();
 		$this->source->seekTo($this->offset);
 		if (isset($this->address['Size']))
-			$this->cpucore->setBreakPoint($this->offset + $this->address['Size']);
+			$this->cpucore->setBreakPoint($this->offset + $this->address['Size'],'definedsize');
+		addressFactory::loadPlatformAddresses($this->game['id']);
 	}
 	public function execute($arg) {
 		$output = $this->cpucore->execute($this->offset);
@@ -30,7 +31,6 @@ class asm extends gamemod {
 			
 		if (isset($this->address['Arguments']))
 			$this->metadata['comments'] = $this->address['Arguments'];
-			
 
 		$i = 0;
 		$branches = $this->cpucore->getBranches();
@@ -53,9 +53,23 @@ class asm extends gamemod {
 			}
 			$this->metadata['menuitems'][$label] = $label;
 		}
+		$dumpbranches = false;
+		if ($dumpbranches) {
+			foreach ($branches as $i=>$branch)
+				$branchcopy[$branch - $this->offset] = $labels[$i];
+			echo yaml_emit($branchcopy);
+			die;
+		}
+		$ioffs = $this->source->currentOffset();
 		foreach($output as &$opcode) {
+			if (isset($opcode['stack'])) {
+				if (isset($this->address['Locals'][$opcode['stack']])) {
+					$opcode['uri'] = $opcode['name'] = $this->address['Locals'][$opcode['stack']];
+				}
+			}
 			if (isset($opcode['target']) || isset($opcode['destination'])) {
 				$addr = isset($opcode['target']) ? $opcode['target'] : $opcode['destination'];
+				debugvar($addr, 'Searching for...');
 				$opcode['uri'] = sprintf($this->cpucore->addressFormat(), $addr);
 				$targEntry = addressFactory::getAddressSubentryFromOffset($addr, $this->source, $this->game);
 				$opcode['name'] = $targEntry['Name'];

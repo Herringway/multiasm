@@ -50,8 +50,10 @@ interface seekable {
 	public function seekTo($offset);
 }
 abstract class platform extends filter implements seekable {
-	protected $lastSource = 'rom';
+	protected $selectedSource = 'rom';
 	protected $offset = 0;
+	protected $dataSource = array();
+	protected $firstseek = true;
 	public function setDataSource(filter $source, $where = 'rom') { $this->dataSource[$where] = $source; }
 	public function getSources() { return array_keys($this->dataSource); }
 	public function getMiscInfo() {
@@ -59,11 +61,20 @@ abstract class platform extends filter implements seekable {
 	}
 	public function getPlatformAddresses() { return array(); }
 	public function seekTo($offset) {
-		list($source, $trueOffset) = $this->map($offset);
-		debugvar($source, 'seeking into:');
-		$this->lastSource = $source;
-		$this->dataSource[$source]->seekTo($trueOffset);
+		$this->firstseek = false;
+		try {
+		list($this->selectedSource, $trueOffset) = $this->map($offset);
+		debugvar($this->selectedSource, sprintf('seeking to %s in ', $offset));
+		if (!isset($this->dataSource[$this->selectedSource]))
+			$this->selectedSource = 'noise';
+		} catch (Exception $e) {
+			$this->selectedSource = 'noise';
+		}
+		$this->dataSource[$this->selectedSource]->seekTo($trueOffset);
 		$this->offset = $offset;
+	}
+	public function seekRel($offset) {
+		$this->seekTo($this->offset + $offset);
 	}
 	public function isInRange($offset) {
 		try {
@@ -71,15 +82,17 @@ abstract class platform extends filter implements seekable {
 			debugvar($trueOffset, 'true offset');
 			return $this->dataSource[$source]->isInRange($trueOffset);
 		} catch (Exception $e) {
-			dprintf('caught exception: %s', $e->msg());
+			dprintf('caught exception: %s', $e->getMessage());
 		}
 		return false;
 	}
-	public function getByte() { $this->offset++; return $this->dataSource[$this->lastSource]->getByte(); }
-	public function getShort() { $this->offset += 2; return $this->dataSource[$this->lastSource]->getShort(); }
-	public function getLong() { $this->offset += 4; return $this->dataSource[$this->lastSource]->getLong();	}
-	public function getString($size) { $this->offset += $size; return $this->dataSource[$this->lastSource]->getString($size);	}
-	public function init() { }
+	public function getByte() { $tmp = $this->dataSource[$this->selectedSource]->getByte(); $this->seekRel(1); return $tmp; }
+	public function getShort() { $tmp = $this->dataSource[$this->selectedSource]->getShort(); $this->seekRel(2); return $tmp; }
+	public function getLong() { $tmp = $this->dataSource[$this->selectedSource]->getLong(); $this->seekRel(4); return $tmp; }
+	public function getString($size) { $tmp = $this->dataSource[$this->selectedSource]->getString($size); $this->seekRel($size); return $tmp; }
+	public function init() {
+		$this->setDataSource(new noiseSource(), 'noise');
+	}
 	public function getVar($size) { 
 		$output = 0;
 		for ($i = 0; $i < $size; $i++)
@@ -102,7 +115,7 @@ abstract class compression_filter extends filter {
 		return ($this->getByte()<<8) + $this->getByte();
 	}
 	public function getLong() {
-		return ($this->getLong()<<16) + $this->getLong();
+		return ($this->getShort()<<16) + $this->getShort();
 	}
 	public function getString($size) {
 		if (!isset($this->buffer[$this->location+$size]))
@@ -122,17 +135,9 @@ class rawData extends filter {
 	private $handle;
 	private $size;
 	public function isInRange($offset) {
-		$this->getFileSize();
 		return $offset <= $this->size;
 	}
-	private function getFileSize() {
-		if (!isset($this->size)) {
-			$curoffset = ftell($this->handle);
-			fseek($this->handle, 0, SEEK_END);
-			$this->size = ftell($this->handle);
-			fseek($this->handle, $curoffset, SEEK_SET);
-		}
-	}
+	public function getSize() { return $this->size; }
 	public function getByte() { return $this->getVar(1); }
 	public function getShort() { return $this->getVar(2); }
 	public function getLong() { return $this->getVar(4); }
@@ -140,8 +145,11 @@ class rawData extends filter {
 	public function seekTo($offset) { fseek($this->handle, $offset); }
 	public function open($file) { 
 		if (!file_exists($file))
-			throw new Exception('Could not find file');
+			throw new FileNotFoundException($file);
 		$this->handle = fopen($file, 'r');
+		fseek($this->handle, 0, SEEK_END);
+		$this->size = ftell($this->handle);
+		fseek($this->handle, 0, SEEK_SET);
 	}
 	public function currentOffset() { return ftell($this->handle); }
 	
@@ -161,10 +169,62 @@ class rawData extends filter {
 		return $output;
 	}
 }
-function defaultv($format) {
-	if (isset($format))
-		return $format;
-	return '%s';
+class noiseSource extends filter {
+	
+	public function isInRange($offset) {
+		return true;
+	}
+	public function getSize() { return 0; }
+	public function getByte() { return $this->getVar(1); }
+	public function getShort() { return $this->getVar(2); }
+	public function getLong() { return $this->getVar(4); }
+	public function getString($size) { $data = ''; while ($size--) $data .= chr($this->getVar(1)); return $data; }
+	public function seekTo($offset) { }
+	public function currentOffset() { return 0; }
+	
+	public function getVar($size, $endianness = null) {
+		return mt_rand(0, pow(2, $size*8)-1);
+	}
+}
+class memoryData extends filter {
+	private $data;
+	private $position = 0;
+	public function isInRange($offset) {
+		return $offset < count($this->data);
+	}
+	public function setData(array $data) {
+		$this->data = $data;
+	}
+	public function getByte() {
+		return $this->data[$this->position++];
+	}
+	public function getShort() {
+		return $this->getByte() + ($this->getByte()<<8);
+	}
+	public function getLong() {
+		return $this->getShort() + ($this->getShort()<<16);
+	}
+	public function seekTo($target) {
+		$this->position = $target;
+	}
+	public function currentOffset() {
+		return $this->position;
+	}
+	public function getVar($size, $endianness = null) {
+		$output = 0;
+		if ($endianness == 'l')
+			for ($i = 0; $i < $size; $i++)
+				$output += $this->getByte()<<(($size-$i-1)*8);
+		else if ($endianness == 'm') {
+			$output += $this->getByte()<<(2*8);
+			$output += $this->getByte()<<(0*8);
+			$output += $this->getByte()<<(1*8);
+		}
+		else
+			for ($i = 0; $i < $size; $i++)
+				$output += $this->getByte()<<($i*8);
+		return $output;
+	}
 }
 abstract class gamemod {
 	const title = '';
@@ -209,53 +269,6 @@ abstract class coremod {
 		return $this->metadata;
 	}
 }
-interface __table_data {
-	public function __construct(filter $source, $gamedetails, $values);
-	public function getValue();
-}
-abstract class table_data implements __table_data {
-	protected $source;
-	protected $entry;
-	protected $gamedetails;
-	protected $metadata;
-	protected static $math = null;
-	private $mathvars;
-	protected function setVar($var, $val) {
-		$this->mathvars[$var] = $val;
-	}
-	private function __setVars() {
-		foreach ($this->mathvars as $var=>$val)
-			self::$math->evaluate(sprintf('%s = %d', strtolower(str_replace(array('?', ' ', '"', '/','+', '-','*'), array('Q', '_', '','D','A','S','M'), $var)), $val));
-		$this->mathvars = array();
-	}
-	protected function evalString($str) {
-		if (is_int($str))
-			return $str;
-		$this->__setVars();
-		debugvar($str, 'evaluating');
-		$result = self::$math->evaluate($str);
-		debugvar($result, 'result');
-		return $result;
-	}
-	public function __construct(filter $source, $gamedetails, $entry) {
-		if (self::$math === null) 
-			self::$math = new EvalMath();
-		$this->source = $source;
-		$this->details = $entry;
-		if (isset($this->details['Size']))
-			$this->details['Size'] = $this->evalString($this->details['Size']);
-		$this->gamedetails = $gamedetails;
-	}
-	public function setMetadata(&$input) {
-		$this->metadata = &$input;
-	}
-	public function getValue() {
-		$val = $this->__getValue();
-		if (is_int($val) && isset($this->details['Name']))
-			$this->setVar($this->details['Name'], $val);
-		return $val;
-	}
-}
 abstract class cpucore {
 	protected $initialoffset;
 	protected $currentoffset;
@@ -277,7 +290,7 @@ abstract class cpucore {
 	public function getBranches() { ksort($this->branches); return $this->branches; }
 	public function getDefault() { }
 	public function setPlatform($src) { $this->dataSource = $src; $this->platform = $src; }
-	public function setBreakPoint($addr) { $this->breakpoints[] = $addr; }
+	public function setBreakPoint($addr, $label = '') { debugvar($addr, sprintf('adding %s breakpoint',$label)); $this->breakpoints[$label] = $addr; }
 	public function setState($flag, $state) { $this->processorState[$flag] = $state; }
 	public function getState($flag) { return $this->processorState[$flag]; }
 	protected function initializeProcessor() { }
@@ -317,13 +330,12 @@ abstract class cpucore {
 				$this->lastOpcode = $instruction['opcode'];
 				$output[] = $instruction;
 			} catch (Exception $e) {
-				$this->setBreakPoint($this->currentoffset);
+				$this->setBreakPoint($this->currentoffset, $e->getMessage());
 			}
 			$this->executeInstruction($instruction);
 		}
 		return $output;
 	}
-	//public function setPlatform($platform) { $this->platform = $platform; }
 }
 function gametitle($game) {
 	$miscdata = array();

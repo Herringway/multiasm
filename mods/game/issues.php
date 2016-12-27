@@ -1,16 +1,18 @@
 <?php
 class issues extends gamemod {
+	private $countProblems = 0;
 	public static function getMagicValue() { return 'issues'; }
 	public static function getMenuEntries($s) { return array('issues' => 'Issues'); }
-	public function getDescription() { return 'Issues'; }
+	public function getDescription() { return 'Issues ('.$this->countProblems.')'; }
 	public function getTemplate() { return 'issues'; }
 	public function execute() {
 		$allproblems = array();
 		$prev = 0;
 		foreach (addressFactory::getAddresses() as $name => $entry) {
 			$problems = array();
-			if ($prev > $entry['Offset'])
+			if (isset($entry['Offset']) && ($prev > $entry['Offset']))
 				$problems[] = 'Overlap detected ('.dechex($prev).')';
+			$prev = $entry['Offset'];
 			if (!isset($entry['Size']))
 				$problems[] = 'No size defined';
 			if (!isset($entry['Type']))
@@ -55,9 +57,6 @@ class issues extends gamemod {
 			$this->countProblems += count($problems);
 			if ($problems != array())
 				$allproblems[$name] = $problems;
-			//if (isset($entry['size']) && !isset($this->addresses[$offset+$entry['size']]) && ($this->platform->map_rom($offset+$entry['size']) < $this->game['size']))
-			//	$allproblems[decimal_to_function($offset+$entry['size'])] = array('Undefined area!');
-			$prev = $entry['Offset']+(isset($entry['Size']) ? $entry['Size'] : 0);
 		}
 		return array($allproblems);
 	}
