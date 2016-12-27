@@ -1,4 +1,4 @@
 {%extends "base.tpl"%}
 {%block content%}
-{%for entry in data%}${{addrformat|format(entry.address)}} - ${{addrformat|format(entry.address+entry.size-1)}} ({{addrformat|format(entry.size)}}):<a{%if not entry.name%} class="unknown"{%endif%} title="{{entry.description}}" href="/{{coremod}}/{%if entry.name%}{{entry.name}}{%else%}{{addrformat|format(entry.address)}}{%endif%}">{%if entry.name%}{{entry.name}}{%else%}{{entry.type}}_{{addrformat|format(entry.address)}}{%endif%}</a>
+{%for entry in data%}${{addrformat|format(entry.address)}} - ${{addrformat|format(entry.address+entry.size-1)}} ({{addrformat|format(entry.size)}}):<a{%if not entry.name%} class="unknown"{%endif%} title="{{entry.description}}" href="{{rootdir}}/{{coremod}}/{%if entry.name%}{{entry.name}}{%else%}{{addrformat|format(entry.address)}}{%endif%}">{%if entry.name%}{{entry.name}}{%else%}{{entry.type}}_{{addrformat|format(entry.address)}}{%endif%}</a>
 {%endfor%}{%endblock%}
