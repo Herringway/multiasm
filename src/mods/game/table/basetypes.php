@@ -130,8 +130,8 @@ class table_struct extends table_data {
 				$name = $entry['Name'];
 			else
 				$entry['Name'] = $name;
-			if (file_exists('mods/game/table/'.$type.'.php') && !class_exists('table_'.$type))
-				require_once 'mods/game/table/'.$type.'.php';
+			if (file_exists('src/mods/game/table/'.$type.'.php') && !class_exists('table_'.$type))
+				require_once 'src/mods/game/table/'.$type.'.php';
 			if (!class_exists('table_'.$type))
 				throw new Exception($type.' is unimplemented!');
 			$typeclass = 'table_'.$type;
@@ -165,8 +165,8 @@ class table_struct extends table_data {
 		return $output;
 	}
 	private function getSubValue($type, $entry, $size) {
-		if (file_exists('mods/game/table/'.$type.'.php') && !class_exists('table_'.$type))
-			require_once 'mods/game/table/'.$type.'.php';
+		if (file_exists('src/mods/game/table/'.$type.'.php') && !class_exists('table_'.$type))
+			require_once 'src/mods/game/table/'.$type.'.php';
 		if (!class_exists('table_'.$type))
 			throw new Exception($type.' is unimplemented!');
 		$type = 'table_'.$type;
@@ -215,8 +215,8 @@ class table_bitstruct extends table_data {
 		return $output;
 	}
 	private function getSubValue($type, $entry, $size, $bitoffset) {
-		if (file_exists('mods/game/table/'.$type.'.php') && !class_exists('table_'.$type))
-			require_once 'mods/game/table/'.$type.'.php';
+		if (file_exists('src/mods/game/table/'.$type.'.php') && !class_exists('table_'.$type))
+			require_once 'src/mods/game/table/'.$type.'.php';
 		if (!class_exists('table_'.$type))
 			throw new Exception($type.' is unimplemented!');
 		$type = 'table_'.$type;
@@ -254,8 +254,8 @@ class table_array extends table_data {
 				break;
 			$type = isset($this->details['Item Type']['Type']) ? $this->details['Item Type']['Type'] : 'int';
 			
-			if (file_exists('mods/game/table/'.$type.'.php') && !class_exists('table_'.$type))
-				require_once 'mods/game/table/'.$type.'.php';
+			if (file_exists('src/mods/game/table/'.$type.'.php') && !class_exists('table_'.$type))
+				require_once 'src/mods/game/table/'.$type.'.php';
 			if (!class_exists('table_'.$type))
 				throw new Exception($type.' is unimplemented!');
 			$typeclass = 'table_'.$type;

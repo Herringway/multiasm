@@ -10,7 +10,7 @@ class table extends gamemod {
 	public function execute($arg, $query = '') {
 		$this->offset = $arg;
 		
-		require_once 'mods/game/table/basetypes.php';
+		require_once 'src/mods/game/table/basetypes.php';
 		$mod = 'table_'.$this->address['Type'];
 		switch ($mod) {
 			case 'table_data': $mod = 'table_struct'; break;

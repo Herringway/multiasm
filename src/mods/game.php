@@ -37,9 +37,9 @@ class game extends coremod {
 		debugmessage("Loading Modules", 'info');
 		//Load Modules
 		$this->metadata['submods'] = array();
-		for ($dir = opendir('./mods/game/'); $file = readdir($dir); ) {
+		for ($dir = opendir('./src/mods/game/'); $file = readdir($dir); ) {
 			if (substr($file, -4) == ".php") {
-				require_once './mods/game/' . $file;
+				require_once './src/mods/game/' . $file;
 				$modClass = substr($file,0, -4);
 				$magic = $modClass::getMagicValue();
 				if ($magic !== null) {
@@ -118,7 +118,7 @@ class game extends coremod {
 			$source->seekTo($offset);
 			if (isset($addressEntry['Filters']))
 				foreach ($addressEntry['Filters'] as $filter) {
-					require_once 'filters/'.$filter.'.php';
+					require_once 'src/filters/'.$filter.'.php';
 					$source = new $filter($source);
 				}
 		}

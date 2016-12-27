@@ -6,9 +6,9 @@ class snes extends platform {
 		return pow(2,24)+1;
 	}
 	public function getPlatformAddresses() {
-		$registers = yaml_parse_file('platforms/snes_registers.yml');
+		$registers = yaml_parse_file('src/platforms/snes_registers.yml');
 		if (isset($this->game['superfx']) && ($this->game['superfx'] == true))
-			$registers += yaml_parse_file('platforms/snes_superfx.yml');
+			$registers += yaml_parse_file('src/platforms/snes_superfx.yml');
 		return $registers;
 	}
 	public function map($offset) {

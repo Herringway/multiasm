@@ -87,7 +87,7 @@ class addressFactory {
 						unset($addr['Index']);
 					}
 					else if (isset($addr['Entries']) && $GLOBALS['settings']['Struct Addresses']) {
-						require_once 'mods/game/table/basetypes.php';
+						require_once 'src/mods/game/table/basetypes.php';
 						$tablemod = new table_struct($source, $game, $addr);
 						$source->seekTo($addr['Offset']);
 						$tablemod->getValue();

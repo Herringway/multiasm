@@ -1,6 +1,6 @@
 <?php
 require_once 'src/commonfunctions.php';
-require_once 'mods/game/table/basetypes.php';
+require_once 'src/mods/game/table/basetypes.php';
 class basetypeTest extends PHPUnit_Framework_TestCase {
 	public function testInt() {
 		$vals = array(1,0,2,1,0);

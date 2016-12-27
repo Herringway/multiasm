@@ -47,7 +47,7 @@ if ($settings['cacheclear'])
 	$cache->clear();
 
 header('Content-Type: text/html; charset=utf-8');
-$loader = new Twig_Loader_Filesystem('templates');
+$loader = new Twig_Loader_Filesystem('src/templates');
 $twig = new Twig_Environment($loader, array('debug' => $settings['debug']));
 $twig->addExtension(new Twig_Extension_Debug());
 $twig->addExtension(new Penguin_Twig_Extensions());
@@ -106,7 +106,7 @@ if ($settings['gamemenu']) {
 	}
 	asort($metadata['gamelist']);
 }
-$mainmod = loadModules('./mods/', $argv[0]);
+$mainmod = loadModules('./src/mods/', $argv[0]);
 debugvar($mainmod, 'Main Module');
 $mod = new $mainmod();
 $mod->setMetadata($metadata);
