@@ -1,5 +1,5 @@
 <?php
-require_once 'libs/commonfunctions.php';
+require_once 'src/commonfunctions.php';
 class commonfuncTest extends PHPUnit_Framework_TestCase {
 	public function testGameTitle() {
 		$this->assertEquals('Game', gametitle(array('Title' => 'Game')));

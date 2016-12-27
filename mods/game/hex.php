@@ -3,7 +3,7 @@ class hex extends gamemod {
 	private $offset;
 	public function getTemplate() { return 'hex'; }
 	public function execute($arg) {
-		require_once 'libs/hexview.php';
+		require_once 'src/hexview.php';
 		if (!isset($this->address['Size']))
 			die('Data has no size defined!');
 		$size = $this->address['Size'];

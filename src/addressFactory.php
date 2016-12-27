@@ -1,5 +1,5 @@
 <?php
-require_once 'libs/platformFactory.php';
+require_once 'src/platformFactory.php';
 class addressFactory {
 	private static $addrs = array();
 	private static $currentID;

@@ -1,6 +1,6 @@
 <?php
-require 'libs/platformFactory.php';
-require 'libs/addressFactory.php';
+require 'src/platformFactory.php';
+require 'src/addressFactory.php';
 class game extends coremod {
 	const magic = '';
 	public function toBinaryData($argv, $data) {

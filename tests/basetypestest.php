@@ -1,5 +1,5 @@
 <?php
-require_once 'libs/commonfunctions.php';
+require_once 'src/commonfunctions.php';
 require_once 'mods/game/table/basetypes.php';
 class basetypeTest extends PHPUnit_Framework_TestCase {
 	public function testInt() {

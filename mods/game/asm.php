@@ -1,5 +1,5 @@
 <?php
-require_once 'libs/cpuFactory.php';
+require_once 'src/cpuFactory.php';
 class asm extends gamemod {
 	private $cpucore;
 	private $offset;

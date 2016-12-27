@@ -1,6 +1,6 @@
 <?php
-require_once 'libs/exceptions.php';
 require_once 'vendor/autoload.php';
+require_once 'src/exceptions.php';
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\ChromePHPHandler;

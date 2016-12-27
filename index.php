@@ -1,9 +1,9 @@
 <?php
-require_once 'libs/commonfunctions.php';
-require_once 'libs/cache.php';
-require_once 'libs/settings.php';
 require_once 'vendor/autoload.php';
-require_once 'libs/twigext.php';
+require_once 'src/commonfunctions.php';
+require_once 'src/cache.php';
+require_once 'src/settings.php';
+require_once 'src/twigext.php';
 function loadModules($path, $mod) {
 	for ($dir = opendir($path); $file = readdir($dir); ) {
 		if (substr($file, -4) == ".php") {
