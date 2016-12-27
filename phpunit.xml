@@ -1,5 +1,20 @@
-<testsuites>
-  <testsuite name="multiasm tests">
-    <directory suffix="test.php" phpVersion="5.3.0">./src/tests</directory>
-  </testsuite>
-</testsuites>
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit>
+  <logging>
+    <log type="coverage-clover" target="build/logs/clover.xml"/>
+  </logging>
+  <filter>
+    <whitelist>
+      <directory suffix=".php">./src</directory>
+      <exclude>
+        <directory>./vendor</directory>
+        <directory>./tests</directory>
+      </exclude>
+    </whitelist>
+  </filter>
+  <testsuites>
+    <testsuite name="multiasm tests">
+      <directory suffix="test.php" phpVersion="5.3.0">./src/tests</directory>
+    </testsuite>
+  </testsuites>
+</phpunit>
