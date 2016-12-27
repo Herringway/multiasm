@@ -135,7 +135,8 @@ default:
 	debugvar($mod->getMetadata()['template'], 'displaymode');
 	header('Content-Type: text/html; charset=UTF-8');
 	$displaydata['data'] = $data;
-	$displaydata['errors'] = $GLOBALS['ERRORS'];
+	if (isset($GLOBALS['ERRORS']))
+		$displaydata['errors'] = $GLOBALS['ERRORS'];
 	echo $twig->render($displaydata['template'].'.tpl', $displaydata);
 	break;
 }
