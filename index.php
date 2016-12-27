@@ -43,6 +43,8 @@ if ($settings['debug']) {
 	ini_set('xdebug.var_display_max_depth', -1);
 }
 $cache = new cache();
+if ($settings['cacheclear'])
+	$cache->clear();
 
 header('Content-Type: text/html; charset=utf-8');
 $loader = new Twig_Loader_Filesystem('templates');
