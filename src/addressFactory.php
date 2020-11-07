@@ -5,24 +5,26 @@ class addressFactory {
 	private static $currentID;
 	private static $platforms = array();
 	public static function loadGame($id) {
+		global $settings;
 		$tags = ['!assembly' => 'assemblytag', '!data' => 'datatag', '!empty' => 'emptytag', '!struct' => 'structtag', '!int' => 'inttag', '!script' => 'scripttag', '!array' => 'arraytag', '!pointer' => 'pointertag', '!tile' => 'tiletag', '!unknown' => 'unknowntag', '!color' => 'colortag'];
 		self::$currentID = $id;
 		$ndocs = 0;
 		if (isset(self::$addrs[$id]))
 			return self::$addrs[$id];
 		debugmessage('Loading YAML for '.$id, 'info');
+		$gameyamlpath = sprintf('%1$s/%2$s/%2$s.yml', $settings['yamlpath'], $id);
 		if ($GLOBALS['settings']['cache']) {
 			global $cache;
-			if (isset($cache[sprintf('MPASM.ymlmodified.%s', $id)]) && ($cache[sprintf('MPASM.ymlmodified.%s', $id)] === filemtime(sprintf('games/%1$s/%1$s.yml', $id)))) {
+			if (isset($cache[sprintf('MPASM.ymlmodified.%s', $id)]) && ($cache[sprintf('MPASM.ymlmodified.%s', $id)] === filemtime($gameyamlpath))) {
 				debugmessage(sprintf("Game data (%s) loaded from cache", $id), 'info');
 				list($game,$addresses) = $cache[sprintf('MPASM.ymlcache.%s', $id)];
 			} else { //Load game data & platform class from yml
-				list($game,$addresses) = $cache[sprintf('MPASM.ymlcache.%s', $id)] = yaml_parse_file(sprintf('games/%1$s/%1$s.yml', $id), -1, $ndocs, $tags);
-				$cache[sprintf('MPASM.ymlmodified.%s', $id)] = filemtime(sprintf('games/%1$s/%1$s.yml', $id));
+				list($game,$addresses) = $cache[sprintf('MPASM.ymlcache.%s', $id)] = yaml_parse_file($gameyamlpath, -1, $ndocs, $tags);
+				$cache[sprintf('MPASM.ymlmodified.%s', $id)] = filemtime($gameyamlpath);
 			}
 			$output = array($game,$addresses);
 		} else 
-			$output = yaml_parse_file(sprintf('games/%1$s/%1$s.yml', $id), -1, $ndocs, $tags);
+			$output = yaml_parse_file($gameyamlpath, -1, $ndocs, $tags);
 		self::$platforms[$id] = platformFactory::getPlatform($output[0]['Platform']);
 		self::$addrs[$id] = $output;
 	}

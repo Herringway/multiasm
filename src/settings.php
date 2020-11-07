@@ -11,6 +11,7 @@ class settings implements arrayaccess {
 		'cache' => true,
 		'cacheclear' => false,
 		'admins' => array(),
+		'yamlpath' => '.',
 		'errorlimit' => 40,
 		'Struct Addresses' => false,
 		'Resolve Addresses' => true,
