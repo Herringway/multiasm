@@ -9,9 +9,9 @@ class hex extends gamemod {
 		$size = $this->address['Size'];
 		$this->offset = $arg;
 		if (isset($this->address['charset']))
-			$charset = $this->game['scripttables'][$this->address['charset']]['replacements'];
-		else if (isset($this->game['defaultscript']))
-			$charset = $this->game['scripttables'][$this->game['defaultscript']]['replacements'];
+			$charset = $this->game['Script Tables'][$this->address['Charset']]['Replacements'];
+		else if (isset($this->game['Default Script']))
+			$charset = $this->game['Script Tables'][$this->game['Default Script']]['Replacements'];
 		else
 			$charset = null;
 		if ($charset !== null) {
