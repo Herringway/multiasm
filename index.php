@@ -1,4 +1,7 @@
 <?php
+if (!isset($argv) && preg_match('/\.(css|ico)$/', $_SERVER["REQUEST_URI"])) {
+    return false;    // serve the requested resource as-is.
+}
 require_once 'vendor/autoload.php';
 require_once 'src/commonfunctions.php';
 require_once 'src/cache.php';
