@@ -35,6 +35,6 @@ function replacechar($char, $charset) {
 		$c = trim(mb_substr($charset[ord($char)],0,1), "\t\n\r");
 	if (isset($c) && ($c != ''))
 		return htmlentities($c);
-	return '░';
+	return '█';
 }
 ?>
