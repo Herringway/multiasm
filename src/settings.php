@@ -20,14 +20,14 @@ class settings implements arrayaccess {
 	public function __construct($filename = 'settings.yml') {
 		$this->writefile = $filename;
 		if (!file_exists($filename)) {
-			$this->needswrite = true;
 			$this->settings = $this->defaults;
+			save();
 		} else
 			$this->settings = yaml_parse_file($filename);
 	}
 	function __destruct() {
 		if ($this->needswrite) 
-			file_put_contents($this->writefile, yaml_emit($this->settings));
+			save();
 	}
 	public function offsetSet($key, $value) {
 		if (!isset($this->defaults[$key]))
@@ -48,6 +48,9 @@ class settings implements arrayaccess {
 		if (!isset($this->defaults[$key]))
 			throw new Exception(sprintf('Unknown setting: %s!', $key));
 		return default_value($this->settings, $key, $this->defaults[$key]);
+    }
+    public function save() {
+		file_put_contents($this->writefile, yaml_emit($this->settings));
     }
 }
 function default_value($array, $key, $default = false) {
