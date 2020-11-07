@@ -11,7 +11,7 @@ $log->pushHandler(new StreamHandler('debug.log', Logger::DEBUG));
 $log->pushHandler(new FirePHPHandler(Logger::DEBUG));
 $log->pushHandler(new ChromePHPHandler(Logger::DEBUG));
 date_default_timezone_set('America/Halifax');
-set_error_handler('error_handling');
+// set_error_handler('error_handling');
 ini_set('yaml.output_width', -1);
 define('BRANCH_LIMIT', 5000);
 function error_handling($errno, $message, $file, $line, $context) {
@@ -64,7 +64,6 @@ abstract class platform extends filter implements seekable {
 		$this->firstseek = false;
 		try {
 		list($this->selectedSource, $trueOffset) = $this->map($offset);
-		debugvar($this->selectedSource, sprintf('seeking to %s in ', $offset));
 		if (!isset($this->dataSource[$this->selectedSource]))
 			$this->selectedSource = 'noise';
 		} catch (Exception $e) {
@@ -356,16 +355,7 @@ function debugvar($var, $label) {
 function debugmessage($message, $level = 'error') {
 	if (!$GLOBALS['settings']['debug'])
 		return;
-	static $count = 0;
-	if ($count++ > 100)
-		return;
-	global $log;
-	if ($level === 'error')
-		$log->error($message);
-	else if ($level === 'warn')
-		$log->warning($message);
-	else
-		$log->debug($message);
+	error_log($message, 4);
 }
 function dprintf($message) {
 	$args = func_get_args();

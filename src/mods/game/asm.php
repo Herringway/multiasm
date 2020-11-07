@@ -69,7 +69,6 @@ class asm extends gamemod {
 			}
 			if (isset($opcode['target']) || isset($opcode['destination'])) {
 				$addr = isset($opcode['target']) ? $opcode['target'] : $opcode['destination'];
-				debugvar($addr, 'Searching for...');
 				$opcode['uri'] = sprintf($this->cpucore->addressFormat(), $addr);
 				$targEntry = addressFactory::getAddressSubentryFromOffset($addr, $this->source, $this->game);
 				$opcode['name'] = $targEntry['Name'];

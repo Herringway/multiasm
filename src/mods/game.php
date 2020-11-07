@@ -73,7 +73,11 @@ class game extends coremod {
 				$magic = true;
 			} else {
 				$offset = addressFactory::getAddressFromName($argv[1]);
-				if (is_numeric('0x'.$argv[1]) && $platform->isInRange(hexdec($argv[1])))
+				$inrange = $platform->isInRange(hexdec($argv[1]));
+				$isnumeric = is_numeric(intval('0x'.$argv[1]));
+				debugvar($isnumeric, "Is numeric");
+				debugvar($inrange, "Is in range");
+				if ($isnumeric && $inrange)
 					$offset = hexdec($argv[1]);
 				debugvar($offset, 'Location');
 			}

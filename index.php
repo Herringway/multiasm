@@ -92,8 +92,6 @@ else {
 	else
 		$format = $types[$v];
 }
-//Some debug output
-debugvar($_SERVER, 'Server');
 
 //Options!
 debugvar($argv, 'args');
