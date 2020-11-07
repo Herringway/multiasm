@@ -39,7 +39,7 @@ if (count($_GET) > 0) {
 $metadata['time_start'] = microtime(true);
 $metadata['rootdir'] = '/';
 if (isset($_SERVER['DOCUMENT_URI']))
-	$metadata['rootdir'] = dirname($_SERVER['DOCUMENT_URI']);
+	$metadata['rootdir'] = dirname($_SERVER['DOCUMENT_URI']).'/';
 $settings = new settings('settings.yml');
 
 if ($settings['debug']) {
