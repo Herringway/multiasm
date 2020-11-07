@@ -58,14 +58,18 @@ if (!isset($argv)) {
 	$console = false;
 	if ($metadata['rootdir'] != '/')
 		$uristring = str_replace($metadata['rootdir'], '', $_SERVER['REQUEST_URI']);
+	else
+		$uristring = $_SERVER['REQUEST_URI'];
 	$argv = array_slice(explode('/', $uristring),1);
 } else {
 	$console = true;
 	array_shift($argv);
 }
-debugvar(substr($argv[count($argv)-1], 0, strrpos($argv[count($argv)-1], '.')), 'extension detection');
-if ((substr($argv[count($argv)-1], 0, strrpos($argv[count($argv)-1], '.')) != $argv[count($argv)-1]) && (substr($argv[count($argv)-1], 0, strrpos($argv[count($argv)-1], '.')) != ''))
-	$argv[count($argv)-1] = substr($argv[count($argv)-1], 0, strrpos($argv[count($argv)-1], '.'));
+if (count($argv) > 0) {
+	debugvar(substr($argv[count($argv)-1], 0, strrpos($argv[count($argv)-1], '.')), 'extension detection');
+	if ((substr($argv[count($argv)-1], 0, strrpos($argv[count($argv)-1], '.')) != $argv[count($argv)-1]) && (substr($argv[count($argv)-1], 0, strrpos($argv[count($argv)-1], '.')) != ''))
+		$argv[count($argv)-1] = substr($argv[count($argv)-1], 0, strrpos($argv[count($argv)-1], '.'));
+}
 $metadata['options'] = array();
 for ($i = 2; $i < count($argv); $i++) {
 	$v = explode('=', $argv[$i]);
